@@ -1,12 +1,10 @@
 package com.ssafy.frogdetox
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ssafy.frogdetox.databinding.ActivityMainBinding
+import com.ssafy.frogdetox.fragment.DetoxFragment
+import com.ssafy.frogdetox.fragment.TodoFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -16,29 +14,22 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        enableEdgeToEdge()
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.mainFragmentLayout, TodoFragment())
+            .replace(R.id.mainFrameLayout, TodoFragment())
             .commit()
 
         binding.bottomNavbar.setOnItemSelectedListener {
             val transaction = supportFragmentManager.beginTransaction()
             when(it.itemId){
-                R.id.todoTab -> transaction.replace(R.id.mainFragmentLayout, TodoFragment())
-                R.id.detoxTab -> transaction.replace(R.id.mainFragmentLayout, DetoxFragment())
+                R.id.todoTab -> transaction.replace(R.id.mainFrameLayout, TodoFragment())
+                R.id.detoxTab -> transaction.replace(R.id.mainFrameLayout, DetoxFragment())
             }
             transaction.commit()
 
             true
         }
-
     }
 
     //FragmentTransaction 을 이용 화면 replace
@@ -46,11 +37,11 @@ class MainActivity : AppCompatActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         when (fragment) {
             TODO_FRAGMENT -> {
-                transaction.replace(binding.mainFragmentLayout.id, TodoFragment())
+                transaction.replace(binding.mainFrameLayout.id, TodoFragment())
                     .commit()
             }
             DETOX_FRAGMENT -> {
-                transaction.replace(binding.mainFragmentLayout.id, DetoxFragment())
+                transaction.replace(binding.mainFrameLayout.id, DetoxFragment())
                     .commit()
             }
             SETTING_FRAGMENT -> {
