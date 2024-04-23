@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.TodoFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:id="@+id/llWeek"
+        app:layout_constraintTop_toBottomOf="@id/ivFrog">
+
+        <TextView
+            android:id="@+id/tvWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:text="5월 2주차" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            />
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_arrow_circle_left_24"
+            tools:layout_editor_absoluteX="285dp" />
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_arrow_circle_right_24"
+            tools:layout_editor_absoluteX="246dp"
+            tools:layout_editor_absoluteY="13dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/lldate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/llWeek">
+
+        <ImageView
+            android:id="@+id/ivSun"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:src="@android:drawable/checkbox_off_background" />
+
+        <ImageView
+            android:id="@+id/ivMon"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            android:src="@android:drawable/checkbox_off_background" />
+
+        <ImageView
+            android:id="@+id/ivTue"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            android:src="@android:drawable/checkbox_off_background" />
+
+        <ImageView
+            android:id="@+id/ivWed"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            android:src="@android:drawable/checkbox_off_background" />
+
+
+        <ImageView
+            android:id="@+id/ivThu"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            android:src="@android:drawable/checkbox_off_background" />
+
+        <ImageView
+            android:id="@+id/ivFri"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            android:src="@android:drawable/checkbox_off_background" />
+
+
+        <ImageView
+            android:id="@+id/ivSat"
+            android:layout_width="0dp"
+            android:layout_height="54dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:src="@android:drawable/checkbox_off_background" />
+
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/ivFrog"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_launcher_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="OOO님"
+        android:textSize="30sp"
+        app:layout_constraintStart_toEndOf="@+id/ivFrog"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvDont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="오늘은 이걸 하지마세요. 개~굴"
+        app:layout_constraintBottom_toBottomOf="@+id/ivFrog"
+        app:layout_constraintStart_toEndOf="@+id/ivFrog"
+        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+    <Button
+        android:id="@+id/btnAddTodo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lldate" />
+
+    <ListView
+        android:id="@+id/lvTodo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnAddTodo" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
