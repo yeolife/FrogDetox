@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             val transaction = supportFragmentManager.beginTransaction()
             when(it.itemId){
                 R.id.todoTab -> transaction.replace(R.id.mainFragmentLayout, TodoFragment())
-                R.id.DetoxTab -> transaction.replace(R.id.mainFragmentLayout, DetoxFragment())
+                R.id.detoxTab -> transaction.replace(R.id.mainFragmentLayout, DetoxFragment())
             }
             transaction.commit()
 
