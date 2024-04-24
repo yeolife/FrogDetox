@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
     </FrameLayout>
 
+    <!-- TODO labelVisibilityMode 정하기 -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavbar"
         android:layout_width="match_parent"
@@ -25,6 +26,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        style="@style/BottomNavigationViewNoRipple"
+        app:itemIconTint="@drawable/menu_selector_color"
+        app:itemTextColor="@drawable/menu_selector_color"
+        app:itemBackground="@color/white"
+        android:outlineAmbientShadowColor="@color/black"
         app:menu="@menu/bottom_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
