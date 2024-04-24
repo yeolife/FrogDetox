@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.ssafy.frogdetox.databinding.ActivityMainBinding
 import com.ssafy.frogdetox.fragment.DetoxFragment
+import com.ssafy.frogdetox.fragment.SettingFragment
 import com.ssafy.frogdetox.fragment.TodoFragment
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             when(it.itemId){
                 R.id.todoTab -> transaction.replace(R.id.mainFrameLayout, TodoFragment())
                 R.id.detoxTab -> transaction.replace(R.id.mainFrameLayout, DetoxFragment())
+                R.id.settingTab -> transaction.replace(R.id.mainFrameLayout, SettingFragment())
             }
             transaction.commit()
 
@@ -45,7 +47,8 @@ class MainActivity : AppCompatActivity() {
                     .commit()
             }
             SETTING_FRAGMENT -> {
-
+                transaction.replace(binding.mainFrameLayout.id, SettingFragment())
+                    .commit()
             }
         }
     }
