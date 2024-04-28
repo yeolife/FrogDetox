@@ -64,7 +64,7 @@ class TodoFragment : Fragment() {
 
         todoAdapter.itemClickListener = object: TodoListAdapter.ItemClickListener {
             override fun onClick(position: Int) {
-                Toast.makeText(requireActivity(), todoAdapter.list[position].id, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "{$position}번 투두", Toast.LENGTH_SHORT).show()
             }
         }
 

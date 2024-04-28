@@ -6,11 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.marginTop
-import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
 import com.ssafy.frogdetox.MainActivity
 import com.ssafy.frogdetox.adapter.FragmentAdapter
 import com.ssafy.frogdetox.databinding.FragmentDetoxBinding
