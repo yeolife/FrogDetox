@@ -46,8 +46,14 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation("com.google.android.material:material:1.0.0")
     implementation("com.tbuonomo:dotsindicator:5.0")
+
+    // 이미지 파싱
     implementation ("com.github.bumptech.glide:glide:4.11.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
+
+    // viewPager2
+    implementation ("androidx.viewpager2:viewpager2:1.0.0")
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

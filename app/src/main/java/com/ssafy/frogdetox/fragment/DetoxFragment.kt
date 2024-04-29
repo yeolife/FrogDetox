@@ -36,14 +36,16 @@ class DetoxFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val pagerAdapter = FragmentAdapter(requireActivity().supportFragmentManager)
 
-        val springDotsIndicator = binding.dotsIndicator
-        val viewPager = binding.viewPager
-        val adapter = pagerAdapter
-        viewPager.adapter = adapter
-        springDotsIndicator.attachTo(viewPager)
-
+        initViewPager()
     }
 
+    private fun initViewPager() {
+        val viewPager = binding.viewPager
+        val viewPagerAdapter = FragmentAdapter(mainActivity)
+        viewPager.adapter = viewPagerAdapter
+
+        val springDotsIndicator = binding.dotsIndicator
+        springDotsIndicator.attachTo(viewPager)
+    }
 }
