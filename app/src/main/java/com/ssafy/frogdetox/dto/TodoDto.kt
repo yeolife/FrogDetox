@@ -1,3 +1,3 @@
 package com.ssafy.frogdetox.dto
 
-data class TodoDto(var id: Int, var isComplete: Boolean, var context: String, var date: Long)
+data class TodoDto(var id: Int, var dateId: Int, var content: String, var time: Long, var isComplete: Boolean)
