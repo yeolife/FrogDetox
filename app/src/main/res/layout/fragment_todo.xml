@@ -25,20 +25,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_arrow_circle_left_24"
-            tools:layout_editor_absoluteX="285dp" />
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_arrow_circle_right_24"
-            tools:layout_editor_absoluteX="246dp"
-            tools:layout_editor_absoluteY="13dp" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
