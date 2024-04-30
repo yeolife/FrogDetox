@@ -19,16 +19,9 @@ object dummy {
         TodoDto(15,  8, "테스트!!!!", 1714213389, false)
     )
 
-    val todoDateList: MutableList<TodoDateDto> = mutableListOf(
-        TodoDateDto(1, 1714213389, 1),
-        TodoDateDto(2, 1714213389, 2),
-        TodoDateDto(3, 1714213389, 3),
-        TodoDateDto(4, 1714213389, 4),
-        TodoDateDto(5, 1714213389, 5),
-        TodoDateDto(6, 1714213389, 6),
-        TodoDateDto(7, 1714213389, 7),
-        TodoDateDto(8, 1714213389, 1),
-        TodoDateDto(9, 1714213389, 2),
-        TodoDateDto(10, 1714213389, 3)
-    )
+    val todoDateList: MutableList<TodoDateDto> = mutableListOf<TodoDateDto>().apply {
+        for(i in 1..100){
+            add(TodoDateDto(1, 1714176000000+i*86400000, 1))
+        }
+    }
 }
