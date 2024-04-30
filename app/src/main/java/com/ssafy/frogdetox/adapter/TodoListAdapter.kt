@@ -21,7 +21,7 @@ class TodoListAdapter(var list: MutableList<TodoDto>): RecyclerView.Adapter<Todo
                 isChecked = item.isComplete
             }
 
-            itemView.findViewById<TextView>(R.id.tv_context).text = item.context
+            itemView.findViewById<TextView>(R.id.tv_context).text = item.content
         }
 
         init {
