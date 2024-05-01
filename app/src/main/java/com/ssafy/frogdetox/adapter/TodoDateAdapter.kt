@@ -5,7 +5,9 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -40,6 +42,7 @@ class TodoDateAdapter (val context : Context): ListAdapter<TodoDateDto, TodoDate
         @RequiresApi(Build.VERSION_CODES.O)
         fun bind(item: TodoDateDto) {
             val date = itemView.findViewById<TextView>(R.id.tv_Day)
+            val today = itemView.findViewById<ImageView>(R.id.ivBlank)
 //            val week = itemView.findViewById<TextView>(R.id.tv_Day).text
 
             Glide.with(context)
@@ -61,13 +64,10 @@ class TodoDateAdapter (val context : Context): ListAdapter<TodoDateDto, TodoDate
             // 오늘 날짜와 캘린더의 오늘 날짜가 같을 경우 background_blue 적용하기
             Log.d(TAG, "bind: $formatNowTime $formatDateTime ${item.date} $currentMillis")
             if (formatNowTime == formatDateTime) {
+                today.visibility= View.VISIBLE
                 Glide.with(context)
                     .load(R.drawable.todayfrog)//todo : 추후 모양 변경 예정. 개굴 표시로 오늘 표시해도 될듯?
                     .into(itemView.findViewById(R.id.ivDay))
-            }
-
-            itemView.setOnClickListener {
-                Toast.makeText(context,"${formatNowTime}날짜에 해당하는 투두 표시해주기",Toast.LENGTH_SHORT).show()
             }
         }
     }
