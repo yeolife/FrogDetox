@@ -10,6 +10,7 @@
         android:id="@+id/llWeek"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="16dp"
         android:gravity="right"
         app:layout_constraintTop_toBottomOf="@id/ivFrog">
 
@@ -35,6 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/llWeek"
+        android:paddingBottom="16dp"
         app:spanCount="7"
         tools:itemCount="7"
         tools:listitem="@layout/item_list_tododate" />
@@ -70,16 +72,6 @@
         app:layout_constraintStart_toEndOf="@+id/ivFrog"
         app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
-    <Button
-        android:id="@+id/btnAddTodo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_date" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTodo"
         android:layout_width="match_parent"
@@ -88,7 +80,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAddTodo"
+        app:layout_constraintTop_toBottomOf="@+id/rv_date"
         tools:listitem="@layout/item_list_todo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
