@@ -7,17 +7,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
+        android:id="@+id/ivBlank"
+        android:layout_width="54dp"
+        android:layout_height="0dp"
+        android:rotation="180"
+        android:scaleType="centerCrop"
+        android:scaleX="-1"
+        android:src="@drawable/baseline_chat_bubble_outline_24"
+        android:visibility="invisible"
+        app:layout_constraintDimensionRatio="1:1"
+        android:layout_marginTop="-8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivDay"
+        />
+    <ImageView
         android:id="@+id/ivDay"
         android:layout_width="54dp"
         android:layout_height="0dp"
-        android:layout_marginStart="0dp"
         android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:src="@android:drawable/checkbox_off_background"
         app:layout_constraintDimensionRatio="1:1"
-        android:src="@android:drawable/checkbox_off_background" />
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_Day"
