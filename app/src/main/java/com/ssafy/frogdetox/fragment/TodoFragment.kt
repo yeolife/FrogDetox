@@ -69,7 +69,8 @@ class TodoFragment : Fragment() {
         todoAdapter = TodoListAdapter(dummy.todoList)
 
         todoDateRecycler = binding.rvDate
-        todoDateAdapter = TodoDateAdapter(requireContext(),dummy.todoDateList)
+        todoDateAdapter = TodoDateAdapter(requireContext())
+        todoDateAdapter.submitList(getTodoDateData())
 
         todoAdapter.itemClickListener = object: TodoListAdapter.ItemClickListener {
             override fun onClick(position: Int) {
@@ -90,4 +91,7 @@ class TodoFragment : Fragment() {
         }
     }
 
+    private fun getTodoDateData(): MutableList<TodoDateDto> {
+        return dummy.todoDateList
+    }
 }
