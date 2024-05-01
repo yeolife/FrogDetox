@@ -73,9 +73,7 @@ class TodoDateAdapter (val context : Context): ListAdapter<TodoDateDto, TodoDate
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoWeeklyViewHolder {
-        return TodoWeeklyViewHolder(
-            DataBindingUtil.inflate( LayoutInflater.from(parent.context), R.layout.item_list_tododate, parent, false )
-        )
+        return TodoWeeklyViewHolder(ItemListTododateBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
