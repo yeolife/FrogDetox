@@ -43,6 +43,7 @@ class TodoDateAdapter (val context : Context): ListAdapter<TodoDateDto, TodoDate
         fun bind(item: TodoDateDto) {
             val date = itemView.findViewById<TextView>(R.id.tv_Day)
             val today = itemView.findViewById<ImageView>(R.id.ivBlank)
+            val todaytext = itemView.findViewById<TextView>(R.id.tvBlank)
 //            val week = itemView.findViewById<TextView>(R.id.tv_Day).text
 
             Glide.with(context)
@@ -64,10 +65,8 @@ class TodoDateAdapter (val context : Context): ListAdapter<TodoDateDto, TodoDate
             // 오늘 날짜와 캘린더의 오늘 날짜가 같을 경우 background_blue 적용하기
             Log.d(TAG, "bind: $formatNowTime $formatDateTime ${item.date} $currentMillis")
             if (formatNowTime == formatDateTime) {
-                today.visibility= View.VISIBLE
-                Glide.with(context)
-                    .load(R.drawable.todayfrog)//todo : 추후 모양 변경 예정. 개굴 표시로 오늘 표시해도 될듯?
-                    .into(itemView.findViewById(R.id.ivDay))
+//                today.visibility= View.VISIBLE
+                todaytext.visibility = View.VISIBLE
             }
         }
     }
