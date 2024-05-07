@@ -16,12 +16,12 @@ class TodoRepository {
         val mutableData = MutableLiveData<MutableList<TodoDto>>()
         val myRef = Firebase.database.getReference("Todo")
         Log.d(TAG, "getData: $myRef")
-        
+
         myRef.addValueEventListener(object : ValueEventListener {
             val listData : MutableList<TodoDto> = mutableListOf()
-            
+
             override fun onDataChange(snapshot: DataSnapshot) {
-                
+
                 if(snapshot.exists()){
                     listData.clear()
                     for(curSnapshot in snapshot.children){
