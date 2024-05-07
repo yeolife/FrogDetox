@@ -66,6 +66,6 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
 
     //framework ktx dependency 추가
-    implementation ("androidx.fragment:fragment-ktx:1.6.2")
+    implementation ("androidx.fragment:fragment-ktx:1.6.2");
 
 }

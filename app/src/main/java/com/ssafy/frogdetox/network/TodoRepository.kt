@@ -14,19 +14,25 @@ private const val TAG = "TodoRepository_싸피"
 class TodoRepository {
     fun getData() : LiveData<MutableList<TodoDto>> {
         val mutableData = MutableLiveData<MutableList<TodoDto>>()
-        val myRef = Firebase.database.getReference("frog")
+        val myRef = Firebase.database.getReference("Todo")
         Log.d(TAG, "getData: $myRef")
+        
         myRef.addValueEventListener(object : ValueEventListener {
             val listData : MutableList<TodoDto> = mutableListOf()
+            
             override fun onDataChange(snapshot: DataSnapshot) {
+                
                 if(snapshot.exists()){
                     listData.clear()
-                    for(userSnapshot in snapshot.children){
-                        val getData = userSnapshot.getValue(TodoDto::class.java)
-                        listData.add(getData!!)
-
-                        mutableData.value = listData
+                    for(curSnapshot in snapshot.children){
+                        Log.d(TAG, "onDataChange: $curSnapshot")
+                        val getData = curSnapshot.getValue(TodoDto::class.java)
+                        if (getData != null) {
+                            listData.add(getData)
+                        }
                     }
+
+                    mutableData.value = listData
                 }
             }
 

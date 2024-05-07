@@ -38,7 +38,7 @@ class TodoViewModel: ViewModel() {
         todoList.find{it.id == id}?.let {
             it.content = todo.content
             it.dateId = todo.dateId
-            it.time = todo.time
+            it.ragTime = todo.ragTime
             it.isComplete = todo.isComplete
         }
     }
