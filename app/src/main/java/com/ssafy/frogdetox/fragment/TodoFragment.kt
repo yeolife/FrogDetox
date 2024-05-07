@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 import java.util.Locale
 
+private const val TAG = "TodoFragment"
 class TodoFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private var _binding: FragmentTodoBinding? = null
@@ -94,6 +95,11 @@ class TodoFragment : Fragment() {
                         binding2.calendarView.visibility = View.VISIBLE
                     }
                 }
+
+                if(binding2.root.parent != null){
+                    ((binding2.root.parent) as ViewGroup).removeView(binding2.root)
+                }
+
                 dialog.setView(binding2.root)
                 dialog.show()
             }
