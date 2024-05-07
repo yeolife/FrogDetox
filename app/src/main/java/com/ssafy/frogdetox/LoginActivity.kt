@@ -21,4 +21,5 @@ class LoginActivity : AppCompatActivity() {
             finish()
         }
     }
+
 }

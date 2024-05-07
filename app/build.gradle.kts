@@ -1,8 +1,6 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    id ("org.jetbrains.kotlin.kapt")
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -41,6 +39,7 @@ android {
     dataBinding {
         enable = true
     }
+
 }
 
 dependencies {
@@ -61,11 +60,4 @@ dependencies {
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    implementation("com.google.firebase:firebase-database-ktx:20.0.5")
-    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
-
-    //framework ktx dependency 추가
-    implementation ("androidx.fragment:fragment-ktx:1.6.2")
-
 }

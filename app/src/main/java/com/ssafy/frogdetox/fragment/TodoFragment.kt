@@ -1,6 +1,5 @@
 package com.ssafy.frogdetox.fragment
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
@@ -13,8 +12,6 @@ import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,14 +23,13 @@ import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.dto.TodoDateDto
 import com.ssafy.frogdetox.dto.dummy
-import com.ssafy.frogdetox.viewmodel.TodoViewModel
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 import java.util.Locale
 
-private const val TAG = "TodoFragment_싸피"
+private const val TAG = "TodoFragment"
 class TodoFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private var _binding: FragmentTodoBinding? = null
@@ -44,9 +40,6 @@ class TodoFragment : Fragment() {
 
     private lateinit var todoDateRecycler: RecyclerView
     private lateinit var todoDateAdapter: TodoDateAdapter
-
-    val viewModel : TodoViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,18 +66,11 @@ class TodoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
     }
-    @SuppressLint("NotifyDataSetChanged")
-    fun observerData(){
-        viewModel.fetchData().observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "observerData: ${todoAdapter.list}")
-            todoAdapter.list=it
-            todoAdapter.notifyDataSetChanged()
-        })
-    }
+
+
     private fun initRecyclerView() {
         todoRecycler = binding.rvTodo
-        todoAdapter = TodoListAdapter(viewModel.todoList)
-        observerData()
+        todoAdapter = TodoListAdapter(dummy.todoList)
 
         todoDateRecycler = binding.rvDate
         todoDateAdapter = TodoDateAdapter(requireContext())
@@ -96,11 +82,13 @@ class TodoFragment : Fragment() {
                 val dialog = AlertDialog.Builder(requireContext())
                     .setPositiveButton("확인") { dialog, _ ->
                         // TODO: 알람시간 설정, db 수정
+
                         dialog.dismiss()
                     }
                     .setNegativeButton("취소") { dialog, _ ->
                         dialog.dismiss()
                     }
+
                 binding2.switch2.setOnClickListener {
                     if(binding2.calendarView.visibility==View.VISIBLE){
                         binding2.calendarView.visibility = View.GONE
