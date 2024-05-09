@@ -1,5 +1,7 @@
 package com.ssafy.frogdetox.viewmodel
 
+import android.annotation.SuppressLint
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,20 +9,36 @@ import com.ssafy.frogdetox.dto.TodoDateDto
 import com.ssafy.frogdetox.dto.TodoDto
 import com.ssafy.frogdetox.dto.dummy
 import com.ssafy.frogdetox.network.TodoRepository
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 class TodoViewModel: ViewModel() {
     private val repo = TodoRepository()
     var todoList: MutableList<TodoDto> = dummy.todoList
     private var todoDateList: MutableList<TodoDateDto> = dummy.todoDateList
+    @SuppressLint("NewApi")
+    val currentMillis = LocalDateTime.now()
+        .atZone(ZoneId.systemDefault())
+        .toInstant()?.toEpochMilli() ?: 0
+    private val _selectDay = MutableLiveData<Long>().apply {
+        value = currentMillis
+    }
+    val selectDay : LiveData<Long>
+        get() = _selectDay
+
+    fun setSelectDay(day : Long){
+        _selectDay.value = day
+    }
 
     fun fetchData(): LiveData<MutableList<TodoDto>>{
         val mutableData = MutableLiveData<MutableList<TodoDto>>()
-        repo.getData().observeForever {
-            mutableData.value = it
+        selectDay.observeForever(){
+            repo.getData(it).observeForever {
+                mutableData.value = it
+            }
         }
         return mutableData
     }
-
 
     fun selectTodo(id: Int): TodoDto? {
         return todoList.find { it.id == id }
@@ -38,7 +56,7 @@ class TodoViewModel: ViewModel() {
         todoList.find{it.id == id}?.let {
             it.content = todo.content
             it.dateId = todo.dateId
-            it.ragTime = todo.ragTime
+            it.regTime = todo.regTime
             it.isComplete = todo.isComplete
         }
     }
