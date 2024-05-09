@@ -9,10 +9,12 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.ssafy.frogdetox.dto.TodoDto
+import com.ssafy.frogdetox.viewmodel.TodoViewModel
 
 private const val TAG = "TodoRepository_싸피"
 class TodoRepository {
-    fun getData() : LiveData<MutableList<TodoDto>> {
+
+    fun getData(selectday : Long) : LiveData<MutableList<TodoDto>> {
         val mutableData = MutableLiveData<MutableList<TodoDto>>()
         val myRef = Firebase.database.getReference("Todo")
         Log.d(TAG, "getData: $myRef")
@@ -25,10 +27,10 @@ class TodoRepository {
                 if(snapshot.exists()){
                     listData.clear()
                     for(curSnapshot in snapshot.children){
-                        Log.d(TAG, "onDataChange: $curSnapshot")
                         val getData = curSnapshot.getValue(TodoDto::class.java)
                         if (getData != null) {
-                            listData.add(getData)
+                            if((selectday>=(getData.regTime)&&selectday<(getData.regTime)+86400000))
+                                listData.add(getData)
                         }
                     }
 

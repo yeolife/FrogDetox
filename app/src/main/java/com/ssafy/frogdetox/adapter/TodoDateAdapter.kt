@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -19,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.databinding.ItemListTododateBinding
 import com.ssafy.frogdetox.dto.TodoDateDto
+import com.ssafy.frogdetox.dto.TodoDto
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -38,11 +40,25 @@ class TodoDateAdapter (val context : Context): ListAdapter<TodoDateDto, TodoDate
         }
     }
 
+    interface ItemClickListener {
+        fun onClick(dto: TodoDateDto)
+    }
+
+    lateinit var itemClickListener: ItemClickListener
+
     inner class TodoWeeklyViewHolder(private var binding: ItemListTododateBinding): RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            itemView.setOnClickListener {
+                itemClickListener.onClick(getItem(layoutPosition))
+            }
+        }
+
         @RequiresApi(Build.VERSION_CODES.O)
         fun bind(item: TodoDateDto) {
             val date = itemView.findViewById<TextView>(R.id.tv_Day)
-            val today = itemView.findViewById<ImageView>(R.id.ivBlank)
+            val today = itemView.findViewById<TextView>(R.id.today)
+            val notToday = itemView.findViewById<TextView>(R.id.notToday)
             val todaytext = itemView.findViewById<TextView>(R.id.tvBlank)
 //            val week = itemView.findViewById<TextView>(R.id.tv_Day).text
 
@@ -64,9 +80,16 @@ class TodoDateAdapter (val context : Context): ListAdapter<TodoDateDto, TodoDate
             val formatDateTime = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일").format(currentDateTime)
             // 오늘 날짜와 캘린더의 오늘 날짜가 같을 경우 background_blue 적용하기
             Log.d(TAG, "bind: $formatNowTime $formatDateTime ${item.date} $currentMillis")
+
             if (formatNowTime == formatDateTime) {
-//                today.visibility= View.VISIBLE
-                todaytext.visibility = View.VISIBLE
+                today.visibility = View.VISIBLE
+                notToday.visibility = View.INVISIBLE
+//                todaytext.visibility = View.VISIBLE
+            }
+            else{
+                today.visibility = View.INVISIBLE
+                notToday.visibility = View.VISIBLE
+                todaytext.visibility = View.INVISIBLE
             }
         }
     }
