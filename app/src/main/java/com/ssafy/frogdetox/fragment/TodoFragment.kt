@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.frogdetox.MainActivity
+import com.ssafy.frogdetox.adapter.ItemClickListener
 import com.ssafy.frogdetox.adapter.TodoDateAdapter
 import com.ssafy.frogdetox.adapter.TodoListAdapter
 import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
@@ -36,7 +37,6 @@ class TodoFragment : Fragment() {
     private lateinit var todoDateAdapter: TodoDateAdapter
 
     val viewModel : TodoViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,26 +61,31 @@ class TodoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initRecyclerView()
     }
+
     @SuppressLint("NotifyDataSetChanged")
-    fun observerData(){
+    fun observerData() {
         viewModel.fetchData().observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "observerData: ${todoAdapter.list}")
-            todoAdapter.list=it
-            todoAdapter.notifyDataSetChanged()
+            todoAdapter.addHeaderAndSubmitList(it)
         })
     }
+
     private fun initRecyclerView() {
         todoRecycler = binding.rvTodo
-        todoAdapter = TodoListAdapter(viewModel.todoList)
+
+        todoAdapter = TodoListAdapter(ItemClickListener { id ->
+            Toast.makeText(mainActivity, "${id} 아이디를 가진 투두 클릭", Toast.LENGTH_SHORT).show()
+        })
+
         observerData()
 
         todoDateRecycler = binding.rvDate
         todoDateAdapter = TodoDateAdapter(requireContext())
         todoDateAdapter.submitList(getTodoDateData())
 
-        todoDateAdapter.itemClickListener = object :TodoDateAdapter.ItemClickListener{
+        todoDateAdapter.itemClickListener = object :TodoDateAdapter.ItemClickListener {
             override fun onClick(dto: TodoDateDto) {
                 Log.d(TAG, "onClick: ${dto.id} ${dto.date} ${dto.week}")
                 viewModel.setSelectDay(dto.date)
