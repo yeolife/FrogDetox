@@ -1,8 +1,14 @@
 package com.ssafy.frogdetox.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.ssafy.frogdetox.databinding.ItemHeaderTodoBinding
+import com.ssafy.frogdetox.databinding.ItemListTodoBinding
+import com.ssafy.frogdetox.dto.TodoDto
+import com.ssafy.frogdetox.fragment.TodoFragment
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
@@ -46,9 +52,82 @@ class TodoListAdapter(private val clickListener: ItemClickListener):
                 val item = getItem(position) as DataItem.TodoItem
                 holder.bind(item.item, clickListener)
             }
+            is HeaderViewHolder -> {
+                holder.bind(clickListener)
+            }
         }
     }
 
+    class TodoViewHolder private constructor(private val binding: ItemListTodoBinding):
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: TodoDto, clickListener: ItemClickListener) {
+            binding.todo = item
+            binding.clickListener = clickListener
+        }
+    }
+
+        companion object {
+            fun from(parent: ViewGroup): TodoViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ItemListTodoBinding.inflate(layoutInflater, parent, false)
+                return TodoViewHolder(binding)
+            }
+        }
+    }
+
+    class HeaderViewHolder private constructor(private val binding: ItemHeaderTodoBinding):
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(clickListener: ItemClickListener) {
+            binding.clickListener = clickListener
+        }
+        companion object {
+            fun from(parent: ViewGroup): HeaderViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ItemHeaderTodoBinding.inflate(layoutInflater, parent, false)
+                return HeaderViewHolder(binding)
+            }
+        }
+    }
+
+    fun addHeaderAndSubmitList(list: List<TodoDto>?) {
+        adapterScope.launch {
+            val items = when (list) {
+                null -> listOf(DataItem.Header)
+                else -> listOf(DataItem.Header) + list.map { DataItem.TodoItem(it) }
+            }
+            withContext(Dispatchers.Main) {
+                submitList(items)
+            }
+        }
+    }
+}
+
+class TodoListDiffCallback : DiffUtil.ItemCallback<DataItem>() {
+    override fun areItemsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
+        return oldItem == newItem
+    }
+}
+
+class ItemClickListener(val clickListener: (id: String, state: Int) -> Unit) {
+    fun onClick(todo: TodoDto) = clickListener(todo.id, TodoFragment.TODO_UPDATE)
+    fun onHeaderClick() = clickListener("-1", TodoFragment.TODO_INSERT)
+}
+
+sealed class DataItem {
+    data class TodoItem(val item: TodoDto) : DataItem() {
+        override val id = item.id
+    }
+
+    object Header: DataItem() {
+        override val id = Int.MIN_VALUE.toString()
+    }
+
+    abstract val id: String
+  
     fun addHeaderAndSubmitList(list: List<TodoDto>?) {
         adapterScope.launch {
             val items = when (list) {
