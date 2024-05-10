@@ -150,12 +150,27 @@ class TodoFragment : Fragment() {
         dialog.show()
     }
 
+        initRecyclerView()
+    }
+
+
     @SuppressLint("NotifyDataSetChanged")
     fun observerData() {
         viewModel.fetchData().observe(viewLifecycleOwner, Observer {
             todoAdapter.addHeaderAndSubmitList(it)
         })
     }
+
+
+
+    private fun initRecyclerView() {
+        todoRecycler = binding.rvTodo
+
+        todoAdapter = TodoListAdapter(ItemClickListener { id ->
+            Toast.makeText(mainActivity, "${id} 아이디를 가진 투두 클릭", Toast.LENGTH_SHORT).show()
+        })
+
+        observerData()
 
     private fun initTodoDateRecyclerView() {
         todoDateRecycler = binding.rvDate
