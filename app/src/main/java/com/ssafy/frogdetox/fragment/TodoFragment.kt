@@ -130,8 +130,6 @@ class TodoFragment : Fragment() {
                 dialog.dismiss()
             }
             .setNegativeButton("취소") { dialog, _ ->
-                viewModel.deleteTodo(todo.id)
-
                 dialog.dismiss()
             }
         bindingTMD.switch2.setOnClickListener {
