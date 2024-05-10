@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -26,9 +25,7 @@ import com.ssafy.frogdetox.dto.TodoDto
 import com.ssafy.frogdetox.dto.dummy
 import com.ssafy.frogdetox.util.timeUtil.currentMillis
 import com.ssafy.frogdetox.viewmodel.TodoViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 private const val TAG = "TodoFragment_싸피"
 class TodoFragment : Fragment() {
@@ -148,27 +145,12 @@ class TodoFragment : Fragment() {
         dialog.show()
     }
 
-        initRecyclerView()
-    }
-
-
     @SuppressLint("NotifyDataSetChanged")
     fun observerData() {
         viewModel.fetchData().observe(viewLifecycleOwner, Observer {
             todoAdapter.addHeaderAndSubmitList(it)
         })
     }
-
-
-
-    private fun initRecyclerView() {
-        todoRecycler = binding.rvTodo
-
-        todoAdapter = TodoListAdapter(ItemClickListener { id ->
-            Toast.makeText(mainActivity, "${id} 아이디를 가진 투두 클릭", Toast.LENGTH_SHORT).show()
-        })
-
-        observerData()
 
     private fun initTodoDateRecyclerView() {
         todoDateRecycler = binding.rvDate

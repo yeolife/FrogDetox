@@ -51,8 +51,6 @@ class TodoViewModel: ViewModel() {
         repo.todoDelete(id)
     }
 
-
-
     fun selectTodoDate(id: Int): TodoDateDto? {
         return todoDateList.find { it.id == id }
     }

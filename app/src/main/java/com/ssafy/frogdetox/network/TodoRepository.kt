@@ -52,7 +52,7 @@ class TodoRepository {
     suspend fun todoSelect(id: String): TodoDto {
         return withContext(Dispatchers.IO) {
             var todo = TodoDto()
-            
+
             // count 만큼의 이벤트를 대기함
             val latch = CountDownLatch(1)
 
@@ -66,7 +66,7 @@ class TodoRepository {
                 Log.e("firebase", "Error getting data", it)
                 latch.countDown()
             }
-            
+
             // 모든 이벤트가 끝나면 await에서 대기하고 있던 스레드가 해제됨
             latch.await()
 
