@@ -42,10 +42,11 @@
         app:layout_constraintEnd_toEndOf="@id/ivDay"
         app:layout_constraintTop_toBottomOf="@id/ivDay"
         tools:visibility="visible" />
+
     <ImageView
         android:id="@+id/ivDay"
-        android:layout_width="54dp"
-        android:layout_height="0dp"
+        android:layout_width="57dp"
+        android:layout_height="56dp"
         android:scaleType="centerCrop"
         android:src="@android:drawable/checkbox_off_background"
         app:layout_constraintDimensionRatio="1:1"
