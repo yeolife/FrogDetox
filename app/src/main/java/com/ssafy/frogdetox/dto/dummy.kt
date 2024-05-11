@@ -20,8 +20,8 @@ object dummy {
     )
 
     val todoDateList: MutableList<TodoDateDto> = mutableListOf<TodoDateDto>().apply {
-        for(i in 1..100){
-            add(TodoDateDto(0,1714176000000+(i*86400000.toLong()), 1))
+        for(i in 1..10){
+            add(TodoDateDto("0",1714176000000+(i*86400000.toLong()), 1))
         }
     }
 }

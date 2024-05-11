@@ -6,11 +6,13 @@ import androidx.lifecycle.ViewModel
 import com.ssafy.frogdetox.dto.TodoDateDto
 import com.ssafy.frogdetox.dto.TodoDto
 import com.ssafy.frogdetox.dto.dummy
+import com.ssafy.frogdetox.network.DateRepository
 import com.ssafy.frogdetox.network.TodoRepository
 import com.ssafy.frogdetox.util.timeUtil.currentMillis
 
 class TodoViewModel: ViewModel() {
-    private val repo = TodoRepository()
+    private val todoRepo = TodoRepository()
+    private val dateRepo = DateRepository()
     var todoList: MutableList<TodoDto> = dummy.todoList
     private var todoDateList: MutableList<TodoDateDto> = dummy.todoDateList
 
@@ -27,46 +29,43 @@ class TodoViewModel: ViewModel() {
     fun fetchData(): LiveData<MutableList<TodoDto>>{
         val mutableData = MutableLiveData<MutableList<TodoDto>>()
         selectDay.observeForever {
-            repo.getData(it).observeForever {
+            todoRepo.getData(it).observeForever {
                 mutableData.value = it
             }
         }
-
         return mutableData
     }
 
     suspend fun selectTodo(id: String): TodoDto {
-        return repo.todoSelect(id)
+        return todoRepo.todoSelect(id)
     }
 
     fun addTodo(todo: TodoDto) {
-        repo.todoInsert(todo)
+        todoRepo.todoInsert(todo)
     }
 
     fun updateTodo(todo: TodoDto) {
-        repo.todoUpdate(todo)
+        todoRepo.todoUpdate(todo)
     }
 
     fun deleteTodo(id: String) {
-        repo.todoDelete(id)
+        todoRepo.todoDelete(id)
     }
 
-    fun selectTodoDate(id: Int): TodoDateDto? {
-        return todoDateList.find { it.id == id }
+    fun fetchDateData(): LiveData<MutableList<TodoDateDto>>{
+        return dateRepo.getData()
+    }
+
+    suspend fun selectTodoDate(id: String): TodoDateDto? {
+        return dateRepo.dateSelect(id)
     }
 
     fun addTodoDate(todoDate: TodoDateDto) {
-        todoDateList.add(todoDate)
+        return dateRepo.dateInsert(todoDate)
     }
 
-    fun deleteTodoDate(id: Int) {
-        todoDateList.removeIf { it.id == id }
+    fun deleteTodoDate(id: String) {
+        dateRepo.dateDelete(id)
     }
 
-    fun updateTodoDate(id: Int, todoDate: TodoDateDto) {
-        todoDateList.find{ it.id == id }?.let {
-            it.date = todoDate.date
-            it.week = todoDate.week
-        }
-    }
 }
