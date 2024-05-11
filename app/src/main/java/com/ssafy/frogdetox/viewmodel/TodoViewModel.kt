@@ -13,8 +13,8 @@ import com.ssafy.frogdetox.util.timeUtil.currentMillis
 class TodoViewModel: ViewModel() {
     private val todoRepo = TodoRepository()
     private val dateRepo = DateRepository()
-    var todoList: MutableList<TodoDto> = dummy.todoList
-    private var todoDateList: MutableList<TodoDateDto> = dummy.todoDateList
+//    var todoList: MutableList<TodoDto> = dummy.todoList
+//    private var todoDateList: MutableList<TodoDateDto> = dummy.todoDateList
 
     private val _selectDay = MutableLiveData<Long>().apply {
         value = currentMillis

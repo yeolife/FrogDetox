@@ -1,20 +1,25 @@
 package com.ssafy.frogdetox.fragment
 
+import android.R.attr.data
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.frogdetox.MainActivity
+import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.adapter.ItemClickListener
 import com.ssafy.frogdetox.adapter.TodoDateAdapter
 import com.ssafy.frogdetox.adapter.TodoListAdapter
@@ -22,10 +27,10 @@ import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.dto.TodoDateDto
 import com.ssafy.frogdetox.dto.TodoDto
-import com.ssafy.frogdetox.dto.dummy
-import com.ssafy.frogdetox.util.timeUtil.currentMillis
+import com.ssafy.frogdetox.util.timeUtil
 import com.ssafy.frogdetox.viewmodel.TodoViewModel
 import kotlinx.coroutines.launch
+
 
 private const val TAG = "TodoFragment_싸피"
 class TodoFragment : Fragment() {
@@ -112,9 +117,12 @@ class TodoFragment : Fragment() {
                 todo.content = bindingTMD.editTextText2.text.toString()
 
                 if(state == TODO_INSERT) {
-                    todo.regTime = currentMillis
+                    viewModel.selectDay.value?.let {
+                        todo.regTime = it
+                    }
 
                     viewModel.addTodo(todo)
+
                 } else {
                     viewModel.updateTodo(todo)
                 }
@@ -167,13 +175,29 @@ class TodoFragment : Fragment() {
 
         todoDateRecycler.apply {
             adapter = todoDateAdapter
+
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
     }
 
-    fun observeDate() {
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun observeDate() {
         viewModel.fetchDateData().observe(viewLifecycleOwner, Observer{
             todoDateAdapter.submitList(it)
+
+            // Date 리사이클러뷰의 시작을 오늘로
+            val display = mainActivity.applicationContext?.resources?.displayMetrics
+            val screenWidthPx = display?.widthPixels ?: 0
+            val itemWidthPx = 54
+            val offset = (screenWidthPx / 2 + itemWidthPx)
+
+            for (index in todoDateAdapter.currentList.indices) {
+                if(timeUtil.compareDay(todoDateAdapter.currentList[index].date, timeUtil.currentMillis)) {
+                    (todoDateRecycler.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index + 1, if(offset >= 0) offset else 0);
+                    
+                    break
+                }
+            }
         })
     }
 
