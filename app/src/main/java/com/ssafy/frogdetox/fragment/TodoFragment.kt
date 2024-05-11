@@ -155,7 +155,7 @@ class TodoFragment : Fragment() {
     private fun initTodoDateRecyclerView() {
         todoDateRecycler = binding.rvDate
         todoDateAdapter = TodoDateAdapter(requireContext())
-        todoDateAdapter.submitList(getTodoDateData())
+        observeDate()
 
         todoDateAdapter.itemClickListener = object :TodoDateAdapter.ItemClickListener {
             override fun onClick(dto: TodoDateDto) {
@@ -168,12 +168,13 @@ class TodoFragment : Fragment() {
         todoDateRecycler.apply {
             adapter = todoDateAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-//            layoutManager = GridLayoutManager(context, 7)
         }
     }
 
-    private fun getTodoDateData(): MutableList<TodoDateDto> {
-        return dummy.todoDateList
+    fun observeDate() {
+        viewModel.fetchDateData().observe(viewLifecycleOwner, Observer{
+            todoDateAdapter.submitList(it)
+        })
     }
 
     companion object {
