@@ -54,7 +54,6 @@ class TodoDateAdapter (val context : Context): ListAdapter<TodoDateDto, TodoDate
             }
         }
 
-        @RequiresApi(Build.VERSION_CODES.O)
         fun bind(item: TodoDateDto) {
             val date = itemView.findViewById<TextView>(R.id.tv_Day)
             val today = itemView.findViewById<TextView>(R.id.today)
@@ -98,7 +97,6 @@ class TodoDateAdapter (val context : Context): ListAdapter<TodoDateDto, TodoDate
         return TodoWeeklyViewHolder(ItemListTododateBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: TodoWeeklyViewHolder, position: Int) {
         holder.apply {
             bind(getItem(position))

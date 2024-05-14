@@ -14,7 +14,6 @@ object timeUtil {
         .atZone(ZoneId.systemDefault())
         .toInstant()?.toEpochMilli() ?: 0
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun compareDay(time1: Long, time2: Long): Boolean {
         val Time1 =
             Instant.ofEpochMilli(time1).atZone(ZoneId.systemDefault()).toLocalDateTime()
