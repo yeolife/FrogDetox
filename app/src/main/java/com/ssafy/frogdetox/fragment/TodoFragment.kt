@@ -37,6 +37,7 @@ import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.dto.TodoDateDto
 import com.ssafy.frogdetox.dto.TodoDto
 import com.ssafy.frogdetox.util.displayText
+import com.ssafy.frogdetox.util.getWeekPageTitle
 import com.ssafy.frogdetox.util.timeUtil
 import com.ssafy.frogdetox.util.todoListSwiper.ItemTouchHelperListener
 import com.ssafy.frogdetox.util.todoListSwiper.SwipeController
@@ -48,7 +49,6 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
 private const val TAG = "TodoFragment_싸피"
-@RequiresApi(Build.VERSION_CODES.O)
 class TodoFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private var _binding: FragmentTodoBinding? = null
@@ -190,27 +190,6 @@ class TodoFragment : Fragment() {
 
     // ----------------------- TodoDate
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun initTodoDateRecyclerView() {
-        todoDateRecycler = binding.rvDate
-        todoDateAdapter = TodoDateAdapter(requireContext())
-        observeDate()
-
-        todoDateAdapter.itemClickListener = object :TodoDateAdapter.ItemClickListener {
-            override fun onClick(dto: TodoDateDto) {
-                Log.d(TAG, "onClick: ${dto.id} ${dto.date} ${dto.week}")
-                viewModel.setSelectDay(dto.date)
-                Log.d(TAG, "onClick: ${viewModel.selectDay.value}")
-            }
-        }
-
-        todoDateRecycler.apply {
-            adapter = todoDateAdapter
-
-            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        }
-    }
-
     private fun initTodoDateCalendar() {
         class DayViewContainer(view: View) : ViewContainer(view) {
             val bind = CalendarDayLayoutBinding.bind(view)
@@ -247,9 +226,10 @@ class TodoFragment : Fragment() {
             override fun bind(container: DayViewContainer, data: WeekDay) = container.bind(data)
         }
 
-//            binding.rvDate.weekScrollListener = { weekDays ->
-//                binding.exSevenToolbar.title = getWeekPageTitle(weekDays)
-//            }
+        binding.rvDate.weekScrollListener = { weekDays ->
+//            binding.exSevenToolbar.title = getWeekPageTitle(weekDays)
+            binding.tvWeek.text = getWeekPageTitle(weekDays)
+        }
 
         val currentMonth = YearMonth.now()
         binding.rvDate.setup(
@@ -260,7 +240,26 @@ class TodoFragment : Fragment() {
         binding.rvDate.scrollToDate(LocalDate.now())
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initTodoDateRecyclerView() {
+        todoDateRecycler = binding.rvDate
+        todoDateAdapter = TodoDateAdapter(requireContext())
+        observeDate()
+
+        todoDateAdapter.itemClickListener = object :TodoDateAdapter.ItemClickListener {
+            override fun onClick(dto: TodoDateDto) {
+                Log.d(TAG, "onClick: ${dto.id} ${dto.date} ${dto.week}")
+                viewModel.setSelectDay(dto.date)
+                Log.d(TAG, "onClick: ${viewModel.selectDay.value}")
+            }
+        }
+
+        todoDateRecycler.apply {
+            adapter = todoDateAdapter
+
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        }
+    }
+
     private fun observeDate() {
         viewModel.fetchDateData().observe(viewLifecycleOwner, Observer{
             todoDateAdapter.submitList(it)

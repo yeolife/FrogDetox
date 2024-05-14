@@ -13,18 +13,15 @@ import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun YearMonth.displayText(short: Boolean = false): String {
     return "${this.month.displayText(short = short)} ${this.year}"
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun Month.displayText(short: Boolean = true): String {
     val style = if (short) TextStyle.SHORT else TextStyle.FULL
     return getDisplayName(style, Locale.ENGLISH)
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun DayOfWeek.displayText(uppercase: Boolean = false): String {
     return getDisplayName(TextStyle.SHORT, Locale.ENGLISH).let { value ->
         if (uppercase) value.uppercase(Locale.ENGLISH) else value
@@ -40,7 +37,6 @@ fun Context.findActivity(): Activity {
     throw IllegalStateException("no activity")
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun getWeekPageTitle(week: Week): String {
     val firstDate = week.days.first().date
     val lastDate = week.days.last().date
