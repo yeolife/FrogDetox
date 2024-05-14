@@ -68,6 +68,9 @@ dependencies {
     //framework ktx dependency 추가
     implementation ("androidx.fragment:fragment-ktx:1.6.2")
 
+    // calenarView
     implementation("com.kizitonwose.calendar:view:2.5.0")
 
+    // swipe delete
+    implementation("it.xabaras.android:recyclerview-swipedecorator:1.4")
 }

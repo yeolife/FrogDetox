@@ -1,7 +1,9 @@
 package com.ssafy.frogdetox.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -9,6 +11,7 @@ import com.ssafy.frogdetox.databinding.ItemHeaderTodoBinding
 import com.ssafy.frogdetox.databinding.ItemListTodoBinding
 import com.ssafy.frogdetox.dto.TodoDto
 import com.ssafy.frogdetox.fragment.TodoFragment
+import com.ssafy.frogdetox.util.todoListSwiper.ItemTouchHelperListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,11 +19,18 @@ import kotlinx.coroutines.withContext
 
 private const val TYPE_HEADER = 1
 private const val TYPE_ITEM = 2
+
+private const val TAG = "TodoListAdapter_창민"
 class TodoListAdapter(private val clickListener: ItemClickListener):
-    ListAdapter<DataItem, RecyclerView.ViewHolder>(TodoListDiffCallback()) {
+    ListAdapter<DataItem, RecyclerView.ViewHolder>(TodoListDiffCallback()), ItemTouchHelperListener {
 
     private val adapterScope = CoroutineScope(Dispatchers.Default)
 
+    interface TodoSwipeListener {
+        fun onItemDelete(id: String)
+    }
+
+    var todoSwipeListener: TodoSwipeListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
@@ -88,6 +98,16 @@ class TodoListAdapter(private val clickListener: ItemClickListener):
             withContext(Dispatchers.Main) {
                 submitList(items)
             }
+        }
+    }
+
+    override fun onItemMove(from_position: Int, to_position: Int): Boolean = false
+
+    override fun onItemSwipe(position: Int) { }
+
+    override fun onRightClick(position: Int, viewHolder: RecyclerView.ViewHolder?) {
+        todoSwipeListener?.let {
+            it.onItemDelete(currentList[position].id)
         }
     }
 }

@@ -3,18 +3,22 @@ package com.ssafy.frogdetox.fragment
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.core.WeekDay
@@ -27,19 +31,21 @@ import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.adapter.ItemClickListener
 import com.ssafy.frogdetox.adapter.TodoDateAdapter
 import com.ssafy.frogdetox.adapter.TodoListAdapter
+import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
 import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
-import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
 import com.ssafy.frogdetox.dto.TodoDateDto
 import com.ssafy.frogdetox.dto.TodoDto
 import com.ssafy.frogdetox.util.displayText
 import com.ssafy.frogdetox.util.timeUtil
+import com.ssafy.frogdetox.util.todoListSwiper.ItemTouchHelperListener
+import com.ssafy.frogdetox.util.todoListSwiper.SwipeController
 import com.ssafy.frogdetox.viewmodel.TodoViewModel
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-
 
 private const val TAG = "TodoFragment_싸피"
 @RequiresApi(Build.VERSION_CODES.O)
@@ -59,7 +65,6 @@ class TodoFragment : Fragment() {
 
     private val dateFormatter = DateTimeFormatter.ofPattern("dd")
 
-
     val viewModel : TodoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +76,6 @@ class TodoFragment : Fragment() {
 
         mainActivity = context as MainActivity
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,55 +90,14 @@ class TodoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        observerTodoList()
+
         initTodoRecyclerView()
+
 //        initTodoDateRecyclerView()
-        class DayViewContainer(view: View) : ViewContainer(view) {
-            val bind = CalendarDayLayoutBinding.bind(view)
-            lateinit var day: WeekDay
 
-            init {
-                view.setOnClickListener {
-                    if (selectedDate != day.date) {
-                        val oldDate = selectedDate
-                        selectedDate = day.date
-                        binding.rvDate.notifyDateChanged(day.date)
-                        oldDate?.let { binding.rvDate.notifyDateChanged(it) }
-                    }
-                }
-            }
-
-            fun bind(day: WeekDay) {
-                this.day = day
-                bind.exSevenDateText.text = dateFormatter.format(day.date)
-                bind.exSevenDayText.text = day.date.dayOfWeek.displayText()
-
-                val colorRes = if (day.date == selectedDate) {
-                    R.color.LightGreen
-                } else {
-                    R.color.white
-                }
-//                bind.exSevenDateText.setTextColor(view.context.getColorCompat(colorRes))
-                bind.exSevenSelectedView.isVisible = day.date == selectedDate
-            }
-        }
-
-            binding.rvDate.dayBinder = object : WeekDayBinder<DayViewContainer> {
-                override fun create(view: View) = DayViewContainer(view)
-                override fun bind(container: DayViewContainer, data: WeekDay) = container.bind(data)
-            }
-
-//            binding.rvDate.weekScrollListener = { weekDays ->
-//                binding.exSevenToolbar.title = getWeekPageTitle(weekDays)
-//            }
-
-            val currentMonth = YearMonth.now()
-            binding.rvDate.setup(
-                currentMonth.minusMonths(5).atStartOfMonth(),
-                currentMonth.plusMonths(5).atEndOfMonth(),
-                firstDayOfWeekFromLocale(),
-            )
-            binding.rvDate.scrollToDate(LocalDate.now())
-        }
+        initTodoDateCalendar()
+    }
 
     private fun initTodoRecyclerView() {
         todoRecycler = binding.rvTodo
@@ -153,7 +116,14 @@ class TodoFragment : Fragment() {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
 
-        observerData()
+        val itemTouchHelper = ItemTouchHelper(SwipeController(todoAdapter))
+        itemTouchHelper.attachToRecyclerView(binding.rvTodo)
+
+        todoAdapter.todoSwipeListener = object : TodoListAdapter.TodoSwipeListener {
+            override fun onItemDelete(id: String) {
+                viewModel.deleteTodo(id)
+            }
+        }
     }
 
     private fun todoRegisterDialog(state: Int, id: String) {
@@ -212,11 +182,13 @@ class TodoFragment : Fragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun observerData() {
+    fun observerTodoList() {
         viewModel.fetchData().observe(viewLifecycleOwner, Observer {
             todoAdapter.addHeaderAndSubmitList(it)
         })
     }
+
+    // ----------------------- TodoDate
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initTodoDateRecyclerView() {
@@ -237,6 +209,55 @@ class TodoFragment : Fragment() {
 
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
+    }
+
+    private fun initTodoDateCalendar() {
+        class DayViewContainer(view: View) : ViewContainer(view) {
+            val bind = CalendarDayLayoutBinding.bind(view)
+            lateinit var day: WeekDay
+
+            init {
+                view.setOnClickListener {
+                    if (selectedDate != day.date) {
+                        val oldDate = selectedDate
+                        selectedDate = day.date
+                        binding.rvDate.notifyDateChanged(day.date)
+                        oldDate?.let { binding.rvDate.notifyDateChanged(it) }
+                    }
+                }
+            }
+
+            fun bind(day: WeekDay) {
+                this.day = day
+                bind.exSevenDateText.text = dateFormatter.format(day.date)
+                bind.exSevenDayText.text = day.date.dayOfWeek.displayText()
+
+                val colorRes = if (day.date == selectedDate) {
+                    R.color.LightGreen
+                } else {
+                    R.color.white
+                }
+//                bind.exSevenDateText.setTextColor(view.context.getColorCompat(colorRes))
+                bind.exSevenSelectedView.isVisible = day.date == selectedDate
+            }
+        }
+
+        binding.rvDate.dayBinder = object : WeekDayBinder<DayViewContainer> {
+            override fun create(view: View) = DayViewContainer(view)
+            override fun bind(container: DayViewContainer, data: WeekDay) = container.bind(data)
+        }
+
+//            binding.rvDate.weekScrollListener = { weekDays ->
+//                binding.exSevenToolbar.title = getWeekPageTitle(weekDays)
+//            }
+
+        val currentMonth = YearMonth.now()
+        binding.rvDate.setup(
+            currentMonth.minusMonths(5).atStartOfMonth(),
+            currentMonth.plusMonths(5).atEndOfMonth(),
+            firstDayOfWeekFromLocale(),
+        )
+        binding.rvDate.scrollToDate(LocalDate.now())
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
