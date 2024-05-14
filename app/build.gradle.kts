@@ -68,4 +68,6 @@ dependencies {
     //framework ktx dependency 추가
     implementation ("androidx.fragment:fragment-ktx:1.6.2")
 
+    implementation("com.kizitonwose.calendar:view:2.5.0")
+
 }

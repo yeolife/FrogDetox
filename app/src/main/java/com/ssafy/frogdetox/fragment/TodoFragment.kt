@@ -12,12 +12,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.kizitonwose.calendar.core.WeekDay
+import com.kizitonwose.calendar.core.atStartOfMonth
+import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import com.kizitonwose.calendar.view.ViewContainer
+import com.kizitonwose.calendar.view.WeekDayBinder
 import com.ssafy.frogdetox.MainActivity
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.adapter.ItemClickListener
@@ -25,14 +31,20 @@ import com.ssafy.frogdetox.adapter.TodoDateAdapter
 import com.ssafy.frogdetox.adapter.TodoListAdapter
 import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
+import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
 import com.ssafy.frogdetox.dto.TodoDateDto
 import com.ssafy.frogdetox.dto.TodoDto
+import com.ssafy.frogdetox.util.displayText
 import com.ssafy.frogdetox.util.timeUtil
 import com.ssafy.frogdetox.viewmodel.TodoViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 
 
 private const val TAG = "TodoFragment_싸피"
+@RequiresApi(Build.VERSION_CODES.O)
 class TodoFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private var _binding: FragmentTodoBinding? = null
@@ -44,6 +56,11 @@ class TodoFragment : Fragment() {
 
     private lateinit var todoDateRecycler: RecyclerView
     private lateinit var todoDateAdapter: TodoDateAdapter
+
+    private var selectedDate = LocalDate.now()
+
+    private val dateFormatter = DateTimeFormatter.ofPattern("dd")
+
 
     val viewModel : TodoViewModel by viewModels()
 
@@ -72,8 +89,54 @@ class TodoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initTodoRecyclerView()
-        initTodoDateRecyclerView()
-    }
+//        initTodoDateRecyclerView()
+        class DayViewContainer(view: View) : ViewContainer(view) {
+            val bind = CalendarDayLayoutBinding.bind(view)
+            lateinit var day: WeekDay
+
+            init {
+                view.setOnClickListener {
+                    if (selectedDate != day.date) {
+                        val oldDate = selectedDate
+                        selectedDate = day.date
+                        binding.rvDate.notifyDateChanged(day.date)
+                        oldDate?.let { binding.rvDate.notifyDateChanged(it) }
+                    }
+                }
+            }
+
+            fun bind(day: WeekDay) {
+                this.day = day
+                bind.exSevenDateText.text = dateFormatter.format(day.date)
+                bind.exSevenDayText.text = day.date.dayOfWeek.displayText()
+
+                val colorRes = if (day.date == selectedDate) {
+                    R.color.LightGreen
+                } else {
+                    R.color.white
+                }
+//                bind.exSevenDateText.setTextColor(view.context.getColorCompat(colorRes))
+                bind.exSevenSelectedView.isVisible = day.date == selectedDate
+            }
+        }
+
+            binding.rvDate.dayBinder = object : WeekDayBinder<DayViewContainer> {
+                override fun create(view: View) = DayViewContainer(view)
+                override fun bind(container: DayViewContainer, data: WeekDay) = container.bind(data)
+            }
+
+//            binding.rvDate.weekScrollListener = { weekDays ->
+//                binding.exSevenToolbar.title = getWeekPageTitle(weekDays)
+//            }
+
+            val currentMonth = YearMonth.now()
+            binding.rvDate.setup(
+                currentMonth.minusMonths(5).atStartOfMonth(),
+                currentMonth.plusMonths(5).atEndOfMonth(),
+                firstDayOfWeekFromLocale(),
+            )
+            binding.rvDate.scrollToDate(LocalDate.now())
+        }
 
     private fun initTodoRecyclerView() {
         todoRecycler = binding.rvTodo
@@ -160,6 +223,7 @@ class TodoFragment : Fragment() {
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun initTodoDateRecyclerView() {
         todoDateRecycler = binding.rvDate
         todoDateAdapter = TodoDateAdapter(requireContext())

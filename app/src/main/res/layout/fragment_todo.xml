@@ -28,18 +28,18 @@
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.kizitonwose.calendar.view.WeekCalendarView
         android:id="@+id/rv_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:cv_dayViewResource="@layout/calendar_day_layout"
+        app:cv_daySize="seventhWidth"
+        app:cv_orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/llWeek"
-        android:paddingBottom="16dp"
-        app:spanCount="7"
-        tools:itemCount="7"
-        tools:listitem="@layout/item_list_tododate" />
+        />
+
 
     <ImageView
         android:id="@+id/ivFrog"
