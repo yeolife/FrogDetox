@@ -1,6 +1,5 @@
 package com.ssafy.frogdetox.fragment
 
-import android.R.attr.data
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
@@ -10,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -189,9 +187,6 @@ class TodoFragment : Fragment() {
                 } else {
                     viewModel.updateTodo(todo)
                 }
-
-                // id는 firebase의 문자열 키로 등록하면 되겠는데..
-                // dateId는 어떻게 값을 넣어야할지 모르겠음..
 
                 // TODO. 알람 등록
 
