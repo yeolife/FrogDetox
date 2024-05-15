@@ -13,7 +13,6 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 private const val TAG = "TodoViewModel_싸피"
-@RequiresApi(Build.VERSION_CODES.O)
 class TodoViewModel: ViewModel() {
     private val todoRepo = TodoRepository()
 

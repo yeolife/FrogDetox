@@ -31,7 +31,6 @@ class TodoRepository {
         myRef.addValueEventListener(object : ValueEventListener {
             val listData : MutableList<TodoDto> = mutableListOf()
 
-            @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(snapshot: DataSnapshot) {
                 val selectvalue = Instant.ofEpochMilli(selectday)
                     .atZone(ZoneId.systemDefault())
