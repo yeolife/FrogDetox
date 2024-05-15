@@ -41,7 +41,6 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 private const val TAG = "TodoFragment_싸피"
-@RequiresApi(Build.VERSION_CODES.O)
 
 class TodoFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
