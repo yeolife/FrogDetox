@@ -3,16 +3,12 @@ package com.ssafy.frogdetox.fragment
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -29,26 +25,24 @@ import com.kizitonwose.calendar.view.WeekDayBinder
 import com.ssafy.frogdetox.MainActivity
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.adapter.ItemClickListener
-import com.ssafy.frogdetox.adapter.TodoDateAdapter
 import com.ssafy.frogdetox.adapter.TodoListAdapter
 import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
 import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
-import com.ssafy.frogdetox.dto.TodoDateDto
 import com.ssafy.frogdetox.dto.TodoDto
 import com.ssafy.frogdetox.util.displayText
 import com.ssafy.frogdetox.util.getWeekPageTitle
-import com.ssafy.frogdetox.util.timeUtil
-import com.ssafy.frogdetox.util.todoListSwiper.ItemTouchHelperListener
 import com.ssafy.frogdetox.util.todoListSwiper.SwipeController
 import com.ssafy.frogdetox.viewmodel.TodoViewModel
-import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 private const val TAG = "TodoFragment_싸피"
+@RequiresApi(Build.VERSION_CODES.O)
+
 class TodoFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private var _binding: FragmentTodoBinding? = null
@@ -57,9 +51,6 @@ class TodoFragment : Fragment() {
 
     private lateinit var todoRecycler: RecyclerView
     private lateinit var todoAdapter: TodoListAdapter
-
-    private lateinit var todoDateRecycler: RecyclerView
-    private lateinit var todoDateAdapter: TodoDateAdapter
 
     private var selectedDate = LocalDate.now()
 
@@ -93,8 +84,6 @@ class TodoFragment : Fragment() {
         observerTodoList()
 
         initTodoRecyclerView()
-
-//        initTodoDateRecyclerView()
 
         initTodoDateCalendar()
     }
@@ -203,6 +192,7 @@ class TodoFragment : Fragment() {
                         binding.rvDate.notifyDateChanged(day.date)
                         oldDate?.let { binding.rvDate.notifyDateChanged(it) }
                     }
+                    viewModel.setSelectDay(day.date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli())
                 }
             }
 
@@ -218,6 +208,7 @@ class TodoFragment : Fragment() {
                 }
 //                bind.exSevenDateText.setTextColor(view.context.getColorCompat(colorRes))
                 bind.exSevenSelectedView.isVisible = day.date == selectedDate
+
             }
         }
 
@@ -240,45 +231,7 @@ class TodoFragment : Fragment() {
         binding.rvDate.scrollToDate(LocalDate.now())
     }
 
-    private fun initTodoDateRecyclerView() {
-        todoDateRecycler = binding.rvDate
-        todoDateAdapter = TodoDateAdapter(requireContext())
-        observeDate()
 
-        todoDateAdapter.itemClickListener = object :TodoDateAdapter.ItemClickListener {
-            override fun onClick(dto: TodoDateDto) {
-                Log.d(TAG, "onClick: ${dto.id} ${dto.date} ${dto.week}")
-                viewModel.setSelectDay(dto.date)
-                Log.d(TAG, "onClick: ${viewModel.selectDay.value}")
-            }
-        }
-
-        todoDateRecycler.apply {
-            adapter = todoDateAdapter
-
-            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        }
-    }
-
-    private fun observeDate() {
-        viewModel.fetchDateData().observe(viewLifecycleOwner, Observer{
-            todoDateAdapter.submitList(it)
-
-            // Date 리사이클러뷰의 시작을 오늘로
-            val display = mainActivity.applicationContext?.resources?.displayMetrics
-            val screenWidthPx = display?.widthPixels ?: 0
-            val itemWidthPx = 54
-            val offset = (screenWidthPx / 2 + itemWidthPx)
-
-            for (index in todoDateAdapter.currentList.indices) {
-                if(timeUtil.compareDay(todoDateAdapter.currentList[index].date, timeUtil.currentMillis)) {
-                    (todoDateRecycler.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(index + 1, if(offset >= 0) offset else 0);
-                    
-                    break
-                }
-            }
-        })
-    }
 
     companion object {
         const val TODO_INSERT = 0

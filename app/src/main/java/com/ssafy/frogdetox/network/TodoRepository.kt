@@ -1,6 +1,8 @@
 package com.ssafy.frogdetox.network
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.DataSnapshot
@@ -13,6 +15,9 @@ import com.ssafy.frogdetox.dto.TodoDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.concurrent.CountDownLatch
 
 
@@ -26,14 +31,21 @@ class TodoRepository {
         myRef.addValueEventListener(object : ValueEventListener {
             val listData : MutableList<TodoDto> = mutableListOf()
 
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(snapshot: DataSnapshot) {
-
+                val selectvalue = Instant.ofEpochMilli(selectday)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate()
+                lateinit var listvalue:LocalDate
                 if(snapshot.exists()){
                     listData.clear()
                     for(curSnapshot in snapshot.children){
                         val getData = curSnapshot.getValue(TodoDto::class.java)
                         if (getData != null) {
-                            if((selectday>=(getData.regTime)&&selectday<(getData.regTime)+86400000))
+                            listvalue = Instant.ofEpochMilli(getData.regTime)
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate()
+                            if(selectvalue==listvalue)
                                 listData.add(getData)
                         }
                     }

@@ -1,23 +1,24 @@
 package com.ssafy.frogdetox.viewmodel
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ssafy.frogdetox.dto.TodoDateDto
 import com.ssafy.frogdetox.dto.TodoDto
-import com.ssafy.frogdetox.dto.dummy
-import com.ssafy.frogdetox.network.DateRepository
 import com.ssafy.frogdetox.network.TodoRepository
-import com.ssafy.frogdetox.util.timeUtil.currentMillis
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
+private const val TAG = "TodoViewModel_싸피"
+@RequiresApi(Build.VERSION_CODES.O)
 class TodoViewModel: ViewModel() {
     private val todoRepo = TodoRepository()
-    private val dateRepo = DateRepository()
-//    var todoList: MutableList<TodoDto> = dummy.todoList
-//    private var todoDateList: MutableList<TodoDateDto> = dummy.todoDateList
 
     private val _selectDay = MutableLiveData<Long>().apply {
-        value = currentMillis
+        value = LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
     }
     val selectDay : LiveData<Long>
         get() = _selectDay
@@ -29,6 +30,7 @@ class TodoViewModel: ViewModel() {
     fun fetchData(): LiveData<MutableList<TodoDto>>{
         val mutableData = MutableLiveData<MutableList<TodoDto>>()
         selectDay.observeForever {
+            Log.d(TAG, "fetchData: ${selectDay.value}")
             todoRepo.getData(it).observeForever {
                 mutableData.value = it
             }
@@ -50,22 +52,6 @@ class TodoViewModel: ViewModel() {
 
     fun deleteTodo(id: String) {
         todoRepo.todoDelete(id)
-    }
-
-    fun fetchDateData(): LiveData<MutableList<TodoDateDto>>{
-        return dateRepo.getData()
-    }
-
-    suspend fun selectTodoDate(id: String): TodoDateDto? {
-        return dateRepo.dateSelect(id)
-    }
-
-    fun addTodoDate(todoDate: TodoDateDto) {
-        return dateRepo.dateInsert(todoDate)
-    }
-
-    fun deleteTodoDate(id: String) {
-        dateRepo.dateDelete(id)
     }
 
 }
