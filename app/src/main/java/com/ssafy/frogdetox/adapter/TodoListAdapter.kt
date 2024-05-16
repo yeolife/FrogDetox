@@ -18,8 +18,6 @@ import kotlinx.coroutines.withContext
 private const val TYPE_HEADER = 1
 private const val TYPE_ITEM = 2
 
-private const val TAG = "TodoListAdapter_창민"
-
 class TodoListAdapter(private val clickListener: ItemClickListener) :
     ListAdapter<DataItem, RecyclerView.ViewHolder>(TodoListDiffCallback()),
     ItemTouchHelperListener {

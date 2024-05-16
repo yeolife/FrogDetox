@@ -88,7 +88,7 @@ class TodoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: ${userName} $userImgUrl")
-        binding.tvName.text=userName+"님"
+        binding.tvName.text=userName
         binding.ivFrog.load(userImgUrl) {
             transformations(CircleCropTransformation())
             placeholder(R.drawable.ic_launcher_foreground)
@@ -110,21 +110,8 @@ class TodoFragment : Fragment() {
             } else if(state == TODO_UPDATE){
                 todoRegisterDialog(TODO_UPDATE, id)
             }
-            else if(state==TODO_CHECK){
-                var todo:TodoDto
-                lifecycleScope.launch {
-                    viewModel.selectTodo(id).let {
-                        todo = it
-                    }
-                    Log.d(TAG, "initTodoRecyclerView: ${todo.isComplete}")
-                    todo.isComplete=!todo.isComplete
-                    Log.d(TAG, "initTodoRecyclerView: ${todo.isComplete}")
-                    viewModel.updateTodo(todo)
-
-                }
-            }
         })
-        
+
         todoRecycler.apply {
             adapter = todoAdapter
 
@@ -264,7 +251,6 @@ class TodoFragment : Fragment() {
     companion object {
         const val TODO_INSERT = 0
         const val TODO_UPDATE = 1
-        const val TODO_CHECK = 2
         @JvmStatic
         fun newInstance(param1: String?, param2: String?) =
             TodoFragment().apply {
