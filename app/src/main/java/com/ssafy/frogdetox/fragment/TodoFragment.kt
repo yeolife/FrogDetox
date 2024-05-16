@@ -225,7 +225,6 @@ class TodoFragment : Fragment() {
                 }
 //                bind.exSevenDateText.setTextColor(view.context.getColorCompat(colorRes))
                 bind.exSevenSelectedView.isVisible = day.date == selectedDate
-
             }
         }
 
