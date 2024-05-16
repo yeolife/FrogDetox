@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.ssafy.frogdetox.adapter.TodoListAdapter
 
 class SwipeController() : ItemTouchHelper.Callback() {
 
@@ -27,8 +28,11 @@ class SwipeController() : ItemTouchHelper.Callback() {
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        val draw_flags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
-        val swipe_flags = ItemTouchHelper.START or ItemTouchHelper.END
+        val draw_flags = 0
+        var swipe_flags = let {
+            if (viewHolder is TodoListAdapter.HeaderViewHolder) 0 else ItemTouchHelper.START
+        }
+
         return makeMovementFlags(draw_flags, swipe_flags)
     }
 
