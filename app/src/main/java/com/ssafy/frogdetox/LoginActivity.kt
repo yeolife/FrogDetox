@@ -92,6 +92,7 @@ class LoginActivity : AppCompatActivity() {
                 putExtra("url", user.photoUrl.toString())
                 putExtra("name", user.displayName)
             }
+
             Toast.makeText(this, "환영합니다, ${user.displayName}님", Toast.LENGTH_SHORT).show()
             startActivity(intent)
             finish()

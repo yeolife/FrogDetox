@@ -126,6 +126,12 @@ class TodoFragment : Fragment() {
                 viewModel.deleteTodo(id)
             }
         }
+
+        todoAdapter.todoCompleteListener = object : TodoListAdapter.TodoCompleteListener {
+            override fun onChecked(id: String, isChecked: Boolean) {
+                viewModel.updateTodoComplete(id, isChecked)
+            }
+        }
     }
 
     private fun todoRegisterDialog(state: Int, id: String) {
@@ -153,11 +159,9 @@ class TodoFragment : Fragment() {
                     viewModel.selectDay.value?.let {
                         todo.regTime = it
                     }
-
                     viewModel.addTodo(todo)
-
                 } else {
-                    viewModel.updateTodo(todo)
+                    viewModel.updateTodoContent(todo)
                 }
 
                 // TODO. 알람 등록

@@ -57,9 +57,9 @@ dependencies {
     // 이미지 파싱
     implementation ("com.github.bumptech.glide:glide:4.11.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
-
+    
+    // 웹 이미지 URL 보여줌
     implementation("io.coil-kt:coil:2.6.0")
-
 
     // viewPager2
     implementation ("androidx.viewpager2:viewpager2:1.0.0")
