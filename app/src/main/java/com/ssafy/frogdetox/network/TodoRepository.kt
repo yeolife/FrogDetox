@@ -1,8 +1,6 @@
 package com.ssafy.frogdetox.network
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.DataSnapshot
@@ -93,10 +91,16 @@ class TodoRepository {
         myRef.child(key).setValue(todo)
     }
 
-    fun todoUpdate(todo: TodoDto) {
+    fun todoContentUpdate(todo: TodoDto) {
         val childUpdates: Map<String, Any> = mapOf("content" to todo.content)
 
         myRef.child(todo.id).updateChildren(childUpdates)
+    }
+
+    fun todoCheckUpdate(id: String, complete: Boolean) {
+        val childUpdates: Map<String, Any> = mapOf("complete" to complete)
+
+        myRef.child(id).updateChildren(childUpdates)
     }
 
     fun todoDelete(id: String) {

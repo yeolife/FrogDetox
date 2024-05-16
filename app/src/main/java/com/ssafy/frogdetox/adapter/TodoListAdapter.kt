@@ -1,11 +1,7 @@
 package com.ssafy.frogdetox.adapter
 
-import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -23,8 +19,10 @@ private const val TYPE_HEADER = 1
 private const val TYPE_ITEM = 2
 
 private const val TAG = "TodoListAdapter_창민"
-class TodoListAdapter(private val clickListener: ItemClickListener):
-    ListAdapter<DataItem, RecyclerView.ViewHolder>(TodoListDiffCallback()), ItemTouchHelperListener {
+
+class TodoListAdapter(private val clickListener: ItemClickListener) :
+    ListAdapter<DataItem, RecyclerView.ViewHolder>(TodoListDiffCallback()),
+    ItemTouchHelperListener {
 
     private val adapterScope = CoroutineScope(Dispatchers.Default)
 
@@ -32,12 +30,22 @@ class TodoListAdapter(private val clickListener: ItemClickListener):
         fun onItemDelete(id: String)
     }
 
+    interface TodoCompleteListener {
+        fun onChecked(id: String, isChecked: Boolean)
+    }
+
     var todoSwipeListener: TodoSwipeListener? = null
+    var todoCompleteListener: TodoCompleteListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType) {
+        return when (viewType) {
             TYPE_HEADER -> HeaderViewHolder.from(parent)
-            TYPE_ITEM -> TodoViewHolder.from(parent)
+            TYPE_ITEM -> run {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ItemListTodoBinding.inflate(layoutInflater, parent, false)
+                TodoViewHolder(binding, todoCompleteListener)
+            }
+
             else -> throw ClassCastException("Unknown viewType $viewType")
         }
     }
@@ -55,33 +63,35 @@ class TodoListAdapter(private val clickListener: ItemClickListener):
                 val item = getItem(position) as DataItem.TodoItem
                 holder.bind(item.item, clickListener)
             }
+
             is HeaderViewHolder -> {
                 holder.bind(clickListener)
             }
         }
     }
 
-    class TodoViewHolder private constructor(private val binding: ItemListTodoBinding):
+    class TodoViewHolder(
+        private val binding: ItemListTodoBinding,
+        private val todoCompleteListener: TodoCompleteListener?
+    ) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: TodoDto, clickListener: ItemClickListener) {
             binding.todo = item
             binding.clickListener = clickListener
-        }
 
-        companion object {
-            fun from(parent: ViewGroup): TodoViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemListTodoBinding.inflate(layoutInflater, parent, false)
-                return TodoViewHolder(binding)
+            binding.cbIsComplete.setOnCheckedChangeListener { _, isChecked ->
+                todoCompleteListener?.onChecked(item.id, isChecked)
             }
         }
     }
 
-    class HeaderViewHolder private constructor(private val binding: ItemHeaderTodoBinding):
+    class HeaderViewHolder private constructor(private val binding: ItemHeaderTodoBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(clickListener: ItemClickListener) {
             binding.clickListener = clickListener
         }
+
         companion object {
             fun from(parent: ViewGroup): HeaderViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
@@ -105,7 +115,7 @@ class TodoListAdapter(private val clickListener: ItemClickListener):
 
     override fun onItemMove(from_position: Int, to_position: Int): Boolean = false
 
-    override fun onItemSwipe(position: Int) { }
+    override fun onItemSwipe(position: Int) {}
 
     override fun onRightClick(position: Int, viewHolder: RecyclerView.ViewHolder?) {
         todoSwipeListener?.let {
@@ -134,7 +144,7 @@ sealed class DataItem {
         override val id = item.id
     }
 
-    object Header: DataItem() {
+    object Header : DataItem() {
         override val id = Int.MIN_VALUE.toString()
     }
 
