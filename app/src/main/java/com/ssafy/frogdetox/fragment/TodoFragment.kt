@@ -137,7 +137,7 @@ class TodoFragment : Fragment() {
     private fun todoRegisterDialog(state: Int, id: String) {
         var todo = TodoDto()
 
-        bindingTMD.editTextText2.setText("")
+        bindingTMD.etTodo.setText("")
         bindingTMD.switch2.isChecked = false
         bindingTMD.calendarView.visibility = View.GONE
 
@@ -147,13 +147,13 @@ class TodoFragment : Fragment() {
                     todo = it
                 }
 
-                bindingTMD.editTextText2.setText(todo.content)
+                bindingTMD.etTodo.setText(todo.content)
             }
         }
 
         val dialog = AlertDialog.Builder(requireContext())
             .setPositiveButton("확인") { dialog, _ ->
-                todo.content = bindingTMD.editTextText2.text.toString()
+                todo.content = bindingTMD.etTodo.text.toString()
 
                 if(state == TODO_INSERT) {
                     viewModel.selectDay.value?.let {
