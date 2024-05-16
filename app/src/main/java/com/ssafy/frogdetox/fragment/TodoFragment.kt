@@ -3,12 +3,11 @@ package com.ssafy.frogdetox.fragment
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
@@ -57,8 +58,15 @@ class TodoFragment : Fragment() {
 
     val viewModel : TodoViewModel by viewModels()
 
+    private var userImgUrl: String? = null
+    private var userName: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            userImgUrl = it.getString("url")
+            userName = it.getString("name")
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -79,6 +87,12 @@ class TodoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated: ${userName} $userImgUrl")
+        binding.tvName.text=userName
+        binding.ivFrog.load(userImgUrl) {
+            transformations(CircleCropTransformation())
+            placeholder(R.drawable.ic_launcher_foreground)
+        }
 
         observerTodoList()
 
@@ -230,10 +244,16 @@ class TodoFragment : Fragment() {
         binding.rvDate.scrollToDate(LocalDate.now())
     }
 
-
-
     companion object {
         const val TODO_INSERT = 0
         const val TODO_UPDATE = 1
+        @JvmStatic
+        fun newInstance(param1: String?, param2: String?) =
+            TodoFragment().apply {
+                arguments = Bundle().apply {
+                    putString("url", param1)
+                    putString("name", param2)
+                }
+            }
     }
 }
