@@ -58,6 +58,9 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.11.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
 
+    implementation("io.coil-kt:coil:2.6.0")
+
+
     // viewPager2
     implementation ("androidx.viewpager2:viewpager2:1.0.0")
     androidTestImplementation(libs.androidx.junit)
@@ -66,6 +69,10 @@ dependencies {
     // firebase
     implementation("com.google.firebase:firebase-database-ktx:20.0.5")
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+
+    // firebase auth 에서 필요한 의존성 추가
+    implementation ("com.google.firebase:firebase-auth-ktx")
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
 
     // fcm
     implementation (platform("com.google.firebase:firebase-bom:32.1.0"))

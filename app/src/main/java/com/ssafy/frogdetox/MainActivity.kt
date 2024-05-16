@@ -1,30 +1,32 @@
 package com.ssafy.frogdetox
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.ssafy.frogdetox.databinding.ActivityMainBinding
 import com.ssafy.frogdetox.fragment.DetoxFragment
 import com.ssafy.frogdetox.fragment.SettingFragment
 import com.ssafy.frogdetox.fragment.TodoFragment
 
+private const val TAG = "MainActivity_싸피"
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
 
+
         supportFragmentManager.beginTransaction()
-            .replace(R.id.mainFrameLayout, TodoFragment())
+            .replace(R.id.mainFrameLayout, TodoFragment.newInstance(intent.getStringExtra("url"),intent.getStringExtra("name")))
             .commit()
 
         binding.bottomNavbar.setOnItemSelectedListener {
             val transaction = supportFragmentManager.beginTransaction()
             when(it.itemId){
-                R.id.todoTab -> transaction.replace(R.id.mainFrameLayout, TodoFragment())
+                R.id.todoTab -> transaction.replace(R.id.mainFrameLayout, TodoFragment.newInstance(intent.getStringExtra("url"),intent.getStringExtra("name")))
                 R.id.detoxTab -> transaction.replace(R.id.mainFrameLayout, DetoxFragment())
                 R.id.settingTab -> transaction.replace(R.id.mainFrameLayout, SettingFragment())
             }
