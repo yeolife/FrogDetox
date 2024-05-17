@@ -87,4 +87,6 @@ dependencies {
 
     // swipe delete
     implementation("it.xabaras.android:recyclerview-swipedecorator:1.4")
+
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
 }
