@@ -8,8 +8,11 @@ import androidx.annotation.RequiresApi
 import com.kizitonwose.calendar.core.Week
 import com.kizitonwose.calendar.core.yearMonth
 import java.time.DayOfWeek
+import java.time.Instant
+import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
+import java.time.ZoneId
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -26,6 +29,14 @@ fun DayOfWeek.displayText(uppercase: Boolean = false): String {
     return getDisplayName(TextStyle.SHORT, Locale.ENGLISH).let { value ->
         if (uppercase) value.uppercase(Locale.ENGLISH) else value
     }
+}
+
+fun LongToLocalDate(time: Long): LocalDate {
+    val date = Instant.ofEpochMilli(time)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
+
+    return date
 }
 
 fun Context.findActivity(): Activity {
