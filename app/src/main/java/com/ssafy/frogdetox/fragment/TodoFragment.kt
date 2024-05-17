@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -244,26 +245,69 @@ class TodoFragment : Fragment() {
                 }
 
                 bindingTMD.etTodo.setText(todo.content)
+                bindingTMD.switch2.isChecked = todo.isAlarm
+                if(todo.isAlarm){
+                    bindingTMD.calendarView.visibility = View.VISIBLE
+                } else {
+                    bindingTMD.calendarView.visibility = View.GONE
+                }
             }
         }
 
         val dialog = AlertDialog.Builder(requireContext())
             .setPositiveButton("확인") { dialog, _ ->
-                todo.content = bindingTMD.etTodo.text.toString()
-
-                if(state == TODO_INSERT) {
-                    viewModel.selectDay.value?.let {
-                        todo.regTime = it
-                    }
-                    todo.uId = sharedPreferencesUtil.getUId().toString()
-                    viewModel.addTodo(todo)
-                } else {
-                    viewModel.updateTodoContent(todo)
+                if(bindingTMD.etTodo.text.isBlank()){
+                    Toast.makeText(requireContext(),"todo 내용을 입력하세요.개굴!",Toast.LENGTH_SHORT).show()
                 }
+                else{
+                    todo.content = bindingTMD.etTodo.text.toString()
 
-                registerAlarm()
-
-                dialog.dismiss()
+                    if(state == TODO_INSERT) {
+                        viewModel.selectDay.value?.let {
+                            todo.regTime = it
+                        }
+                        todo.uId = sharedPreferencesUtil.getUId().toString()
+                        if(bindingTMD.switch2.isChecked){
+                            val alarmCode = registerAlarm()
+                            todo.alarmCode = alarmCode
+                            todo.isAlarm=true
+                            val hour = bindingTMD.calendarView.hour
+                            var strMinute = bindingTMD.calendarView.minute.toString()
+                            if(bindingTMD.calendarView.minute<10)
+                                strMinute = "0"+bindingTMD.calendarView.minute.toString()
+                            if(hour>12)
+                                todo.time = "⏰ PM "+(hour-12).toString()+":"+strMinute
+                            else
+                                todo.time = "⏰ AM "+bindingTMD.calendarView.hour+":"+strMinute
+                        }
+                        else{
+                            todo.isAlarm=false
+                        }
+                        viewModel.addTodo(todo)
+                    } else {
+                        if(bindingTMD.switch2.isChecked){
+                            val alarmCode = registerAlarm()
+                            todo.alarmCode = alarmCode
+                            todo.isAlarm=true
+                            val hour = bindingTMD.calendarView.hour
+                            var strMinute = bindingTMD.calendarView.minute.toString()
+                            if(bindingTMD.calendarView.minute<10)
+                                strMinute = "0"+bindingTMD.calendarView.minute.toString()
+                            if(hour>12)
+                                todo.time = "⏰ PM "+(hour-12).toString()+":"+strMinute
+                            else
+                                todo.time = "⏰ AM "+bindingTMD.calendarView.hour+":"+strMinute
+                            viewModel.updateTodoContent(todo)
+                            // TODO: 알람 수정
+                        }
+                        else{
+                            todo.isAlarm=false
+                            // TODO: 알람 삭제.
+                        }
+                        viewModel.updateTodoContent(todo)
+                    }
+                    dialog.dismiss()
+                }
             }
             .setNegativeButton("취소") { dialog, _ ->
                 dialog.dismiss()
@@ -284,14 +328,14 @@ class TodoFragment : Fragment() {
         dialog.show()
     }
 
-    private fun registerAlarm() {
+    private fun registerAlarm() : Int{
         val hour = bindingTMD.calendarView.hour.toString()
         val minute = bindingTMD.calendarView.minute.toString()
         val time = "${LongToLocalDate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
-
         val random = (1..100000) // 1~100000 범위에서 알람코드 랜덤으로 생성
         val alarmCode = random.random()
         setAlarm(alarmCode, bindingTMD.etTodo.text.toString(), time)
+        return alarmCode
     }
 
     private fun setAlarm(alarmCode : Int, content : String, time : String){

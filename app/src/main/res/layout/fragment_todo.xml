@@ -81,6 +81,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_date"
-        tools:listitem="@layout/item_list_todo" />
+        tools:listitem="@layout/item_list_todo"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
