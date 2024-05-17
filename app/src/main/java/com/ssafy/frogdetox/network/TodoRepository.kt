@@ -122,7 +122,7 @@ class TodoRepository {
     }
 
     fun todoContentUpdate(todo: TodoDto) {
-        val childUpdates: Map<String, Any> = mapOf("content" to todo.content)
+        val childUpdates: Map<String, Any> = mapOf("content" to todo.content, "alarm" to todo.isAlarm,"alarmCode" to todo.alarmCode,"time" to todo.time)
 
         myRef.child(todo.id).updateChildren(childUpdates)
     }
