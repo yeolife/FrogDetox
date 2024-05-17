@@ -1,33 +1,25 @@
 package com.ssafy.frogdetox
 
-import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.frogdetox.databinding.ActivityLoginBinding
 import com.ssafy.frogdetox.util.SharedPreferencesUtil
-import kotlin.math.log
 
 private const val TAG = "LoginActivity_싸피"
 class LoginActivity : AppCompatActivity() {
@@ -64,7 +56,6 @@ class LoginActivity : AppCompatActivity() {
         auth = Firebase.auth
 
         createNotificationChannel()
-        initFCM()
     }
 
     override fun onStart() {
@@ -108,15 +99,15 @@ class LoginActivity : AppCompatActivity() {
         activityLauncher.launch(signInIntent)
     }
 
-    private fun initFCM() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) return@OnCompleteListener
-
-            // token log 남기기
-            Log.d(TAG, "token: ${task.result ?: "task.result is null"}")
-//            task.result?.let { uploadToken(it) }
-        })
-    }
+//    private fun initFCM() {
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+//            if (!task.isSuccessful) return@OnCompleteListener
+//
+//            // token log 남기기
+//            Log.d(TAG, "token: ${task.result ?: "task.result is null"}")
+////            task.result?.let { uploadToken(it) }
+//        })
+//    }
 
     private fun createNotificationChannel() {
         val importance = NotificationManager.IMPORTANCE_HIGH
