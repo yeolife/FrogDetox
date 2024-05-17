@@ -3,13 +3,11 @@ package com.ssafy.frogdetox.fragment
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -37,7 +35,16 @@ import com.ssafy.frogdetox.util.displayText
 import com.ssafy.frogdetox.util.getWeekPageTitle
 import com.ssafy.frogdetox.util.todoListSwiper.SwipeController
 import com.ssafy.frogdetox.viewmodel.TodoViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.net.HttpURLConnection
+import java.net.URL
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneOffset
@@ -136,12 +143,56 @@ class TodoFragment : Fragment() {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun todoRegisterDialog(state: Int, id: String) {
         var todo = TodoDto()
 
         bindingTMD.etTodo.setText("")
         bindingTMD.switch2.isChecked = false
         bindingTMD.calendarView.visibility = View.GONE
+        Log.d(TAG, "todoRegisterDialog: 여기까지 출력")
+        //network작업 Runnable --> lambda
+        bindingTMD.tvAiText.setOnClickListener { v: View? ->
+            val apiKey = "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"
+            val prompt = "컴퓨터학과 대학생이 할일 하나 \"~~하기\" 형식으로 추천해줘. 출력은 본론만 간결히 한줄로"
+
+            GlobalScope.launch(Dispatchers.IO){
+                val url = URL("https://api.openai.com/v1/chat/completions")
+                val connection = url.openConnection() as HttpURLConnection
+
+                connection.requestMethod = "POST"
+                connection.setRequestProperty("Content-Type", "application/json")
+                connection.setRequestProperty("Authorization", "Bearer $apiKey")
+                connection.doOutput = true // outputStream으로 post로 데이터 전송
+                connection.doInput = true // inputStream으로 결과를 받겠음.
+
+                val out = BufferedWriter(OutputStreamWriter(connection.outputStream))
+                out.write(
+                    """
+                {
+                    "model": "gpt-3.5-turbo",
+                    "messages": [{"role": "user", "content": "$prompt"}],
+                    "temperature": 0.7
+                }
+                """.trimIndent()
+                )
+                out.flush()
+                out.close()
+                Log.d(TAG, "todoRegisterDialog: 111111")
+
+                val reader = BufferedReader(InputStreamReader(connection.inputStream))
+
+                Log.d(TAG, "todoRegisterDialog: $reader")
+                val read = StringBuilder()
+                Log.d(TAG, "todoRegisterDialog: $read")
+                var temp: String? = ""
+                while (reader.readLine().also { temp = it } != null) {
+                    read.append(temp)
+                }
+
+                Log.d(TAG, "from GPT : $read")
+            }
+        }
 
         if(state == TODO_UPDATE) {
             lifecycleScope.launch {
@@ -167,6 +218,7 @@ class TodoFragment : Fragment() {
                 }
 
                 // TODO. 알람 등록
+
 
                 dialog.dismiss()
             }
