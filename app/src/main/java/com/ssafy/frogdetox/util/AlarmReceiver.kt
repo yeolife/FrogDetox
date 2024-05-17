@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.ssafy.frogdetox.MainActivity
 import com.ssafy.frogdetox.R
 import java.util.Calendar
 
@@ -30,14 +31,14 @@ class AlarmReceiver : BroadcastReceiver() {
             NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance)
         )
 
-        val intent2 = Intent(context, AlarmService::class.java)
+        val intent2 = Intent(context, MainActivity::class.java)
         val requestCode = intent.extras!!.getInt("alarm_rqCode")
         val content = intent.extras!!.getString("content")
 
         val pendingIntent =
             if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S)
                 PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_IMMUTABLE)
-            else PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_UPDATE_CURRENT);
+            else PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_UPDATE_CURRENT)
 
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)

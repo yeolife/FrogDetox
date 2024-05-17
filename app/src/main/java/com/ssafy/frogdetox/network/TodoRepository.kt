@@ -11,6 +11,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.ssafy.frogdetox.LoginActivity.Companion.sharedPreferencesUtil
 import com.ssafy.frogdetox.dto.TodoDto
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -60,7 +61,36 @@ class TodoRepository {
         })
         return mutableData
     }
+    suspend fun getThreeTodo(): String {
+        val deferred = CompletableDeferred<String>()
 
+        var result = ""
+        var count = 0
+
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (curSnapshot in snapshot.children) {
+                        if (count >= 6) break
+                        val getData = curSnapshot.getValue(TodoDto::class.java)
+                        if (getData != null) {
+                            if (getData.uId == sharedPreferencesUtil.getUId()) {
+                                result += getData.content + ", "
+                                count++
+                            }
+                        }
+                    }
+                    deferred.complete(result)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                deferred.completeExceptionally(error.toException())
+            }
+        })
+
+        return deferred.await()
+    }
     suspend fun todoSelect(id: String): TodoDto {
         return withContext(Dispatchers.IO) {
             var todo = TodoDto()
