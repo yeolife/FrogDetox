@@ -35,6 +35,8 @@ import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
 import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.dto.TodoDto
+import com.ssafy.frogdetox.util.LongToLocalDate
+import com.ssafy.frogdetox.util.alarm.AlarmFunctions
 import com.ssafy.frogdetox.util.displayText
 import com.ssafy.frogdetox.util.getWeekPageTitle
 import com.ssafy.frogdetox.util.todoListSwiper.SwipeController
@@ -56,6 +58,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.Date
 
 private const val TAG = "TodoFragment_싸피"
 
@@ -67,6 +70,7 @@ class TodoFragment : Fragment() {
 
     private lateinit var todoRecycler: RecyclerView
     private lateinit var todoAdapter: TodoListAdapter
+    private lateinit var alarmFunctions: AlarmFunctions
 
     private var selectedDate = LocalDate.now()
 
@@ -109,6 +113,8 @@ class TodoFragment : Fragment() {
             transformations(CircleCropTransformation())
             placeholder(R.drawable.ic_launcher_foreground)
         }
+
+        alarmFunctions = AlarmFunctions(mainActivity)
 
         observerTodoList()
 
@@ -255,8 +261,7 @@ class TodoFragment : Fragment() {
                     viewModel.updateTodoContent(todo)
                 }
 
-                // TODO. 알람 등록
-
+                registerAlarm()
 
                 dialog.dismiss()
             }
@@ -277,6 +282,20 @@ class TodoFragment : Fragment() {
 
         dialog.setView(bindingTMD.root)
         dialog.show()
+    }
+
+    private fun registerAlarm() {
+        val hour = bindingTMD.calendarView.hour.toString()
+        val minute = bindingTMD.calendarView.minute.toString()
+        val time = "${LongToLocalDate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
+
+        val random = (1..100000) // 1~100000 범위에서 알람코드 랜덤으로 생성
+        val alarmCode = random.random()
+        setAlarm(alarmCode, bindingTMD.etTodo.text.toString(), time)
+    }
+
+    private fun setAlarm(alarmCode : Int, content : String, time : String){
+        alarmFunctions.callAlarm(time, alarmCode, content)
     }
 
     @SuppressLint("NotifyDataSetChanged")

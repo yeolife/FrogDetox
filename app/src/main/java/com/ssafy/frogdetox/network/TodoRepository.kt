@@ -12,6 +12,7 @@ import com.google.firebase.ktx.Firebase
 import com.ssafy.frogdetox.LoginActivity.Companion.sharedPreferencesUtil
 import com.ssafy.frogdetox.dto.TodoDto
 import kotlinx.coroutines.CompletableDeferred
+import com.ssafy.frogdetox.util.LongToLocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -32,9 +33,7 @@ class TodoRepository {
             val listData : MutableList<TodoDto> = mutableListOf()
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                val selectvalue = Instant.ofEpochMilli(selectday)
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate()
+                val selectvalue = LongToLocalDate(selectday)
                 lateinit var listvalue:LocalDate
                 if(snapshot.exists()){
                     listData.clear()
@@ -42,9 +41,7 @@ class TodoRepository {
                         val getData = curSnapshot.getValue(TodoDto::class.java)
                         if (getData != null) {
                             if(getData.uId==sharedPreferencesUtil.getUId()){
-                                listvalue = Instant.ofEpochMilli(getData.regTime)
-                                    .atZone(ZoneId.systemDefault())
-                                    .toLocalDate()
+                                listvalue = LongToLocalDate(getData.regTime)
                                 if(selectvalue==listvalue)
                                     listData.add(getData)
                             }

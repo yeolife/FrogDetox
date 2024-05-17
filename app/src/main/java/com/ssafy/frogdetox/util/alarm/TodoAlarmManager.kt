@@ -1,17 +1,17 @@
-package com.ssafy.frogdetox.util
+package com.ssafy.frogdetox.util.alarm
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.widget.Toast
-import com.ssafy.frogdetox.dto.AlarmData
 import java.util.Calendar
 
 class TodoAlarmManager(private val context: Context) {
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
 
+    @SuppressLint("ScheduleExactAlarm")
     fun setAlarm(hour : Int, minute : Int, alarm_code : Int, content : String, checkedDayList:MutableList<Boolean>){
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra("alarm_rqCode", alarm_code)
@@ -34,15 +34,13 @@ class TodoAlarmManager(private val context: Context) {
             set(Calendar.SECOND, 0)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager?.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-            //val alarmClock = AlarmManager.AlarmClockInfo(calendar.timeInMillis, pendingIntent)
-            //alarmManager?.setAlarmClock(alarmClock, pendingIntent)
-        }
+        alarmManager?.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            pendingIntent
+        )
+        //val alarmClock = AlarmManager.AlarmClockInfo(calendar.timeInMillis, pendingIntent)
+        //alarmManager?.setAlarmClock(alarmClock, pendingIntent)
     }
 
     fun cancelAlarm(alarm_code : Int) {
