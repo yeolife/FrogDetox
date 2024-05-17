@@ -6,13 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".fragment.DetoxSleepFragment">
 
-
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:switchMinWidth="50dp"
+        android:thumb="@drawable/todoalarm_switch_thumb"
+        app:track="@drawable/todoalarm_switch_track"
+        app:thumbTextPadding="24dp"
+        app:switchMinWidth="0dp"
+        app:trackTint="@null"
+        app:thumbTint="@null"
+        android:textOff=""
+        android:textOn=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

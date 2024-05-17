@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layout_margin="10dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:orientation="vertical">
+
     <TextView
-        android:layout_marginTop="25dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
         android:text="Todo 작성"
-        android:textSize="30dp"/>
+        android:textSize="30dp" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,20 +48,21 @@
 
 
         </LinearLayout>
+
         <TextView
             android:id="@+id/tvloading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:layout_weight="0.13"
             android:gravity="center"
             android:padding="15dp"
-            android:layout_marginBottom="10dp"
             android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="@+id/saylayout"
             app:layout_constraintEnd_toEndOf="@+id/saylayout"
             app:layout_constraintStart_toStartOf="@+id/saylayout"
-            app:layout_constraintTop_toTopOf="@+id/saylayout"
-            />
+            app:layout_constraintTop_toTopOf="@+id/saylayout" />
+
         <LinearLayout
             android:id="@+id/lyAiText"
             android:layout_width="match_parent"
@@ -68,8 +70,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/saylayout"
             app:layout_constraintEnd_toEndOf="@+id/saylayout"
             app:layout_constraintStart_toStartOf="@+id/saylayout"
-            app:layout_constraintTop_toTopOf="@+id/saylayout"
-            >
+            app:layout_constraintTop_toTopOf="@+id/saylayout">
 
             <TextView
                 android:layout_width="match_parent"
@@ -81,23 +82,21 @@
                 android:id="@+id/tvAiText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_weight="0.13"
                 android:gravity="center"
                 android:padding="15dp"
-                android:layout_marginBottom="10dp"
                 android:text="말풍선을 클릭하면 할일을 추천해드려요 개굴"
-                android:textSize="14dp"
-                />
+                android:textSize="14dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text=" "/>
+                android:text=" " />
 
 
         </LinearLayout>
-
 
 
         <LinearLayout
@@ -108,8 +107,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/saylayout"
             app:layout_constraintEnd_toEndOf="@+id/saylayout"
             app:layout_constraintStart_toStartOf="@+id/saylayout"
-            app:layout_constraintTop_toTopOf="@+id/saylayout"
-            >
+            app:layout_constraintTop_toTopOf="@+id/saylayout">
 
             <TextView
                 android:layout_width="match_parent"
@@ -121,25 +119,26 @@
                 android:id="@+id/tvResultText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:autoSizeTextType="uniform"
-                android:layout_weight="0.13"
-                android:padding="15dp"
                 android:layout_marginBottom="10dp"
+                android:layout_weight="0.13"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:padding="15dp"
+                android:text="gpt결과"
                 app:layout_constraintBottom_toBottomOf="@+id/saylayout"
                 app:layout_constraintEnd_toEndOf="@+id/saylayout"
                 app:layout_constraintStart_toStartOf="@+id/saylayout"
-                app:layout_constraintTop_toTopOf="@+id/saylayout"
-                android:text="gpt결과"
-                />
+                app:layout_constraintTop_toTopOf="@+id/saylayout" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text=" "/>
+                android:text=" " />
 
 
         </LinearLayout>
+
         <TextView
             android:id="@+id/tvResultClick"
             android:layout_width="wrap_content"
@@ -149,10 +148,9 @@
             android:gravity="center"
             android:text="(클릭하면 입력됩니다!)"
             android:textSize="10sp"
-            app:layout_constraintBottom_toTopOf="@id/linearLayout"
-            app:layout_constraintEnd_toEndOf="parent"
             android:visibility="gone"
-            />
+            app:layout_constraintBottom_toTopOf="@id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -197,28 +195,35 @@
                 android:text=" " />
 
 
-
-
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="20dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="15dp"
             android:text="알림받기"
-            android:textSize="20dp"/>
+            android:textSize="20dp" />
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/switch2"/>
+            android:thumb="@drawable/todoalarm_switch_thumb"
+            app:track="@drawable/todoalarm_switch_track"
+            app:thumbTextPadding="24dp"
+            app:switchMinWidth="0dp"
+            app:trackTint="@null"
+            app:thumbTint="@null"
+            android:textOff=""
+            android:textOn="" />
     </LinearLayout>
 
 
@@ -227,7 +232,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:timePickerMode="spinner"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 </LinearLayout>
