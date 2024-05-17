@@ -26,10 +26,8 @@ class TodoViewModel: ViewModel() {
     fun fetchData(): LiveData<MutableList<TodoDto>>{
         val mutableData = MutableLiveData<MutableList<TodoDto>>()
         selectDay.observeForever {
-            Log.d(TAG, "fetchData: ${selectDay.value}")
             todoRepo.getData(it).observeForever {
                 mutableData.value = it
-
                 Log.d(TAG, "fetchData: $it")
             }
         }

@@ -23,6 +23,7 @@ import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.view.ViewContainer
 import com.kizitonwose.calendar.view.WeekDayBinder
+import com.ssafy.frogdetox.LoginActivity.Companion.sharedPreferencesUtil
 import com.ssafy.frogdetox.MainActivity
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.adapter.ItemClickListener
@@ -212,6 +213,7 @@ class TodoFragment : Fragment() {
                     viewModel.selectDay.value?.let {
                         todo.regTime = it
                     }
+                    todo.uId = sharedPreferencesUtil.getUId().toString()
                     viewModel.addTodo(todo)
                 } else {
                     viewModel.updateTodoContent(todo)

@@ -9,6 +9,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.getValue
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.ssafy.frogdetox.LoginActivity.Companion.sharedPreferencesUtil
 import com.ssafy.frogdetox.dto.TodoDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -39,11 +40,13 @@ class TodoRepository {
                     for(curSnapshot in snapshot.children){
                         val getData = curSnapshot.getValue(TodoDto::class.java)
                         if (getData != null) {
-                            listvalue = Instant.ofEpochMilli(getData.regTime)
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDate()
-                            if(selectvalue==listvalue)
-                                listData.add(getData)
+                            if(getData.uId==sharedPreferencesUtil.getUId()){
+                                listvalue = Instant.ofEpochMilli(getData.regTime)
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDate()
+                                if(selectvalue==listvalue)
+                                    listData.add(getData)
+                            }
                         }
                     }
 
