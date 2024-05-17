@@ -372,4 +372,3 @@ class TodoFragment : Fragment() {
     }
 }
 
-// 알림 권한, 알림 삭제, 알림 수정, dto 알림 불러오기
