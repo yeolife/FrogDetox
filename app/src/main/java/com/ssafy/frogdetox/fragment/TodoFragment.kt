@@ -18,6 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
@@ -40,6 +43,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.InputStreamReader
@@ -98,7 +102,7 @@ class TodoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG, "onViewCreated: ${userName} $userImgUrl")
-        binding.tvName.text=userName
+        binding.tvName.text=userName+"님"
         binding.ivFrog.load(userImgUrl) {
             transformations(CircleCropTransformation())
             placeholder(R.drawable.ic_launcher_foreground)
@@ -154,8 +158,8 @@ class TodoFragment : Fragment() {
         Log.d(TAG, "todoRegisterDialog: 여기까지 출력")
         //network작업 Runnable --> lambda
         bindingTMD.tvAiText.setOnClickListener { v: View? ->
-            val apiKey = "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"
-            val prompt = "컴퓨터학과 대학생이 할일 하나 \"~~하기\" 형식으로 추천해줘. 출력은 본론만 간결히 한줄로"
+            val apiKey = "sk-proj-aKurzhjxFAHM3X4c2b4aT3BlbkFJYmvUVRqAZSRrvEc99E93"
+            val prompt = "대학생이 할일 하나 '~~하기' 형식으로 추천해줘. 출력은 본론만 간결히 한줄로"
 
             GlobalScope.launch(Dispatchers.IO){
                 val url = URL("https://api.openai.com/v1/chat/completions")
@@ -165,34 +169,42 @@ class TodoFragment : Fragment() {
                 connection.setRequestProperty("Content-Type", "application/json")
                 connection.setRequestProperty("Authorization", "Bearer $apiKey")
                 connection.doOutput = true // outputStream으로 post로 데이터 전송
-                connection.doInput = true // inputStream으로 결과를 받겠음.
 
                 val out = BufferedWriter(OutputStreamWriter(connection.outputStream))
                 out.write(
                     """
-                {
-                    "model": "gpt-3.5-turbo",
-                    "messages": [{"role": "user", "content": "$prompt"}],
-                    "temperature": 0.7
-                }
+                {    "model": "gpt-3.5-turbo",    "messages": [{"role": "user", "content": "$prompt"}],    "temperature": 0.7}
                 """.trimIndent()
                 )
                 out.flush()
                 out.close()
-                Log.d(TAG, "todoRegisterDialog: 111111")
 
                 val reader = BufferedReader(InputStreamReader(connection.inputStream))
 
-                Log.d(TAG, "todoRegisterDialog: $reader")
                 val read = StringBuilder()
-                Log.d(TAG, "todoRegisterDialog: $read")
                 var temp: String? = ""
                 while (reader.readLine().also { temp = it } != null) {
                     read.append(temp)
                 }
+                val jsonResponse: JsonObject = JsonParser.parseString(read.toString()).asJsonObject
+                val choices: JsonArray = jsonResponse.getAsJsonArray("choices")
+                val firstChoice: JsonObject = choices.get(0).asJsonObject
+                val message: JsonObject = firstChoice.getAsJsonObject("message")
+                val content: String = message.get("content").asString
 
-                Log.d(TAG, "from GPT : $read")
+                withContext(Dispatchers.Main) {
+                    bindingTMD.tvResultText.text = content
+                    bindingTMD.lyResult.visibility = View.VISIBLE
+                    bindingTMD.tvResultClick.visibility = View.VISIBLE
+                    bindingTMD.lyAiText.visibility = View.GONE
+                }
             }
+        }
+        bindingTMD.lyResult.setOnClickListener{
+            bindingTMD.etTodo.setText(bindingTMD.tvResultText.text)
+            bindingTMD.lyResult.visibility=View.GONE
+            bindingTMD.tvResultClick.visibility = View.GONE
+            bindingTMD.lyAiText.visibility = View.VISIBLE
         }
 
         if(state == TODO_UPDATE) {
