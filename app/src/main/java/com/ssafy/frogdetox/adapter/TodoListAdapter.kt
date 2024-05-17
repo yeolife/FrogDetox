@@ -116,9 +116,7 @@ class TodoListAdapter(private val clickListener: ItemClickListener) :
     override fun onItemSwipe(position: Int) {}
 
     override fun onRightClick(position: Int, viewHolder: RecyclerView.ViewHolder?) {
-        todoSwipeListener?.let {
-            it.onItemDelete(currentList[position].id)
-        }
+        todoSwipeListener?.onItemDelete(currentList[position].id)
     }
 }
 
@@ -142,7 +140,7 @@ sealed class DataItem {
         override val id = item.id
     }
 
-    object Header : DataItem() {
+    data object Header : DataItem() {
         override val id = Int.MIN_VALUE.toString()
     }
 

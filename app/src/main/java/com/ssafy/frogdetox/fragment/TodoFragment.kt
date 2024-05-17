@@ -2,7 +2,9 @@ package com.ssafy.frogdetox.fragment
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -37,7 +39,8 @@ import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.dto.TodoDto
 import com.ssafy.frogdetox.util.LongToLocalDate
-import com.ssafy.frogdetox.util.alarm.AlarmFunctions
+import com.ssafy.frogdetox.util.alarm.AlarmManager
+import com.ssafy.frogdetox.util.alarm.AlarmReceiver
 import com.ssafy.frogdetox.util.displayText
 import com.ssafy.frogdetox.util.getWeekPageTitle
 import com.ssafy.frogdetox.util.todoListSwiper.SwipeController
@@ -61,6 +64,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
+
 private const val TAG = "TodoFragment_싸피"
 
 class TodoFragment : Fragment() {
@@ -71,7 +75,7 @@ class TodoFragment : Fragment() {
 
     private lateinit var todoRecycler: RecyclerView
     private lateinit var todoAdapter: TodoListAdapter
-    private lateinit var alarmFunctions: AlarmFunctions
+    private lateinit var alarmManager: AlarmManager
 
     private var selectedDate = LocalDate.now()
 
@@ -115,7 +119,7 @@ class TodoFragment : Fragment() {
             placeholder(R.drawable.ic_launcher_foreground)
         }
 
-        alarmFunctions = AlarmFunctions(mainActivity)
+        alarmManager = AlarmManager(mainActivity)
 
         observerTodoList()
 
@@ -146,7 +150,13 @@ class TodoFragment : Fragment() {
 
         todoAdapter.todoSwipeListener = object : TodoListAdapter.TodoSwipeListener {
             override fun onItemDelete(id: String) {
-                viewModel.deleteTodo(id)
+                lifecycleScope.launch {
+                    viewModel.selectTodo(id).alarmCode.let {
+                        alarmManager.cancelAlarm(it)
+                    }
+
+                    viewModel.deleteTodo(id)
+                }
             }
         }
 
@@ -207,7 +217,7 @@ class TodoFragment : Fragment() {
                 val reader = BufferedReader(InputStreamReader(connection.inputStream))
 
                 val read = StringBuilder()
-                var temp: String? = ""
+                var temp = ""
                 while (reader.readLine().also { temp = it } != null) {
                     read.append(temp)
                 }
@@ -256,62 +266,49 @@ class TodoFragment : Fragment() {
 
         val dialog = AlertDialog.Builder(requireContext())
             .setPositiveButton("확인") { dialog, _ ->
-                if(bindingTMD.etTodo.text.isBlank()){
-                    Toast.makeText(requireContext(),"todo 내용을 입력하세요.개굴!",Toast.LENGTH_SHORT).show()
-                }
-                else{
+                if(bindingTMD.etTodo.text.isBlank()) {
+                    Toast.makeText(requireContext(),"내용을 입력하세요. 개굴!",Toast.LENGTH_SHORT).show()
+                } else{
+                    todo.uId = sharedPreferencesUtil.getUId().toString()
                     todo.content = bindingTMD.etTodo.text.toString()
-
-                    if(state == TODO_INSERT) {
-                        viewModel.selectDay.value?.let {
-                            todo.regTime = it
-                        }
-                        todo.uId = sharedPreferencesUtil.getUId().toString()
-                        if(bindingTMD.switch2.isChecked){
-                            val alarmCode = registerAlarm()
-                            todo.alarmCode = alarmCode
-                            todo.isAlarm=true
-                            val hour = bindingTMD.calendarView.hour
-                            var strMinute = bindingTMD.calendarView.minute.toString()
-                            if(bindingTMD.calendarView.minute<10)
-                                strMinute = "0"+bindingTMD.calendarView.minute.toString()
-                            if(hour>12)
-                                todo.time = "⏰ PM "+(hour-12).toString()+":"+strMinute
-                            else
-                                todo.time = "⏰ AM "+bindingTMD.calendarView.hour+":"+strMinute
-                        }
-                        else{
-                            todo.isAlarm=false
-                        }
-                        viewModel.addTodo(todo)
-                    } else {
-                        if(bindingTMD.switch2.isChecked){
-                            val alarmCode = registerAlarm()
-                            todo.alarmCode = alarmCode
-                            todo.isAlarm=true
-                            val hour = bindingTMD.calendarView.hour
-                            var strMinute = bindingTMD.calendarView.minute.toString()
-                            if(bindingTMD.calendarView.minute<10)
-                                strMinute = "0"+bindingTMD.calendarView.minute.toString()
-                            if(hour>12)
-                                todo.time = "⏰ PM "+(hour-12).toString()+":"+strMinute
-                            else
-                                todo.time = "⏰ AM "+bindingTMD.calendarView.hour+":"+strMinute
-                            viewModel.updateTodoContent(todo)
-                            // TODO: 알람 수정
-                        }
-                        else{
-                            todo.isAlarm=false
-                            // TODO: 알람 삭제.
-                        }
-                        viewModel.updateTodoContent(todo)
+                    todo.isAlarm = bindingTMD.switch2.isChecked
+                    viewModel.selectDay.value?.let {
+                        todo.regTime = it
                     }
+
+                    if(todo.alarmCode != -1) {
+                        alarmManager.cancelAlarm(todo.alarmCode)
+                    }
+
+                    if(bindingTMD.switch2.isChecked){
+                        todo.alarmCode = registerAlarm()
+
+                        val hour = bindingTMD.calendarView.hour
+                        var strMinute = bindingTMD.calendarView.minute.toString()
+
+                        if(bindingTMD.calendarView.minute<10)
+                            strMinute = "0"+bindingTMD.calendarView.minute.toString()
+                        if(hour>12)
+                            todo.time = "⏰ PM "+(hour-12).toString()+":"+strMinute
+                        else
+                            todo.time = "⏰ AM "+bindingTMD.calendarView.hour+":"+strMinute
+                    } else {
+                        todo.alarmCode = -1
+                        todo.time = ""
+                    }
+
+                    if(state == TODO_INSERT)
+                        viewModel.addTodo(todo)
+                    else if(state == TODO_UPDATE)
+                        viewModel.updateTodoContent(todo)
+
                     dialog.dismiss()
                 }
             }
             .setNegativeButton("취소") { dialog, _ ->
                 dialog.dismiss()
             }
+
         bindingTMD.switch2.setOnClickListener {
             if(bindingTMD.switch2.isChecked) {
                 bindingTMD.calendarView.visibility = View.VISIBLE
@@ -339,7 +336,7 @@ class TodoFragment : Fragment() {
     }
 
     private fun setAlarm(alarmCode : Int, content : String, time : String){
-        alarmFunctions.callAlarm(time, alarmCode, content)
+        alarmManager.callAlarm(time, alarmCode, content)
     }
 
     @SuppressLint("NotifyDataSetChanged")

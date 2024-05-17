@@ -12,5 +12,5 @@ data class TodoDto(
     var time : String,
     var alarmCode : Int,
 ): Serializable {
-    constructor() : this("","","",0L,false,false,"",0)
+    constructor() : this("","","",0L,false,false,"",-1)
 }
