@@ -47,6 +47,20 @@
 
 
         </LinearLayout>
+        <TextView
+            android:id="@+id/tvloading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.13"
+            android:gravity="center"
+            android:padding="15dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@+id/saylayout"
+            app:layout_constraintEnd_toEndOf="@+id/saylayout"
+            app:layout_constraintStart_toStartOf="@+id/saylayout"
+            app:layout_constraintTop_toTopOf="@+id/saylayout"
+            />
         <LinearLayout
             android:id="@+id/lyAiText"
             android:layout_width="match_parent"

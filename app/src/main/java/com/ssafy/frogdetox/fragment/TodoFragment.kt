@@ -39,9 +39,11 @@ import com.ssafy.frogdetox.util.displayText
 import com.ssafy.frogdetox.util.getWeekPageTitle
 import com.ssafy.frogdetox.util.todoListSwiper.SwipeController
 import com.ssafy.frogdetox.viewmodel.TodoViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -155,13 +157,29 @@ class TodoFragment : Fragment() {
         bindingTMD.etTodo.setText("")
         bindingTMD.switch2.isChecked = false
         bindingTMD.calendarView.visibility = View.GONE
-        Log.d(TAG, "todoRegisterDialog: 여기까지 출력")
+        bindingTMD.lyAiText.visibility=View.VISIBLE
+        bindingTMD.lyResult.visibility=View.GONE
         //network작업 Runnable --> lambda
         bindingTMD.tvAiText.setOnClickListener { v: View? ->
             val apiKey = "sk-proj-aKurzhjxFAHM3X4c2b4aT3BlbkFJYmvUVRqAZSRrvEc99E93"
-            val prompt = "대학생이 할일 하나 '~~하기' 형식으로 추천해줘. 출력은 본론만 간결히 한줄로"
-
             GlobalScope.launch(Dispatchers.IO){
+                val job = CoroutineScope(Dispatchers.Main).launch {
+                    bindingTMD.tvloading.text="흠..."
+                    bindingTMD.lyAiText.visibility = View.GONE
+                    bindingTMD.tvloading.visibility=View.VISIBLE
+                    while (true) {
+                        bindingTMD.tvloading.text = bindingTMD.tvloading.text.toString()+" 🤔"
+                        delay(500) // 1초마다 일시 중지
+                    }
+                }
+
+                val todoString =viewModel.currentTodo()
+                Log.d(TAG, "todoRegisterDialog: $todoString")
+                val prompt = if(todoString!=""){
+                    "평소 ${todoString} 같은 일을 하는 사람에게 할 일을 '~~하기' 형식으로 비슷한 할 일 10글자 내외로 하나만 추천해줘. 출력은 본론만 간결히 한줄로"
+                }else{
+                    "일상적인 할일 하나 '~~하기' 형식으로 추천해줘. 출력은 본론만 간결히 한줄로"
+                }
                 val url = URL("https://api.openai.com/v1/chat/completions")
                 val connection = url.openConnection() as HttpURLConnection
 
@@ -190,13 +208,19 @@ class TodoFragment : Fragment() {
                 val choices: JsonArray = jsonResponse.getAsJsonArray("choices")
                 val firstChoice: JsonObject = choices.get(0).asJsonObject
                 val message: JsonObject = firstChoice.getAsJsonObject("message")
-                val content: String = message.get("content").asString
-
+                var content: String = message.get("content").asString
+                if (content.get(content.length-1)=='.'){
+                    content = content.subSequence(0,content.length-1).toString()
+                }
                 withContext(Dispatchers.Main) {
+                    job.cancel()
                     bindingTMD.tvResultText.text = content
                     bindingTMD.lyResult.visibility = View.VISIBLE
                     bindingTMD.tvResultClick.visibility = View.VISIBLE
-                    bindingTMD.lyAiText.visibility = View.GONE
+                    bindingTMD.tvloading.visibility=View.GONE
+                    bindingTMD.lyResult.isEnabled=false
+                    delay(1000) // 클릭 1초 막기
+                    bindingTMD.lyResult.isEnabled=true
                 }
             }
         }

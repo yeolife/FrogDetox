@@ -34,6 +34,9 @@ class TodoViewModel: ViewModel() {
         return mutableData
     }
 
+    suspend fun currentTodo(): String{
+        return todoRepo.getThreeTodo()
+    }
     suspend fun selectTodo(id: String): TodoDto {
         return todoRepo.todoSelect(id)
     }
