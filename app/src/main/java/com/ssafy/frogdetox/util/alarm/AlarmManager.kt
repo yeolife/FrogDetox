@@ -15,7 +15,7 @@ import java.util.Calendar
 import java.util.Date
 
 private const val TAG = "AlarmFunctions_싸피"
-class AlarmFunctions(private val context: Context) {
+class AlarmManager(private val context: Context) {
 
     private lateinit var pendingIntent: PendingIntent
     private val ioScope by lazy { CoroutineScope(Dispatchers.IO) }

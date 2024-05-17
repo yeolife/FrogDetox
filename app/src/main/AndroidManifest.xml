@@ -4,9 +4,12 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Alarm 알림(노티) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
+    <!-- Alarm 정확한 설정 -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- Alarm 재부팅 등록 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"

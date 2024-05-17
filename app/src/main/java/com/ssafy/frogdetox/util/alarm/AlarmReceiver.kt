@@ -12,6 +12,8 @@ import androidx.core.app.NotificationCompat
 import com.ssafy.frogdetox.LoginActivity
 import com.ssafy.frogdetox.MainActivity
 import com.ssafy.frogdetox.R
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class AlarmReceiver : BroadcastReceiver() {
     private lateinit var manager: NotificationManager
@@ -21,35 +23,41 @@ class AlarmReceiver : BroadcastReceiver() {
     private val CHANNEL_NAME = "Alarm"
     @SuppressLint("UnspecifiedImmutableFlag")
     override fun onReceive(context: Context?, intent: Intent?) {
-        manager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        manager.createNotificationChannel(
-            NotificationChannel(
-                CHANNEL_ID,
-                CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT
+        if(intent?.action == Intent.ACTION_BOOT_COMPLETED) {
+            // TODO 재부팅 알람 재등록
+
+        } else {
+            manager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            manager.createNotificationChannel(
+                NotificationChannel(
+                    CHANNEL_ID,
+                    CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
             )
-        )
 
-        builder = NotificationCompat.Builder(context, CHANNEL_ID)
+            builder = NotificationCompat.Builder(context, CHANNEL_ID)
 
-        val intent2 = Intent(context, LoginActivity::class.java)
-        val requestCode = intent?.extras!!.getInt("alarm_rqCode")
-        val content = intent.extras!!.getString("content")
+            val intent2 = Intent(context, LoginActivity::class.java)
+            val requestCode = intent?.extras!!.getInt("alarm_rqCode")
+            val content = intent.extras!!.getString("content")
 
-        val pendingIntent = if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
-            PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_IMMUTABLE); //Activity를 시작하는 인텐트 생성
-        }else {
-            PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_UPDATE_CURRENT);
+            val pendingIntent = if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
+                PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_IMMUTABLE); //Activity를 시작하는 인텐트 생성
+            }else {
+                PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+
+            val notification = builder.setContentTitle("청깨구리")
+                .setContentText(content)
+                .setSmallIcon(R.drawable.cutefrogicon)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build()
+
+            manager.notify(1, notification)
         }
-
-        val notification = builder.setContentTitle("청깨구리")
-            .setContentText(content)
-            .setSmallIcon(R.drawable.cutefrogicon)
-            .setAutoCancel(true)
-            .setContentIntent(pendingIntent)
-            .build()
-
-        manager.notify(1, notification)
     }
 }
