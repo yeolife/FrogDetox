@@ -217,7 +217,7 @@ class TodoFragment : Fragment() {
                 val reader = BufferedReader(InputStreamReader(connection.inputStream))
 
                 val read = StringBuilder()
-                var temp = ""
+                var temp: String? = ""
                 while (reader.readLine().also { temp = it } != null) {
                     read.append(temp)
                 }
@@ -342,6 +342,7 @@ class TodoFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     fun observerTodoList() {
         viewModel.fetchData().observe(viewLifecycleOwner, Observer {
+            it.sortBy { it.complete }
             todoAdapter.addHeaderAndSubmitList(it)
         })
     }
