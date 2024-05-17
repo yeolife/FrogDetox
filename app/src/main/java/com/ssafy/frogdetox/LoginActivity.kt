@@ -26,6 +26,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ssafy.frogdetox.databinding.ActivityLoginBinding
+import com.ssafy.frogdetox.util.SharedPreferencesUtil
 import kotlin.math.log
 
 private const val TAG = "LoginActivity_싸피"
@@ -49,6 +50,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedPreferencesUtil = SharedPreferencesUtil(applicationContext)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.btnMain.setOnClickListener { signIn() }
@@ -92,7 +94,9 @@ class LoginActivity : AppCompatActivity() {
                 putExtra("url", user.photoUrl.toString())
                 putExtra("name", user.displayName)
             }
-
+            Log.d(TAG, "updateUI: ${user.uid}")
+            sharedPreferencesUtil.putUId(user.uid)
+            Log.d(TAG, "updateUI: !!! ${sharedPreferencesUtil.getUId()}")
             Toast.makeText(this, "환영합니다, ${user.displayName}님", Toast.LENGTH_SHORT).show()
             startActivity(intent)
             finish()
@@ -123,5 +127,6 @@ class LoginActivity : AppCompatActivity() {
     companion object {
         const val ID = "ssafy_channel"
         const val NAME = "ssafy"
+        lateinit var sharedPreferencesUtil: SharedPreferencesUtil
     }
 }
