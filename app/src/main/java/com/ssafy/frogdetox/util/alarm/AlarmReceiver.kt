@@ -45,7 +45,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val notification = builder.setContentTitle("청깨구리")
             .setContentText(content)
-            .setSmallIcon(R.drawable.cutefrog)
+            .setSmallIcon(R.drawable.cutefrogicon)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()
