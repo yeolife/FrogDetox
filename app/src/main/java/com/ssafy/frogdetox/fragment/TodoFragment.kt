@@ -393,8 +393,8 @@ class TodoFragment : Fragment() {
 
         val currentMonth = YearMonth.now()
         binding.rvDate.setup(
-            currentMonth.minusMonths(5).atStartOfMonth(),
-            currentMonth.plusMonths(5).atEndOfMonth(),
+            currentMonth.minusMonths(30).atStartOfMonth(),
+            currentMonth.plusMonths(30).atEndOfMonth(),
             firstDayOfWeekFromLocale(),
         )
         binding.rvDate.scrollToDate(LocalDate.now())
