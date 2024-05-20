@@ -1,13 +1,12 @@
-package com.ssafy.frogdetox.fragment
+package com.ssafy.frogdetox.view.detox
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ssafy.frogdetox.MainActivity
-import com.ssafy.frogdetox.adapter.FragmentAdapter
+import androidx.fragment.app.Fragment
+import com.ssafy.frogdetox.view.MainActivity
 import com.ssafy.frogdetox.databinding.FragmentDetoxBinding
 
 class DetoxFragment : Fragment() {

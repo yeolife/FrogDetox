@@ -22,7 +22,7 @@
         android:theme="@style/Theme.FrogDetox"
         tools:targetApi="31">
         <activity
-            android:name=".LoginActivity"
+            android:name=".view.LoginActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,11 +31,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:exported="true">
         </activity>
 
-        <receiver android:name=".util.alarm.AlarmReceiver"
+        <receiver android:name=".common.alarm.AlarmReceiver"
             android:enabled="true"
             android:exported="false">
         </receiver>

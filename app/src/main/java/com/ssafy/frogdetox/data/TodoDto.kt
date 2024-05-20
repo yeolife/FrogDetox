@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.dto
+package com.ssafy.frogdetox.data
 
 import java.io.Serializable
 

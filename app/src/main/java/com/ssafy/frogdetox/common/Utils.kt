@@ -1,10 +1,8 @@
-package com.ssafy.frogdetox.util
+package com.ssafy.frogdetox.common
 
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.kizitonwose.calendar.core.Week
 import com.kizitonwose.calendar.core.yearMonth
 import java.time.DayOfWeek

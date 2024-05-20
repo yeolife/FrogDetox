@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.util.alarm
+package com.ssafy.frogdetox.common.alarm
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
@@ -26,7 +26,7 @@ class AlarmManager(private val context: Context) {
         val receiverIntent = Intent(context, AlarmReceiver::class.java) //리시버로 전달될 인텐트 설정
         receiverIntent.apply {
             putExtra("alarm_rqCode", alarm_code) //요청 코드를 리시버에 전달
-            putExtra("content", content) //수정_일정 제목을 리시버에 전달
+            putExtra("content", content) //수정_일정 제목을 리시버에 전달dddddd
 
             Log.d(TAG, "callAlarm: $alarm_code")
         }
