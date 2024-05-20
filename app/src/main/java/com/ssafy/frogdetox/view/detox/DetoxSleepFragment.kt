@@ -12,13 +12,12 @@ import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.common.alarm.AlarmManager
 import com.ssafy.frogdetox.databinding.DialogSleepBinding
 import com.ssafy.frogdetox.databinding.FragmentDetoxSleepBinding
+import com.ssafy.frogdetox.view.LoginActivity
 import com.ssafy.frogdetox.view.MainActivity
-import com.ssafy.frogdetox.view.todo.TodoViewModel
 
 class DetoxSleepFragment : Fragment() {
     lateinit var binding : FragmentDetoxSleepBinding
     lateinit var alarmManager: AlarmManager
-    val viewModel : DetoxViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -39,15 +38,28 @@ class DetoxSleepFragment : Fragment() {
 
         Glide.with(this)
             .load(R.drawable.sleepfrog)
-            .into(binding.imageView2)
+            .into(binding.imgFrog)
+        Glide.with(this)
+            .load(R.drawable.sleepballoon)
+            .into(binding.imgBall)
+        if(LoginActivity.sharedPreferencesUtil.getMinute()==0){
+            binding.tvSleepTime.text = LoginActivity.sharedPreferencesUtil.getHour().toString()+"시에\n자야지"
+        }
+        else
+            binding.tvSleepTime.text = LoginActivity.sharedPreferencesUtil.getHour().toString()+"시"+LoginActivity.sharedPreferencesUtil.getMinute().toString()+"분에\n자야지"
+
         binding.tvSleepTime.setOnClickListener {
             val binding2 =
                 DialogSleepBinding.inflate(LayoutInflater.from(requireContext()))
             val dialog = AlertDialog.Builder(requireContext())
                 .setPositiveButton("확인") { dialog, _ ->
-                    viewModel.setHour(binding2.calendarView.hour)
-                    viewModel.setMinute(binding2.calendarView.minute)
-                    binding.tvSleepTime.text = binding2.calendarView.hour.toString()+"시"+binding2.calendarView.minute.toString()+"분에\n자야지"
+                    LoginActivity.sharedPreferencesUtil.putHour(binding2.calendarView.hour)
+                    LoginActivity.sharedPreferencesUtil.putMinute(binding2.calendarView.minute)
+                    if(binding2.calendarView.minute==0){
+                        binding.tvSleepTime.text = binding2.calendarView.hour.toString()+"시에\n자야지"
+                    }
+                    else
+                        binding.tvSleepTime.text = binding2.calendarView.hour.toString()+"시"+binding2.calendarView.minute.toString()+"분에\n자야지"
                     dialog.dismiss()
                 }
                 .setNegativeButton("취소") { dialog, _ ->
@@ -58,7 +70,7 @@ class DetoxSleepFragment : Fragment() {
         }
         binding.switch1.setOnCheckedChangeListener { buttonView, isChecked ->
             if(isChecked){
-                alarmManager.setScreenSaverAlarm(requireContext(),viewModel.hour.value,viewModel.minute.value)
+                alarmManager.setScreenSaverAlarm(requireContext(),LoginActivity.sharedPreferencesUtil.getHour(),LoginActivity.sharedPreferencesUtil.getMinute())
             }
             else{
                 //삭제
