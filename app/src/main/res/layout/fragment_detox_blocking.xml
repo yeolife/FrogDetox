@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.detox.DetoxBlockingFragment">
+    tools:context=".view.detox.DetoxBlockingFragment"
+    android:background="@color/white">
 
-    <Button
-        android:id="@+id/btn_bloking"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="제한하기"
-        android:layout_gravity="center"/>
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_appBlocking"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_list_detox_blocking"/>
 </FrameLayout>

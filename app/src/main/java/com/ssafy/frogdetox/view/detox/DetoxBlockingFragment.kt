@@ -1,33 +1,32 @@
 package com.ssafy.frogdetox.view.detox
 
 import android.app.AppOpsManager
-import android.app.Dialog
-import android.app.Notification
 import android.content.Context
-import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.Toast
+import android.widget.LinearLayout
 import androidx.core.app.NotificationManagerCompat
-import com.ssafy.frogdetox.R
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.ssafy.frogdetox.data.AppInfoDto
 import com.ssafy.frogdetox.databinding.FragmentDetoxBlockingBinding
 import com.ssafy.frogdetox.view.MainActivity
+
 
 class DetoxBlockingFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
 
     private var _binding: FragmentDetoxBlockingBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var blockingRecycler: RecyclerView
+    private lateinit var blockingAdapter: DetoxBlockingAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +51,8 @@ class DetoxBlockingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         checkPermission()
+
+        initRecyclerView()
     }
 
     private fun checkPermission() {
@@ -72,16 +73,31 @@ class DetoxBlockingFragment : Fragment() {
         val usagePermission = mode == AppOpsManager.MODE_ALLOWED
 
         if (!overlayPermission || !notiPermission || !usagePermission) {
-            showModalBottomSheet()
+            val bottomSheet = DetoxBlockingBottomSheetFragment()
+
+            bottomSheet.show(childFragmentManager, bottomSheet.tag)
         }
     }
 
-    // Modal BottomSheet 띄우기
-    private fun showModalBottomSheet() {
-        val bottomSheet = DetoxBlockingBottomSheetFragment()
+    private fun initRecyclerView() {
+        blockingRecycler = binding.rvAppBlocking
 
-        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        blockingAdapter = DetoxBlockingAdapter(dummy)
+
+        blockingRecycler.apply {
+            adapter = blockingAdapter
+
+            setHasFixedSize(true)
+
+            addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
+
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        }
     }
-}
 
-// TODO: 백그라운드로 청깨구리가 실행 돼야 함
+    val dummy: MutableList<AppInfoDto> = arrayListOf(
+        AppInfoDto("", "Youtube", false),
+        AppInfoDto("", "KakaoTalk", true),
+        AppInfoDto("", "FrogDetox", false),
+        )
+}
