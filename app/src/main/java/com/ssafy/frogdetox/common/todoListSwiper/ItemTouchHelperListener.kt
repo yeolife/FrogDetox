@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.util.todoListSwiper
+package com.ssafy.frogdetox.common.todoListSwiper
 
 import androidx.recyclerview.widget.RecyclerView
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.DetoxSleepFragment">
+    tools:context=".view.detox.DetoxSleepFragment">
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch1"

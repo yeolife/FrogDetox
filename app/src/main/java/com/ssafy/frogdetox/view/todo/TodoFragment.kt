@@ -1,10 +1,8 @@
-package com.ssafy.frogdetox.fragment
+package com.ssafy.frogdetox.view.todo
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -29,22 +27,18 @@ import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.view.ViewContainer
 import com.kizitonwose.calendar.view.WeekDayBinder
-import com.ssafy.frogdetox.LoginActivity.Companion.sharedPreferencesUtil
-import com.ssafy.frogdetox.MainActivity
+import com.ssafy.frogdetox.view.LoginActivity
+import com.ssafy.frogdetox.view.MainActivity
 import com.ssafy.frogdetox.R
-import com.ssafy.frogdetox.adapter.ItemClickListener
-import com.ssafy.frogdetox.adapter.TodoListAdapter
+import com.ssafy.frogdetox.data.TodoDto
 import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
 import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
-import com.ssafy.frogdetox.dto.TodoDto
-import com.ssafy.frogdetox.util.LongToLocalDate
-import com.ssafy.frogdetox.util.alarm.AlarmManager
-import com.ssafy.frogdetox.util.alarm.AlarmReceiver
-import com.ssafy.frogdetox.util.displayText
-import com.ssafy.frogdetox.util.getWeekPageTitle
-import com.ssafy.frogdetox.util.todoListSwiper.SwipeController
-import com.ssafy.frogdetox.viewmodel.TodoViewModel
+import com.ssafy.frogdetox.common.LongToLocalDate
+import com.ssafy.frogdetox.common.alarm.AlarmManager
+import com.ssafy.frogdetox.common.displayText
+import com.ssafy.frogdetox.common.getWeekPageTitle
+import com.ssafy.frogdetox.common.todoListSwiper.SwipeController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -64,9 +58,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
-
 private const val TAG = "TodoFragment_싸피"
-
 class TodoFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private var _binding: FragmentTodoBinding? = null
@@ -132,9 +124,9 @@ class TodoFragment : Fragment() {
         todoRecycler = binding.rvTodo
 
         todoAdapter = TodoListAdapter(ItemClickListener { id, state ->
-            if(state == TODO_INSERT) {
+            if (state == TODO_INSERT) {
                 todoRegisterDialog(TODO_INSERT, id)
-            } else if(state == TODO_UPDATE){
+            } else if (state == TODO_UPDATE) {
                 todoRegisterDialog(TODO_UPDATE, id)
             }
         })
@@ -174,8 +166,8 @@ class TodoFragment : Fragment() {
         bindingTMD.etTodo.setText("")
         bindingTMD.switch2.isChecked = false
         bindingTMD.calendarView.visibility = View.GONE
-        bindingTMD.lyAiText.visibility=View.VISIBLE
-        bindingTMD.lyResult.visibility=View.GONE
+        bindingTMD.lyAiText.visibility= View.VISIBLE
+        bindingTMD.lyResult.visibility= View.GONE
         //network작업 Runnable --> lambda
         bindingTMD.tvAiText.setOnClickListener { v: View? ->
             val apiKey = "sk-proj-aKurzhjxFAHM3X4c2b4aT3BlbkFJYmvUVRqAZSRrvEc99E93"
@@ -183,7 +175,7 @@ class TodoFragment : Fragment() {
                 val job = CoroutineScope(Dispatchers.Main).launch {
                     bindingTMD.tvloading.text="흠..."
                     bindingTMD.lyAiText.visibility = View.GONE
-                    bindingTMD.tvloading.visibility=View.VISIBLE
+                    bindingTMD.tvloading.visibility= View.VISIBLE
                     while (true) {
                         bindingTMD.tvloading.text = bindingTMD.tvloading.text.toString()+" 🤔"
                         delay(500) // 1초마다 일시 중지
@@ -195,7 +187,7 @@ class TodoFragment : Fragment() {
                 val prompt = if(todoString!=""){
                     "평소 ${todoString} 같은 일을 하는 사람에게 할 일을 '~~하기' 형식으로 비슷한 할 일 10글자 내외로 하나만 추천해줘. 출력은 본론만 간결히 한줄로"
                 }else{
-                    "일상적인 할일 하나 '~~하기' 형식으로 추천해줘. 출력은 본론만 간결히 한줄로"
+                    "일상적인 할 일 하나 '~~하기' 형식으로 추천해줘. 출력은 본론만 간결히 한줄로"
                 }
                 val url = URL("https://api.openai.com/v1/chat/completions")
                 val connection = url.openConnection() as HttpURLConnection
@@ -234,16 +226,16 @@ class TodoFragment : Fragment() {
                     bindingTMD.tvResultText.text = content
                     bindingTMD.lyResult.visibility = View.VISIBLE
                     bindingTMD.tvResultClick.visibility = View.VISIBLE
-                    bindingTMD.tvloading.visibility=View.GONE
-                    bindingTMD.lyResult.isEnabled=false
+                    bindingTMD.tvloading.visibility = View.GONE
+                    bindingTMD.lyResult.isEnabled = false
                     delay(1000) // 클릭 1초 막기
-                    bindingTMD.lyResult.isEnabled=true
+                    bindingTMD.lyResult.isEnabled = true
                 }
             }
         }
         bindingTMD.lyResult.setOnClickListener{
             bindingTMD.etTodo.setText(bindingTMD.tvResultText.text)
-            bindingTMD.lyResult.visibility=View.GONE
+            bindingTMD.lyResult.visibility= View.GONE
             bindingTMD.tvResultClick.visibility = View.GONE
             bindingTMD.lyAiText.visibility = View.VISIBLE
         }
@@ -267,9 +259,9 @@ class TodoFragment : Fragment() {
         val dialog = AlertDialog.Builder(requireContext())
             .setPositiveButton("확인") { dialog, _ ->
                 if(bindingTMD.etTodo.text.isBlank()) {
-                    Toast.makeText(requireContext(),"내용을 입력하세요. 개굴!",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "내용을 입력하세요. 개굴!", Toast.LENGTH_SHORT).show()
                 } else{
-                    todo.uId = sharedPreferencesUtil.getUId().toString()
+                    todo.uId = LoginActivity.sharedPreferencesUtil.getUId().toString()
                     todo.content = bindingTMD.etTodo.text.toString()
                     todo.isAlarm = bindingTMD.switch2.isChecked
                     viewModel.selectDay.value?.let {
@@ -413,4 +405,3 @@ class TodoFragment : Fragment() {
             }
     }
 }
-

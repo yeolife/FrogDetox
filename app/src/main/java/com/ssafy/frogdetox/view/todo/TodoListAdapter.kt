@@ -1,15 +1,14 @@
-package com.ssafy.frogdetox.adapter
+package com.ssafy.frogdetox.view.todo
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.ssafy.frogdetox.data.TodoDto
 import com.ssafy.frogdetox.databinding.ItemHeaderTodoBinding
 import com.ssafy.frogdetox.databinding.ItemListTodoBinding
-import com.ssafy.frogdetox.dto.TodoDto
-import com.ssafy.frogdetox.fragment.TodoFragment
-import com.ssafy.frogdetox.util.todoListSwiper.ItemTouchHelperListener
+import com.ssafy.frogdetox.common.todoListSwiper.ItemTouchHelperListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

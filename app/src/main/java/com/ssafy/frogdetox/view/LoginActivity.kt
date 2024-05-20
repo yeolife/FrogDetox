@@ -1,8 +1,7 @@
-package com.ssafy.frogdetox
+package com.ssafy.frogdetox.view
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -18,10 +17,11 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.ssafy.frogdetox.R
+import com.ssafy.frogdetox.TAG
 import com.ssafy.frogdetox.databinding.ActivityLoginBinding
-import com.ssafy.frogdetox.util.SharedPreferencesUtil
+import com.ssafy.frogdetox.common.SharedPreferencesUtil
 
-private const val TAG = "LoginActivity_싸피"
 class LoginActivity : AppCompatActivity() {
     lateinit var binding : ActivityLoginBinding
 
@@ -111,7 +111,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun createNotificationChannel() {
         val importance = NotificationManager.IMPORTANCE_HIGH
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         manager.createNotificationChannel(NotificationChannel(ID, NAME, importance))
     }
 

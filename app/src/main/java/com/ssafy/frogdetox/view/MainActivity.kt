@@ -1,14 +1,13 @@
-package com.ssafy.frogdetox
+package com.ssafy.frogdetox.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.databinding.ActivityMainBinding
-import com.ssafy.frogdetox.fragment.DetoxFragment
-import com.ssafy.frogdetox.fragment.SettingFragment
-import com.ssafy.frogdetox.fragment.TodoFragment
+import com.ssafy.frogdetox.view.detox.DetoxFragment
+import com.ssafy.frogdetox.view.setting.SettingFragment
+import com.ssafy.frogdetox.view.todo.TodoFragment
 
-private const val TAG = "MainActivity_싸피"
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
@@ -20,13 +19,25 @@ class MainActivity : AppCompatActivity() {
 
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.mainFrameLayout, TodoFragment.newInstance(intent.getStringExtra("url"),intent.getStringExtra("name")))
+            .replace(
+                R.id.mainFrameLayout,
+                TodoFragment.newInstance(
+                    intent.getStringExtra("url"),
+                    intent.getStringExtra("name")
+                )
+            )
             .commit()
 
         binding.bottomNavbar.setOnItemSelectedListener {
             val transaction = supportFragmentManager.beginTransaction()
             when(it.itemId){
-                R.id.todoTab -> transaction.replace(R.id.mainFrameLayout, TodoFragment.newInstance(intent.getStringExtra("url"),intent.getStringExtra("name")))
+                R.id.todoTab -> transaction.replace(
+                    R.id.mainFrameLayout,
+                    TodoFragment.newInstance(
+                        intent.getStringExtra("url"),
+                        intent.getStringExtra("name")
+                    )
+                )
                 R.id.detoxTab -> transaction.replace(R.id.mainFrameLayout, DetoxFragment())
                 R.id.settingTab -> transaction.replace(R.id.mainFrameLayout, SettingFragment())
             }

@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.network
+package com.ssafy.frogdetox.domain
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -6,23 +6,17 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.getValue
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.ssafy.frogdetox.LoginActivity.Companion.sharedPreferencesUtil
-import com.ssafy.frogdetox.dto.TodoDto
+import com.ssafy.frogdetox.view.LoginActivity
+import com.ssafy.frogdetox.data.TodoDto
+import com.ssafy.frogdetox.common.LongToLocalDate
 import kotlinx.coroutines.CompletableDeferred
-import com.ssafy.frogdetox.util.LongToLocalDate
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import java.util.concurrent.CountDownLatch
 
-
-private const val TAG = "TodoRepository_싸피"
 class TodoRepository {
     private val myRef = Firebase.database.getReference("Todo")
 
@@ -34,13 +28,13 @@ class TodoRepository {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 val selectvalue = LongToLocalDate(selectday)
-                lateinit var listvalue:LocalDate
+                lateinit var listvalue: LocalDate
                 if(snapshot.exists()){
                     listData.clear()
                     for(curSnapshot in snapshot.children){
                         val getData = curSnapshot.getValue(TodoDto::class.java)
                         if (getData != null) {
-                            if(getData.uId==sharedPreferencesUtil.getUId()){
+                            if(getData.uId== LoginActivity.sharedPreferencesUtil.getUId()){
                                 listvalue = LongToLocalDate(getData.regTime)
                                 if(selectvalue==listvalue)
                                     listData.add(getData)
@@ -71,7 +65,7 @@ class TodoRepository {
                         if (count >= 6) break
                         val getData = curSnapshot.getValue(TodoDto::class.java)
                         if (getData != null) {
-                            if (getData.uId == sharedPreferencesUtil.getUId()) {
+                            if (getData.uId == LoginActivity.sharedPreferencesUtil.getUId()) {
                                 result += getData.content + ", "
                                 count++
                             }
@@ -101,7 +95,7 @@ class TodoRepository {
                     todo = data
                 }
                 latch.countDown()
-            }.addOnFailureListener{
+            }.addOnFailureListener {
                 Log.e("firebase", "Error getting data", it)
                 latch.countDown()
             }

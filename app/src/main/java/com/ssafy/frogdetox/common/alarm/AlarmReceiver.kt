@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.util.alarm
+package com.ssafy.frogdetox.common.alarm
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
@@ -9,11 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.ssafy.frogdetox.LoginActivity
-import com.ssafy.frogdetox.MainActivity
+import com.ssafy.frogdetox.view.LoginActivity
 import com.ssafy.frogdetox.R
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
 class AlarmReceiver : BroadcastReceiver() {
     private lateinit var manager: NotificationManager

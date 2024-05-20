@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.util.alarm
+package com.ssafy.frogdetox.common.alarm
 
 import android.app.Service
 import android.content.Intent

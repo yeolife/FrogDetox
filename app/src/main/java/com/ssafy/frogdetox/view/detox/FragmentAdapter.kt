@@ -1,12 +1,8 @@
-package com.ssafy.frogdetox.adapter
+package com.ssafy.frogdetox.view.detox
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.ssafy.frogdetox.fragment.DetoxSleepFragment
-import com.ssafy.frogdetox.fragment.DetoxToggleFragment
 
 class FragmentAdapter (fragmentActivity : FragmentActivity): FragmentStateAdapter(fragmentActivity) {
     private val fragments = listOf<Fragment>(DetoxSleepFragment(), DetoxToggleFragment())

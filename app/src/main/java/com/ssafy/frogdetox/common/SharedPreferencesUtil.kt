@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.util
+package com.ssafy.frogdetox.common
 
 import android.content.Context
 import android.content.SharedPreferences

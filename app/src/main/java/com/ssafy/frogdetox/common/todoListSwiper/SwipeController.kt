@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.util.todoListSwiper
+package com.ssafy.frogdetox.common.todoListSwiper
 
 import android.annotation.SuppressLint
 import android.graphics.Canvas
@@ -9,7 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.ssafy.frogdetox.adapter.TodoListAdapter
+import com.ssafy.frogdetox.view.todo.TodoListAdapter
 
 class SwipeController() : ItemTouchHelper.Callback() {
 

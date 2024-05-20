@@ -7,10 +7,10 @@
         <import type="android.view.View" />
         <variable
             name="todo"
-            type="com.ssafy.frogdetox.dto.TodoDto" />
+            type="com.ssafy.frogdetox.data.TodoDto" />
         <variable
             name="clickListener"
-            type="com.ssafy.frogdetox.adapter.ItemClickListener" />
+            type="com.ssafy.frogdetox.view.todo.ItemClickListener" />
     </data>
 
     <LinearLayout

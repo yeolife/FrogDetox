@@ -1,15 +1,14 @@
-package com.ssafy.frogdetox.viewmodel
+package com.ssafy.frogdetox.view.todo
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ssafy.frogdetox.dto.TodoDto
-import com.ssafy.frogdetox.network.TodoRepository
+import com.ssafy.frogdetox.data.TodoDto
+import com.ssafy.frogdetox.domain.TodoRepository
 import java.time.LocalDate
 import java.time.ZoneOffset
 
-private const val TAG = "TodoViewModel_싸피"
 class TodoViewModel: ViewModel() {
     private val todoRepo = TodoRepository()
 
@@ -23,12 +22,12 @@ class TodoViewModel: ViewModel() {
         _selectDay.value = day
     }
 
-    fun fetchData(): LiveData<MutableList<TodoDto>>{
+    fun fetchData(): LiveData<MutableList<TodoDto>> {
         val mutableData = MutableLiveData<MutableList<TodoDto>>()
         selectDay.observeForever {
             todoRepo.getData(it).observeForever {
                 mutableData.value = it
-                Log.d(TAG, "fetchData: $it")
+                Log.d(com.ssafy.frogdetox.viewmodel.TAG, "fetchData: $it")
             }
         }
         return mutableData
