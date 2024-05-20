@@ -18,10 +18,10 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ssafy.frogdetox.R
-import com.ssafy.frogdetox.TAG
 import com.ssafy.frogdetox.databinding.ActivityLoginBinding
 import com.ssafy.frogdetox.common.SharedPreferencesUtil
 
+private const val TAG = "LoginActivity_싸피"
 class LoginActivity : AppCompatActivity() {
     lateinit var binding : ActivityLoginBinding
 

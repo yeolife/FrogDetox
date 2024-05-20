@@ -27,7 +27,6 @@ class TodoViewModel: ViewModel() {
         selectDay.observeForever {
             todoRepo.getData(it).observeForever {
                 mutableData.value = it
-                Log.d(com.ssafy.frogdetox.viewmodel.TAG, "fetchData: $it")
             }
         }
         return mutableData

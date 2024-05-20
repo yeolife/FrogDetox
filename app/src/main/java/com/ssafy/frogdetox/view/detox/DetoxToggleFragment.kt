@@ -6,14 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.ssafy.frogdetox.R
-import com.ssafy.frogdetox.setting.ARG_PARAM1
-import com.ssafy.frogdetox.setting.ARG_PARAM2
 
 /**
  * A simple [Fragment] subclass.
  * Use the [DetoxToggleFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM2 = "param2"
+
 class DetoxToggleFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
