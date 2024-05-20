@@ -65,12 +65,20 @@ class AlarmManager(private val context: Context) {
         alarmManager.cancel(pendingIntent)
     }
 
+    fun cancelScreenSaverAlarm(){
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, ScreenSaverReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context,100001,intent,
+            PendingIntent.FLAG_IMMUTABLE)
+        alarmManager.cancel(pendingIntent)
+    }
+
     @SuppressLint("ScheduleExactAlarm")
     fun setScreenSaverAlarm(context: Context,hour: Int?, minute : Int?){
         Log.d(TAG, "set hour $hour, minute $minute.")
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, ScreenSaverReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(context,0,intent,
+        val pendingIntent = PendingIntent.getBroadcast(context,100001,intent,
             PendingIntent.FLAG_IMMUTABLE)
         val calendar = Calendar.getInstance().apply {
             if (hour != null) {

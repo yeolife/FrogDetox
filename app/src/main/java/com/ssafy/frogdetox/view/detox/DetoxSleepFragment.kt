@@ -1,5 +1,6 @@
 package com.ssafy.frogdetox.view.detox
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -31,6 +32,7 @@ class DetoxSleepFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -68,12 +70,13 @@ class DetoxSleepFragment : Fragment() {
             dialog.setView(binding2.root)
             dialog.show()
         }
-        binding.switch1.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switch1.setOnCheckedChangeListener { _, isChecked ->
             if(isChecked){
                 alarmManager.setScreenSaverAlarm(requireContext(),LoginActivity.sharedPreferencesUtil.getHour(),LoginActivity.sharedPreferencesUtil.getMinute())
             }
             else{
                 //삭제
+                alarmManager.cancelScreenSaverAlarm()
             }
         }
     }

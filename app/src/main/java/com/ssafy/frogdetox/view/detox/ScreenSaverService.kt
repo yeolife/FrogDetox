@@ -159,8 +159,8 @@ class ScreenSaverService : Service() {
                 val newx = event.values[0]
                 val newy = event.values[1]
                 imgList.map {
-                    it.imageView.x -= newx * it.speed
-                    it.imageView.y += newy * it.speed
+                    it.imageView.x -=  it.speed*newx
+                    it.imageView.y +=  it.speed*newy
                     if (it.imageView.x < 0) {
                         it.imageView.x = 0f
                     }
@@ -169,7 +169,7 @@ class ScreenSaverService : Service() {
                     if (it.imageView.y < 0) {
                         it.imageView.y = 0f
                     }
-                    if (it.imageView.y > (realHeight - 405 - SIZE))
+                    if (it.imageView.y > (realHeight - SIZE))
                         it.imageView.y = 0f//(realHeight-405-SIZE).toFloat()
                 }
             }
