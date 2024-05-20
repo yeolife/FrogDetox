@@ -8,9 +8,4 @@
     </style>
 
     <style name="Theme.FrogDetox" parent="Base.Theme.FrogDetox" />
-
-    <style name="DetoxPermissionDialogAnimation">
-        <item name="android:windowEnterAnimation">@anim/detox_slide_in_bottom</item>
-        <item name="android:windowExitAnimation">@anim/detox_slide_out_bottom</item>
-    </style>
 </resources>
