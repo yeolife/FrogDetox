@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
-        app:dotsColor="@color/LightGreen"
+        app:dotsColor="#526B94"
         app:dotsCornerRadius="8dp"
         app:dotsSize="16dp"
         app:dotsSpacing="4dp"
@@ -29,6 +29,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:progressMode="true"
-        app:selectedDotColor="@color/LightGreen" />
+        app:selectedDotColor="#526B94" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

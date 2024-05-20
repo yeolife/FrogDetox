@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,13 @@ class ScreenSaverActivity : AppCompatActivity() {
                 startScreenSaver()
             } else {
                 // 권한이 거부됨
+                Toast.makeText(this,"권한이 없어 실행시킬 수 없습니다. 설정에서 권한을 부여하세요.",Toast.LENGTH_SHORT).show()
+                // 설정 액티비티로 이동
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:$packageName")
+                )
+                overlayPermissionLauncher.launch(intent)
             }
         }
 
