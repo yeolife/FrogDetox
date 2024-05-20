@@ -2,9 +2,15 @@ package com.ssafy.frogdetox.view.detox
 
 import android.app.AppOpsManager
 import android.content.Context
+import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import android.health.connect.datatypes.AppInfo
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +24,7 @@ import com.ssafy.frogdetox.data.AppInfoDto
 import com.ssafy.frogdetox.databinding.FragmentDetoxBlockingBinding
 import com.ssafy.frogdetox.view.MainActivity
 
-
+private const val TAG = "DetoxBlockingFragment"
 class DetoxBlockingFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
 
@@ -82,7 +88,9 @@ class DetoxBlockingFragment : Fragment() {
     private fun initRecyclerView() {
         blockingRecycler = binding.rvAppBlocking
 
-        blockingAdapter = DetoxBlockingAdapter(dummy)
+        val packageManager = mainActivity.packageManager
+        val installedApps = getInstalledApps(packageManager)
+        blockingAdapter = DetoxBlockingAdapter(installedApps)
 
         blockingRecycler.apply {
             adapter = blockingAdapter
@@ -95,9 +103,22 @@ class DetoxBlockingFragment : Fragment() {
         }
     }
 
-    val dummy: MutableList<AppInfoDto> = arrayListOf(
-        AppInfoDto("", "Youtube", false),
-        AppInfoDto("", "KakaoTalk", true),
-        AppInfoDto("", "FrogDetox", false),
-        )
+    private fun getInstalledApps(packageManager: PackageManager): List<AppInfoDto> {
+        val intent = Intent(Intent.ACTION_MAIN, null)
+        intent.addCategory(Intent.CATEGORY_LAUNCHER)
+
+        val apps = packageManager.queryIntentActivities(intent, 0)
+        return apps.map { app ->
+            AppInfoDto(
+                appTitle = app.loadLabel(packageManager).toString(),
+                appIcon = app.loadIcon(packageManager),
+                appPackage = app.activityInfo.packageName,
+                appBlockingState = false
+            )
+        }
+    }
 }
+
+// 1번 이 목록들로 화면 위에 화면 띄우게 설정하기
+// sharedpreference로 패키지명을 키로하고 boolean값을 저장해놓는다.
+// 앱을 켤때마다 shared 초기화하고 다시 저장

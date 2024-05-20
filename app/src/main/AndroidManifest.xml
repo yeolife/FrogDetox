@@ -60,4 +60,12 @@
         <service android:name=".view.detox.ScreenSaverService"/>
     </application>
 
+    <!-- 앱의 목록을 가져오기 위한 쿼리 -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="image/jpeg" />
+        </intent>
+    </queries>
+
 </manifest>
