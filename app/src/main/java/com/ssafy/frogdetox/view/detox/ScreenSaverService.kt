@@ -31,7 +31,7 @@ private const val TAG = "ScreenSaverService_싸피"
 
 data class ImageViewData(
     val imageView: ImageView,
-    val speed : Float = (Random().nextInt(5)+2).toFloat()
+    val speed : Float = (Random().nextInt(2)+2).toFloat()
 )
 class ScreenSaverService : Service() {
     private lateinit var windowManager: WindowManager
@@ -55,9 +55,10 @@ class ScreenSaverService : Service() {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
-            setBackgroundResource(android.R.color.transparent)
+            setBackgroundColor(Color.TRANSPARENT)
             orientation = LinearLayout.VERTICAL
         }
+
         // TextView 생성 및 추가
         val textView = TextView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
