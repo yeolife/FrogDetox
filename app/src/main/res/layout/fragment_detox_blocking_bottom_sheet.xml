@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet_layout"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:background="@drawable/detox_bottom_sheet"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="50dp"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="16dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginVertical="24dp"
+            android:text="앱 차단 기능을 위해서 권한을 허용해주세요" />
+
+        <LinearLayout
+            android:background="@drawable/detox_permission_modal_border_layout"
+            android:id="@+id/ll_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="24dp"
+            android:layout_marginBottom="12dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="다른 앱 위에 표시"
+                android:textStyle="bold"
+                android:layout_margin="10dp"
+                android:textSize="16sp" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_arrow_forward_ios_24"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/detox_permission_modal_border_layout"
+            android:id="@+id/ll_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="24dp"
+            android:layout_marginBottom="12dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="알림"
+                android:textStyle="bold"
+                android:layout_margin="10dp"
+                android:textSize="16sp" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_arrow_forward_ios_24"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/detox_permission_modal_border_layout"
+            android:id="@+id/ll_usageInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="24dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="사용정보 접근"
+                android:textStyle="bold"
+                android:layout_margin="10dp"
+                android:textSize="16sp" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_arrow_forward_ios_24"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
