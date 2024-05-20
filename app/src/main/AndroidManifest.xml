@@ -4,12 +4,17 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Alarm 알림(노티) -->
+    <!-- 알림 -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Alarm 정확한 설정 -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <!-- Alarm 재부팅 등록 -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- 다른 앱 위에 그리기 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- 사용정보 확인 -->
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:allowBackup="true"

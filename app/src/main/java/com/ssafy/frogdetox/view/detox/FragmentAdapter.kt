@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class FragmentAdapter (fragmentActivity : FragmentActivity): FragmentStateAdapter(fragmentActivity) {
-    private val fragments = listOf<Fragment>(DetoxSleepFragment(), DetoxToggleFragment())
+    private val fragments = listOf<Fragment>(DetoxSleepFragment(), DetoxBlockingFragment())
 
     //tab의 개수만큼 return
     override fun getItemCount(): Int = 2
