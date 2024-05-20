@@ -56,6 +56,7 @@ dependencies {
 
     // 이미지 파싱
     implementation ("com.github.bumptech.glide:glide:4.11.0")
+    testImplementation("junit:junit:4.12")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
     
     // 웹 이미지 URL 보여줌

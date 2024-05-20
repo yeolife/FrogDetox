@@ -5,5 +5,6 @@
     <color name="LightGreen">#90EE90</color>
     <color name="MintGreen">#98FF98</color>
     <color name="LimeGreen">#32CD32</color>
+    <color name ="NightBlue">#7e81a2</color>
     <color name="todoListDeleteColor">#BE4941</color>
 </resources>

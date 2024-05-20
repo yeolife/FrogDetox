@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.detox.DetoxSleepFragment">
+    tools:context=".view.detox.DetoxSleepFragment"
+    android:background="@color/NightBlue">
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switch1"
@@ -30,11 +31,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@drawable/sleepfrog" />
 
     <TextView
         android:id="@+id/tvSleepTime"
-        android:layout_width="220dp"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
         android:padding="60dp"

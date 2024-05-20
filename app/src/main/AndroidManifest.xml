@@ -15,6 +15,8 @@
     <!-- 사용정보 확인 -->
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
+    <!-- Alarm 화면보호기 설정 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -26,6 +28,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FrogDetox"
         tools:targetApi="31">
+        <activity
+            android:name=".view.detox.ScreenSaverActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:exported="false" />
         <activity
             android:name=".view.LoginActivity"
             android:exported="true" >
@@ -40,11 +46,18 @@
             android:exported="true">
         </activity>
 
-        <receiver android:name=".common.alarm.AlarmReceiver"
+        <receiver
+            android:name=".common.alarm.AlarmReceiver"
             android:enabled="true"
             android:exported="false">
         </receiver>
 
+        <receiver
+            android:name=".common.alarm.ScreenSaverReceiver"
+            android:enabled="true"
+            android:exported="false">
+        </receiver>
+        <service android:name=".view.detox.ScreenSaverService"/>
     </application>
 
 </manifest>
