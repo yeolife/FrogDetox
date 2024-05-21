@@ -1,6 +1,7 @@
 package com.ssafy.frogdetox.view.detox
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -82,7 +83,7 @@ class ScreenSaverService : Service() {
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                     or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FORMAT_CHANGED
         )
@@ -96,12 +97,12 @@ class ScreenSaverService : Service() {
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
     }
     var frogcount=0
-    var deletecount=10
+    var deletecount=1
     @SuppressLint("ClickableViewAccessibility")
     private fun initTouchListener() {
-        overlayView.setOnTouchListener { v, event ->
+        overlayView.setOnTouchListener { _, event ->
             if(event.action == MotionEvent.ACTION_DOWN){
-                if(frogcount<10){
+                if(frogcount<1){
                     setImageView(event.x,event.y)
                     frogcount++
                 }
@@ -121,7 +122,7 @@ class ScreenSaverService : Service() {
             overlayView.addView(this)
             imgList.add(ImageViewData(this))
             setOnClickListener {
-                if(frogcount>=10){
+                if(frogcount>=1){
                     imgList.remove(ImageViewData(this))
                     overlayView.removeView(this)
                     deletecount--
@@ -129,14 +130,25 @@ class ScreenSaverService : Service() {
                 if(deletecount==0){
                     sensorManager.unregisterListener(listener)
                     windowManager.removeView(overlayView)
-                    startActivity(Intent(this@ScreenSaverService, LoginActivity::class.java).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    })
+                    val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+                    val taskInfo = activityManager.appTasks
+                        .filter { it.taskInfo != null }
+                        .map { it.taskInfo }
+                        .firstOrNull()
+
+                    val topActivity = taskInfo?.topActivity?.className ?: "No top activity found"
+                    Log.d("TopActivity_싸피", "Top Activity: $topActivity")
+                    val loginIntent = Intent(this@ScreenSaverService, LoginActivity::class.java).apply {
+                        putExtra("state",1)
+                        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    startActivity(loginIntent)
                     stopSelf()
                 }
             }
         }
     }
+
     companion object{
         private const val SIZE = 150
         private const val BIGSIZE = 250
