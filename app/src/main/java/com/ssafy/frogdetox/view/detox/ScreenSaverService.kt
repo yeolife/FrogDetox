@@ -21,18 +21,16 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.view.LoginActivity
-import com.ssafy.frogdetox.view.MainActivity
 import java.util.Random
 
 private const val TAG = "ScreenSaverService_싸피"
 
 data class ImageViewData(
     val imageView: ImageView,
-    val speed : Float = (Random().nextInt(2)+2).toFloat()
+    val speed : Float = 3.toFloat()
 )
 class ScreenSaverService : Service() {
     private lateinit var windowManager: WindowManager
@@ -97,17 +95,14 @@ class ScreenSaverService : Service() {
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
     }
     var frogcount=0
-    var deletecount=1
+    var deletecount=10
     @SuppressLint("ClickableViewAccessibility")
     private fun initTouchListener() {
-        overlayView.setOnTouchListener { _, event ->
-            if(event.action == MotionEvent.ACTION_DOWN){
-                if(frogcount<1){
-                    setImageView(event.x,event.y)
-                    frogcount++
-                }
-            }
-            true
+        for (i in 0..9) {
+            val x = (Random().nextInt(realWidth - if (frogcount % 2 == 0) BIGSIZE else SIZE)+if (frogcount % 2 == 0) BIGSIZE/2 else SIZE/2).toFloat()
+            val y = (Random().nextInt(realHeight - 200 - if (frogcount % 2 == 0) BIGSIZE else SIZE)+if (frogcount % 2 == 0) BIGSIZE/2 else SIZE/2).toFloat()
+            setImageView(x, y)
+            frogcount++
         }
     }
     private var imgList = arrayListOf<ImageViewData>()
@@ -117,12 +112,12 @@ class ScreenSaverService : Service() {
             setBackgroundResource(if(frogcount%2==0) R.drawable.gosleepfrog else R.drawable.cutefrogicon)
             layoutParams= if(frogcount%2==0) ViewGroup.LayoutParams(BIGSIZE,
                 BIGSIZE) else ViewGroup.LayoutParams(SIZE,SIZE)
-            this.x = if(frogcount%2==0) x - BIGSIZE/2 else x - SIZE/2
-            this.y = if(frogcount%2==0) y - BIGSIZE/2 else y - SIZE/2
+            this.x = x
+            this.y = y
             overlayView.addView(this)
             imgList.add(ImageViewData(this))
             setOnClickListener {
-                if(frogcount>=1){
+                if(frogcount>=10){
                     imgList.remove(ImageViewData(this))
                     overlayView.removeView(this)
                     deletecount--
@@ -139,7 +134,6 @@ class ScreenSaverService : Service() {
                     val topActivity = taskInfo?.topActivity?.className ?: "No top activity found"
                     Log.d("TopActivity_싸피", "Top Activity: $topActivity")
                     val loginIntent = Intent(this@ScreenSaverService, LoginActivity::class.java).apply {
-                        putExtra("state",1)
                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                     }
                     startActivity(loginIntent)
@@ -168,11 +162,8 @@ class ScreenSaverService : Service() {
     private val listener = object :SensorEventListener {
         override fun onSensorChanged(event: SensorEvent?) {
             event?.let {
-                val newx = event.values[0]
-                val newy = event.values[1]
                 imgList.map {
-                    it.imageView.x -=  it.speed*newx
-                    it.imageView.y +=  it.speed*newy
+                    it.imageView.y +=  it.speed
                     if (it.imageView.x < 0) {
                         it.imageView.x = 0f
                     }
