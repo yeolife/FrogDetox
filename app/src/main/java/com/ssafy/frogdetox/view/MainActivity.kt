@@ -20,16 +20,19 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-
-        supportFragmentManager.beginTransaction()
-            .replace(
-                R.id.mainFrameLayout,
-                TodoFragment.newInstance(
+        if(intent.getIntExtra("state",2)==1){
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.mainFrameLayout,DetoxFragment())
+                .commit()
+        }
+        else{
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.mainFrameLayout, TodoFragment.newInstance(
                     intent.getStringExtra("url"),
                     intent.getStringExtra("name")
-                )
-            )
-            .commit()
+                ))
+                .commit()
+        }
 
         binding.bottomNavbar.setOnItemSelectedListener {
             val transaction = supportFragmentManager.beginTransaction()
