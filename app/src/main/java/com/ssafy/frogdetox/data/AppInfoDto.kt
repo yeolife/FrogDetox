@@ -6,5 +6,4 @@ data class AppInfoDto (
     val appIcon: Drawable,
     val appTitle: String,
     val appPackage: String,
-    val appBlockingState: Boolean
 )

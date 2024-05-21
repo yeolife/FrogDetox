@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.frogdetox.common.Permission.isAccessibilityServiceEnabled
+import com.ssafy.frogdetox.common.SharedPreferencesManager.setAppState
 import com.ssafy.frogdetox.data.AppInfoDto
 import com.ssafy.frogdetox.databinding.FragmentDetoxBlockingBinding
 import com.ssafy.frogdetox.view.MainActivity
@@ -75,6 +76,7 @@ class DetoxBlockingFragment : Fragment() {
 
         val packageManager = mainActivity.packageManager
         val installedApps = getInstalledApps(packageManager)
+
         blockingAdapter = DetoxBlockingAdapter(installedApps)
 
         blockingRecycler.apply {
@@ -97,9 +99,7 @@ class DetoxBlockingFragment : Fragment() {
             AppInfoDto(
                 appTitle = app.loadLabel(packageManager).toString(),
                 appIcon = app.loadIcon(packageManager),
-                appPackage = app.activityInfo.packageName,
-                appBlockingState = false
-            )
+                appPackage = app.activityInfo.packageName)
         }
     }
 }
