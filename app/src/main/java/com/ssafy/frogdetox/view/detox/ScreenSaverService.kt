@@ -14,8 +14,7 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
@@ -30,7 +29,7 @@ private const val TAG = "ScreenSaverService_싸피"
 
 data class ImageViewData(
     val imageView: ImageView,
-    val speed : Float = 3.toFloat()
+    val speed : Float = 5.toFloat()
 )
 class ScreenSaverService : Service() {
     private lateinit var windowManager: WindowManager
@@ -94,35 +93,31 @@ class ScreenSaverService : Service() {
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
     }
-    var frogcount=0
     var deletecount=10
+
     @SuppressLint("ClickableViewAccessibility")
     private fun initTouchListener() {
         for (i in 0..9) {
-            val x = (Random().nextInt(realWidth - if (frogcount % 2 == 0) BIGSIZE else SIZE)+if (frogcount % 2 == 0) BIGSIZE/2 else SIZE/2).toFloat()
-            val y = (Random().nextInt(realHeight - 200 - if (frogcount % 2 == 0) BIGSIZE else SIZE)+if (frogcount % 2 == 0) BIGSIZE/2 else SIZE/2).toFloat()
-            setImageView(x, y)
-            frogcount++
+            val x = (Random().nextInt(realWidth - if (i % 2 == 0) BIGSIZE else SIZE)+if (i % 2 == 0) BIGSIZE/2 else SIZE/2).toFloat()
+            val y = (Random().nextInt(realHeight - 200 - if (i % 2 == 0) BIGSIZE else SIZE)+if (i % 2 == 0) BIGSIZE/2 else SIZE/2).toFloat()
+            setImageView(x, y, i)
         }
     }
     private var imgList = arrayListOf<ImageViewData>()
-    private fun setImageView(x: Float, y: Float) {
+    private fun setImageView(x: Float, y: Float, idx: Int) {
         Log.d(TAG, "setImageView: $x $y 에 생성됨.")
         ImageView(this).apply {
-            setBackgroundResource(if(frogcount%2==0) R.drawable.gosleepfrog else R.drawable.cutefrogicon)
-            layoutParams= if(frogcount%2==0) ViewGroup.LayoutParams(BIGSIZE,
+            setBackgroundResource(if(idx%2==0) R.drawable.gosleepfrog else R.drawable.cutefrogicon)
+            layoutParams= if(idx%2==0) ViewGroup.LayoutParams(BIGSIZE,
                 BIGSIZE) else ViewGroup.LayoutParams(SIZE,SIZE)
             this.x = x
             this.y = y
             overlayView.addView(this)
             imgList.add(ImageViewData(this))
             setOnClickListener {
-                if(frogcount>=10){
-                    imgList.remove(ImageViewData(this))
-                    overlayView.removeView(this)
-                    deletecount--
-                }
-                if(deletecount==0){
+                it.visibility = View.INVISIBLE
+                deletecount--
+                if(deletecount <= 0) {
                     sensorManager.unregisterListener(listener)
                     windowManager.removeView(overlayView)
                     val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -161,20 +156,18 @@ class ScreenSaverService : Service() {
     }
     private val listener = object :SensorEventListener {
         override fun onSensorChanged(event: SensorEvent?) {
-            event?.let {
-                imgList.map {
-                    it.imageView.y +=  it.speed
-                    if (it.imageView.x < 0) {
-                        it.imageView.x = 0f
-                    }
-                    if (it.imageView.x > (realWidth - SIZE))
-                        it.imageView.x = (realWidth - SIZE).toFloat()
-                    if (it.imageView.y < 0) {
-                        it.imageView.y = 0f
-                    }
-                    if (it.imageView.y > (realHeight - SIZE))
-                        it.imageView.y = 0f//(realHeight-405-SIZE).toFloat()
+            imgList.map {
+                it.imageView.y += it.speed
+                if (it.imageView.x < 0) {
+                    it.imageView.x = 0f
                 }
+                if (it.imageView.x > (realWidth - SIZE))
+                    it.imageView.x = (realWidth - SIZE).toFloat()
+                if (it.imageView.y < 0) {
+                    it.imageView.y = 0f
+                }
+                if (it.imageView.y > (realHeight - SIZE))
+                    it.imageView.y = 0f//(realHeight-405-SIZE).toFloat()
             }
         }
 
