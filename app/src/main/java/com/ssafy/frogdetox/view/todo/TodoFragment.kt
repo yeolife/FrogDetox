@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -257,11 +258,19 @@ class TodoFragment : Fragment() {
             }
         }
 
-        val dialog = AlertDialog.Builder(requireContext())
-            .setPositiveButton("확인") { dialog, _ ->
-                if(bindingTMD.etTodo.text.isBlank()) {
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+        val dialog = dialogBuilder
+            .setView(bindingTMD.root)
+            .setCancelable(false) // 다이얼로그 바깥을 클릭해도 닫히지 않도록 설정
+            .create()
+
+        dialog.setOnShowListener {
+            // Positive Button 커스텀 추가
+            val positiveButton = bindingTMD.positiveButton
+            positiveButton.setOnClickListener {
+                if (bindingTMD.etTodo.text.isBlank()) {
                     Toast.makeText(requireContext(), "내용을 입력하세요. 개굴!", Toast.LENGTH_SHORT).show()
-                } else{
+                } else {
                     todo.uId = getUId().toString()
                     todo.content = bindingTMD.etTodo.text.toString()
                     todo.isAlarm = bindingTMD.switch2.isChecked
@@ -269,52 +278,55 @@ class TodoFragment : Fragment() {
                         todo.regTime = it
                     }
 
-                    if(todo.alarmCode != -1) {
+                    if (todo.alarmCode != -1) {
                         alarmManager.cancelAlarm(todo.alarmCode)
                     }
 
-                    if(bindingTMD.switch2.isChecked){
+                    if (bindingTMD.switch2.isChecked) {
                         todo.alarmCode = registerAlarm()
 
                         val hour = bindingTMD.calendarView.hour
                         var strMinute = bindingTMD.calendarView.minute.toString()
 
-                        if(bindingTMD.calendarView.minute<10)
-                            strMinute = "0"+bindingTMD.calendarView.minute.toString()
-                        if(hour>12)
-                            todo.time = "⏰ PM "+(hour-12).toString()+":"+strMinute
+                        if (bindingTMD.calendarView.minute < 10)
+                            strMinute = "0" + bindingTMD.calendarView.minute.toString()
+                        if (hour > 12)
+                            todo.time = "⏰ PM " + (hour - 12).toString() + ":" + strMinute
                         else
-                            todo.time = "⏰ AM "+bindingTMD.calendarView.hour+":"+strMinute
+                            todo.time = "⏰ AM " + bindingTMD.calendarView.hour + ":" + strMinute
                     } else {
                         todo.alarmCode = -1
                         todo.time = ""
                     }
 
-                    if(state == TODO_INSERT)
+                    if (state == TODO_INSERT)
                         viewModel.addTodo(todo)
-                    else if(state == TODO_UPDATE)
+                    else if (state == TODO_UPDATE)
                         viewModel.updateTodoContent(todo)
 
                     dialog.dismiss()
                 }
             }
-            .setNegativeButton("취소") { dialog, _ ->
+
+            // Negative Button 커스텀 추가
+            val negativeButton = bindingTMD.negativeButton
+            negativeButton.setOnClickListener {
                 dialog.dismiss()
             }
+        }
 
         bindingTMD.switch2.setOnClickListener {
-            if(bindingTMD.switch2.isChecked) {
+            if (bindingTMD.switch2.isChecked) {
                 bindingTMD.calendarView.visibility = View.VISIBLE
             } else {
                 bindingTMD.calendarView.visibility = View.GONE
             }
         }
 
-        if(bindingTMD.root.parent != null){
+        if (bindingTMD.root.parent != null) {
             ((bindingTMD.root.parent) as ViewGroup).removeView(bindingTMD.root)
         }
 
-        dialog.setView(bindingTMD.root)
         dialog.show()
     }
 
