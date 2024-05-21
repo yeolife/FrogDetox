@@ -3,6 +3,7 @@ package com.ssafy.frogdetox.view.detox
 import android.accessibilityservice.AccessibilityService
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import com.ssafy.frogdetox.common.SharedPreferencesManager
 
 private const val TAG = "accessibilityService_싸피"
 class AccessibilityService : AccessibilityService() {
@@ -12,9 +13,9 @@ class AccessibilityService : AccessibilityService() {
             val currentAppPackageName = event.packageName.toString()
 
             // 특정 앱의 패키지 이름과 비교
-            if (currentAppPackageName == "com.sec.android.app.camera") {
+            if (SharedPreferencesManager.getAppState(currentAppPackageName)) {
                 // 특정 앱이 전면으로 왔을 때 수행할 작업
-                Log.d(TAG, "onAccessibilityEvent: $123123123")
+                Log.d(TAG, "onAccessibilityEvent: $currentAppPackageName")
             }
         }
     }
@@ -23,5 +24,3 @@ class AccessibilityService : AccessibilityService() {
         Log.d(TAG, "onInterrupt: 앱 감지함니당 ")
     }
 }
-
-// shared에 패키지 이름으로 키로 저장해서 꺼내온다.

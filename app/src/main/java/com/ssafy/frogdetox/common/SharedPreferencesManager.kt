@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 
 object SharedPreferencesManager {
-
     private lateinit var preferences: SharedPreferences
     private const val SHARED_PREFERENCES_NAME = "todo_preference"
 
@@ -15,8 +14,7 @@ object SharedPreferencesManager {
     //사용자 정보 저장
     fun putUId(id:String){
         preferences.edit().apply {
-            putString("id", id)
-            apply()
+            putString("id", id).apply()
         }
     }
 
@@ -27,8 +25,7 @@ object SharedPreferencesManager {
     //detox sleep hour
     fun putHour(hour:Int){
         preferences.edit().apply {
-            putInt("hour", hour)
-            apply()
+            putInt("hour", hour).apply()
         }
     }
 
@@ -39,8 +36,7 @@ object SharedPreferencesManager {
     //detox sleep minute
     fun putMinute(minute:Int){
         preferences.edit().apply {
-            putInt("minute", minute)
-            apply()
+            putInt("minute", minute).apply()
         }
     }
 
@@ -55,8 +51,13 @@ object SharedPreferencesManager {
 
     fun setAppState(packageName: String, state: Boolean) {
         preferences.edit().apply {
-            putBoolean(packageName, state)
-            apply()
+            putBoolean(packageName, state).apply()
+        }
+    }
+
+    fun removeAppState(packageName: String) {
+        preferences.edit().apply {
+            remove(packageName).apply()
         }
     }
 }
