@@ -41,7 +41,7 @@ class DetoxFragment : Fragment() {
 
     private fun initViewPager() {
         val viewPager = binding.viewPager
-        val viewPagerAdapter = FragmentAdapter(mainActivity)
+        val viewPagerAdapter = DetoxTapAdapter(mainActivity)
         viewPager.adapter = viewPagerAdapter
 
         val springDotsIndicator = binding.dotsIndicator

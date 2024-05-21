@@ -1,16 +1,10 @@
 package com.ssafy.frogdetox.view.detox
 
-import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.health.connect.datatypes.AppInfo
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ssafy.frogdetox.common.Permission.isAccessibilityServiceEnabled
 import com.ssafy.frogdetox.data.AppInfoDto
 import com.ssafy.frogdetox.databinding.FragmentDetoxBlockingBinding
 import com.ssafy.frogdetox.view.MainActivity
@@ -66,19 +61,9 @@ class DetoxBlockingFragment : Fragment() {
 
         val notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
 
-        val appOps = mainActivity.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            appOps.unsafeCheckOpNoThrow(
-                AppOpsManager.OPSTR_GET_USAGE_STATS,
-                mainActivity.applicationInfo.uid, mainActivity.packageName)
-        } else {
-            appOps.checkOpNoThrow(
-                AppOpsManager.OPSTR_GET_USAGE_STATS,
-                mainActivity.applicationInfo.uid, mainActivity.packageName)
-        }
-        val usagePermission = mode == AppOpsManager.MODE_ALLOWED
+        val accessibilityPermission = isAccessibilityServiceEnabled(mainActivity, AccessibilityService::class.java)
 
-        if (!overlayPermission || !notiPermission || !usagePermission) {
+        if (!overlayPermission || !notiPermission || !accessibilityPermission) {
             val bottomSheet = DetoxBlockingBottomSheetFragment()
 
             bottomSheet.show(childFragmentManager, bottomSheet.tag)

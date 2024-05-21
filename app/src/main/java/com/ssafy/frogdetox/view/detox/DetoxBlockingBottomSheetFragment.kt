@@ -1,10 +1,9 @@
 package com.ssafy.frogdetox.view.detox
 
-import android.app.AppOpsManager
+import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -15,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.NotificationManagerCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.ssafy.frogdetox.common.Permission.isAccessibilityServiceEnabled
 import com.ssafy.frogdetox.databinding.FragmentDetoxBlockingBottomSheetBinding
 import com.ssafy.frogdetox.view.MainActivity
 
@@ -74,12 +74,9 @@ class DetoxBlockingBottomSheetFragment : BottomSheetDialogFragment() {
             activityLauncher.launch(intent)
         }
 
-        binding.llUsageInfo.setOnClickListener {
-            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                val uri = Uri.fromParts("package", mainActivity.packageName, null)
-                data = uri
-            }
+        binding.llAccessibility.setOnClickListener {
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
             activityLauncher.launch(intent)
         }
@@ -92,25 +89,14 @@ class DetoxBlockingBottomSheetFragment : BottomSheetDialogFragment() {
         // 알람 권한 확인
         val notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
 
-        // 사용정보 권한 확인
-        val appOps = mainActivity.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            appOps.unsafeCheckOpNoThrow(
-                AppOpsManager.OPSTR_GET_USAGE_STATS,
-                mainActivity.applicationInfo.uid, mainActivity.packageName)
-        } else {
-            appOps.checkOpNoThrow(
-                AppOpsManager.OPSTR_GET_USAGE_STATS,
-                mainActivity.applicationInfo.uid, mainActivity.packageName)
-        }
-        val usagePermission = mode == AppOpsManager.MODE_ALLOWED
-        
+        val accessibilityPermission = isAccessibilityServiceEnabled(mainActivity, AccessibilityService::class.java)
+
         // 권한에 따라 view 보여주기
         binding.llOverlay.visibility = if(overlayPermission) View.GONE else View.VISIBLE
         binding.llNotification.visibility = if(notiPermission) View.GONE else View.VISIBLE
-        binding.llUsageInfo.visibility = if(usagePermission) View.GONE else View.VISIBLE
+        binding.llAccessibility.visibility = if(accessibilityPermission) View.GONE else View.VISIBLE
 
-        return (overlayPermission && notiPermission && usagePermission)
+        return (overlayPermission && notiPermission && accessibilityPermission)
     }
 
     override fun onDestroy() {
