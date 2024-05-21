@@ -67,6 +67,12 @@ class DetoxSleepFragment : Fragment() {
                     }
                     else
                         binding.tvSleepTime.text = binding2.calendarView.hour.toString()+"시"+binding2.calendarView.minute.toString()+"분에\n자야지"
+
+                    binding.night.visibility=View.GONE
+                    binding.ivon.visibility=View.VISIBLE
+                    binding.ivoff.visibility=View.GONE
+                    alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
+
                     dialog.dismiss()
                 }
                 .setNegativeButton("취소") { dialog, _ ->
@@ -75,14 +81,17 @@ class DetoxSleepFragment : Fragment() {
             dialog.setView(binding2.root)
             dialog.show()
         }
-        binding.switch1.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked){
-                alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
-            }
-            else{
-                //삭제
-                alarmManager.cancelScreenSaverAlarm()
-            }
+        binding.ivon.setOnClickListener {
+            binding.night.visibility=View.VISIBLE
+            binding.ivon.visibility=View.GONE
+            binding.ivoff.visibility=View.VISIBLE
+            alarmManager.cancelScreenSaverAlarm()
+        }
+        binding.ivoff.setOnClickListener {
+            binding.night.visibility=View.GONE
+            binding.ivon.visibility=View.VISIBLE
+            binding.ivoff.visibility=View.GONE
+            alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
         }
     }
 

@@ -59,7 +59,6 @@ class LoginActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = Firebase.auth
 
-        createNotificationChannel()
     }
 
     override fun onStart() {
@@ -88,7 +87,6 @@ class LoginActivity : AppCompatActivity() {
             val intent2 = Intent(this, MainActivity::class.java).apply {
                 putExtra("url", user.photoUrl.toString())
                 putExtra("name", user.displayName)
-                putExtra("state",intent.getIntExtra("state",0))
             }
             Log.d(TAG, "updateUI: ${user.uid}")
             putUId(user.uid)
@@ -104,24 +102,4 @@ class LoginActivity : AppCompatActivity() {
         activityLauncher.launch(signInIntent)
     }
 
-//    private fun initFCM() {
-//        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-//            if (!task.isSuccessful) return@OnCompleteListener
-//
-//            // token log 남기기
-//            Log.d(TAG, "token: ${task.result ?: "task.result is null"}")
-////            task.result?.let { uploadToken(it) }
-//        })
-//    }
-
-    private fun createNotificationChannel() {
-        val importance = NotificationManager.IMPORTANCE_HIGH
-        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        manager.createNotificationChannel(NotificationChannel(ID, NAME, importance))
-    }
-
-    companion object {
-        const val ID = "ssafy_channel"
-        const val NAME = "ssafy"
-    }
 }

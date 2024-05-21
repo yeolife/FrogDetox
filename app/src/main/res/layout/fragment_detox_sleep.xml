@@ -5,25 +5,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.detox.DetoxSleepFragment"
-    android:background="@color/white"
+    android:background="@drawable/bg_gradient"
     >
+<!--    <androidx.appcompat.widget.SwitchCompat-->
+<!--        android:id="@+id/switch1"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:thumb="@drawable/switch_thumb"-->
+<!--        app:track="@drawable/switch_track"-->
+<!--        app:thumbTextPadding="24dp"-->
+<!--        app:switchMinWidth="0dp"-->
+<!--        app:trackTint="@null"-->
+<!--        app:thumbTint="@null"-->
+<!--        android:textOff=""-->
+<!--        android:textOn=""-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        tools:ignore="UseSwitchCompatOrMaterialXml" />-->
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switch1"
+    <ImageView
+        android:id="@+id/ivon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:thumb="@drawable/switch_thumb"
-        app:track="@drawable/switch_track"
-        app:thumbTextPadding="24dp"
-        app:switchMinWidth="0dp"
-        app:trackTint="@null"
-        app:thumbTint="@null"
-        android:textOff=""
-        android:textOn=""
+        android:src="@drawable/turnon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        android:visibility="gone"
+        />
+    <ImageView
+        android:id="@+id/ivoff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/turnoff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="visible"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +50,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -78,6 +98,15 @@
             />
 
     </LinearLayout>
-
+    <View
+        android:id="@+id/night"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
