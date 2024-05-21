@@ -7,4 +7,5 @@
     <color name="LimeGreen">#32CD32</color>
     <color name ="NightBlue">#7e81a2</color>
     <color name="todoListDeleteColor">#BE4941</color>
+    <color name="halftransparent">#33000000</color>
 </resources>

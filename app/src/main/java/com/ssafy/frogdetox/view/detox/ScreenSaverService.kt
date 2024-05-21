@@ -29,7 +29,7 @@ private const val TAG = "ScreenSaverService_싸피"
 
 data class ImageViewData(
     val imageView: ImageView,
-    val speed : Float = 5.toFloat()
+    val speed : Float = Random().nextInt(6)+4.toFloat()
 )
 class ScreenSaverService : Service() {
     private lateinit var windowManager: WindowManager
@@ -53,7 +53,7 @@ class ScreenSaverService : Service() {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
             )
-            setBackgroundColor(Color.TRANSPARENT)
+            setBackgroundColor(Color.parseColor("#55000000"))
             orientation = LinearLayout.VERTICAL
         }
 
@@ -166,8 +166,8 @@ class ScreenSaverService : Service() {
                 if (it.imageView.y < 0) {
                     it.imageView.y = 0f
                 }
-                if (it.imageView.y > (realHeight - SIZE))
-                    it.imageView.y = 0f//(realHeight-405-SIZE).toFloat()
+                if (it.imageView.y > (realHeight - 300))
+                    it.imageView.y = 0f
             }
         }
 
