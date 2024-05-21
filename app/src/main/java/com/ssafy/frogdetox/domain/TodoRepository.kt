@@ -11,6 +11,8 @@ import com.google.firebase.ktx.Firebase
 import com.ssafy.frogdetox.view.LoginActivity
 import com.ssafy.frogdetox.data.TodoDto
 import com.ssafy.frogdetox.common.LongToLocalDate
+import com.ssafy.frogdetox.common.SharedPreferencesManager
+import com.ssafy.frogdetox.common.SharedPreferencesManager.getUId
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -34,7 +36,7 @@ class TodoRepository {
                     for(curSnapshot in snapshot.children){
                         val getData = curSnapshot.getValue(TodoDto::class.java)
                         if (getData != null) {
-                            if(getData.uId== LoginActivity.sharedPreferencesUtil.getUId()){
+                            if(getData.uId== getUId()){
                                 listvalue = LongToLocalDate(getData.regTime)
                                 if(selectvalue==listvalue)
                                     listData.add(getData)
@@ -65,7 +67,7 @@ class TodoRepository {
                         if (count >= 6) break
                         val getData = curSnapshot.getValue(TodoDto::class.java)
                         if (getData != null) {
-                            if (getData.uId == LoginActivity.sharedPreferencesUtil.getUId()) {
+                            if (getData.uId == getUId()) {
                                 result += getData.content + ", "
                                 count++
                             }

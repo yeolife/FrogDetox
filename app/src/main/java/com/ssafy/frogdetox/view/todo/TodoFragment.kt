@@ -35,6 +35,7 @@ import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
 import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.common.LongToLocalDate
+import com.ssafy.frogdetox.common.SharedPreferencesManager.getUId
 import com.ssafy.frogdetox.common.alarm.AlarmManager
 import com.ssafy.frogdetox.common.displayText
 import com.ssafy.frogdetox.common.getWeekPageTitle
@@ -261,7 +262,7 @@ class TodoFragment : Fragment() {
                 if(bindingTMD.etTodo.text.isBlank()) {
                     Toast.makeText(requireContext(), "내용을 입력하세요. 개굴!", Toast.LENGTH_SHORT).show()
                 } else{
-                    todo.uId = LoginActivity.sharedPreferencesUtil.getUId().toString()
+                    todo.uId = getUId().toString()
                     todo.content = bindingTMD.etTodo.text.toString()
                     todo.isAlarm = bindingTMD.switch2.isChecked
                     viewModel.selectDay.value?.let {
