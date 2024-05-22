@@ -19,6 +19,7 @@
         android:orientation="vertical"
         android:layout_marginHorizontal="16dp">
         <TextView
+            android:id="@+id/tvpermission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -34,7 +35,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingHorizontal="24dp"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="12dp"
+            android:visibility="gone">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -61,12 +63,40 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingHorizontal="24dp"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="12dp"
+            android:visibility="gone">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="알림"
+                android:textStyle="bold"
+                android:layout_margin="10dp"
+                android:textSize="16sp" />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_arrow_forward_ios_24"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:background="@drawable/detox_permission_modal_border_layout"
+            android:id="@+id/ll_reminder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="24dp"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="알림 및 리마인더"
                 android:textStyle="bold"
                 android:layout_margin="10dp"
                 android:textSize="16sp" />
@@ -87,7 +117,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="24dp">
+            android:paddingHorizontal="24dp"
+            android:visibility="gone">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

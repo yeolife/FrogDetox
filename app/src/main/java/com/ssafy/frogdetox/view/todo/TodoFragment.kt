@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -36,11 +38,14 @@ import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
 import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.common.LongToLocalDate
+import com.ssafy.frogdetox.common.Permission
 import com.ssafy.frogdetox.common.SharedPreferencesManager.getUId
 import com.ssafy.frogdetox.common.alarm.AlarmManager
 import com.ssafy.frogdetox.common.displayText
 import com.ssafy.frogdetox.common.getWeekPageTitle
 import com.ssafy.frogdetox.common.todoListSwiper.SwipeController
+import com.ssafy.frogdetox.view.detox.AccessibilityService
+import com.ssafy.frogdetox.view.detox.DetoxBlockingBottomSheetFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -106,6 +111,7 @@ class TodoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkPermission()
         Log.d(TAG, "onViewCreated: ${userName} $userImgUrl")
         binding.tvName.text=userName+"님"
         binding.ivFrog.load(userImgUrl) {
@@ -121,7 +127,16 @@ class TodoFragment : Fragment() {
 
         initTodoDateCalendar()
     }
+    private fun checkPermission() {
+        val notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
 
+        val reminderPermission = Settings.canDrawOverlays(context)
+
+        if (!notiPermission || !reminderPermission) {
+            val bottomSheet = DetoxBlockingBottomSheetFragment(1)
+            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        }
+    }
     private fun initTodoRecyclerView() {
         todoRecycler = binding.rvTodo
 
