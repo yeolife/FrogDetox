@@ -44,7 +44,7 @@ class AlarmReceiver : BroadcastReceiver() {
             val intent2 = Intent(context, LoginActivity::class.java)
             intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             val requestCode = intent?.extras!!.getInt("alarm_rqCode")
-            val content = "오늘 이거는 하지마세요 개굴!\n"+intent.extras!!.getString("content")
+            val content = intent.extras!!.getString("content")
 
             val pendingIntent = if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
                 PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_IMMUTABLE); //Activity를 시작하는 인텐트 생성
@@ -52,7 +52,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_UPDATE_CURRENT);
             }
 
-            val notification = builder.setContentTitle("청깨구리")
+            val notification = builder.setContentTitle("하지마세요! 개굴")
                 .setContentText(content)
                 .setSmallIcon(R.drawable.cutefrogicon)
                 .setAutoCancel(true)

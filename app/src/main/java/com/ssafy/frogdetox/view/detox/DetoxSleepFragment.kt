@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
@@ -49,12 +51,18 @@ class DetoxSleepFragment : Fragment() {
         Glide.with(this)
             .load(R.drawable.sleepballoon)
             .into(binding.imgBall)
-        if(getMinute()==0){
-            binding.tvSleepTime.text = getHour().toString()+"시에\n자야지"
+        val scale = resources.displayMetrics.density // 디바이스의 화면 밀도를 가져옵니다.
+        val textSizeInPx = 25 * scale // dp를 px로 변환합니다.
+        if(getHour()!=-1){
+            if(getMinute()==0){
+                binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
+                binding.tvSleepTime.text = getHour().toString()+"시에\n자야지"
+            }
+            else {
+                binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
+                binding.tvSleepTime.text = getHour().toString() + "시" + getMinute().toString() + "분에\n자야지"
+            }
         }
-        else
-            binding.tvSleepTime.text = getHour().toString()+"시"+getMinute().toString()+"분에\n자야지"
-
         binding.tvSleepTime.setOnClickListener {
             val binding2 =
                 DialogSleepBinding.inflate(LayoutInflater.from(requireContext()))
@@ -63,14 +71,18 @@ class DetoxSleepFragment : Fragment() {
                     putHour(binding2.calendarView.hour)
                     putMinute(binding2.calendarView.minute)
                     if(binding2.calendarView.minute==0){
+                        binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
                         binding.tvSleepTime.text = binding2.calendarView.hour.toString()+"시에\n자야지"
                     }
-                    else
-                        binding.tvSleepTime.text = binding2.calendarView.hour.toString()+"시"+binding2.calendarView.minute.toString()+"분에\n자야지"
-
+                    else {
+                        binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
+                        binding.tvSleepTime.text = binding2.calendarView.hour.toString() + "시" + binding2.calendarView.minute.toString() + "분에\n자야지"
+                    }
                     binding.night.visibility=View.GONE
                     binding.ivon.visibility=View.VISIBLE
                     binding.ivoff.visibility=View.GONE
+                    binding.tvon.visibility=View.VISIBLE
+                    binding.tvoff.visibility=View.GONE
                     alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
 
                     dialog.dismiss()
@@ -85,13 +97,21 @@ class DetoxSleepFragment : Fragment() {
             binding.night.visibility=View.VISIBLE
             binding.ivon.visibility=View.GONE
             binding.ivoff.visibility=View.VISIBLE
+            binding.tvon.visibility = View.GONE
+            binding.tvoff.visibility=View.VISIBLE
             alarmManager.cancelScreenSaverAlarm()
         }
         binding.ivoff.setOnClickListener {
             binding.night.visibility=View.GONE
             binding.ivon.visibility=View.VISIBLE
             binding.ivoff.visibility=View.GONE
-            alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
+            binding.tvon.visibility=View.VISIBLE
+            binding.tvoff.visibility=View.GONE
+            if(getHour()!=-1)
+                alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
+            else{
+                Toast.makeText(requireContext(),"알람 시간을 설정해주세요",Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

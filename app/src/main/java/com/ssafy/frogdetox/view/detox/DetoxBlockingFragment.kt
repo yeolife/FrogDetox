@@ -75,7 +75,7 @@ class DetoxBlockingFragment : Fragment() {
         blockingRecycler = binding.rvAppBlocking
 
         val packageManager = mainActivity.packageManager
-        val installedApps = getInstalledApps(packageManager)
+        val installedApps = getInstalledApps(packageManager,requireContext())
 
         blockingAdapter = DetoxBlockingAdapter(installedApps)
 
@@ -90,16 +90,19 @@ class DetoxBlockingFragment : Fragment() {
         }
     }
 
-    private fun getInstalledApps(packageManager: PackageManager): List<AppInfoDto> {
+    private fun getInstalledApps(packageManager: PackageManager,context: Context): List<AppInfoDto> {
         val intent = Intent(Intent.ACTION_MAIN, null)
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
 
         val apps = packageManager.queryIntentActivities(intent, 0)
-        return apps.map { app ->
+        return apps.filter { app ->
+            app.activityInfo.packageName != context.packageName
+        }.map { app ->
             AppInfoDto(
                 appTitle = app.loadLabel(packageManager).toString(),
                 appIcon = app.loadIcon(packageManager),
-                appPackage = app.activityInfo.packageName)
+                appPackage = app.activityInfo.packageName
+            )
         }
     }
 }
