@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            app:title="제한알 앱을 선택하세요 개굴"
+            app:title="제한할 앱을 선택하세요 개굴"
             app:titleTextColor="@color/black" />
 
         <androidx.recyclerview.widget.RecyclerView

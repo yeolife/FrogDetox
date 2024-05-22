@@ -2,17 +2,21 @@ package com.ssafy.frogdetox.view.detox
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.ssafy.frogdetox.R
+import com.ssafy.frogdetox.common.Permission
 import com.ssafy.frogdetox.common.SharedPreferencesManager.getHour
 import com.ssafy.frogdetox.common.SharedPreferencesManager.getMinute
 import com.ssafy.frogdetox.common.SharedPreferencesManager.putHour
@@ -24,8 +28,15 @@ import com.ssafy.frogdetox.view.LoginActivity
 import com.ssafy.frogdetox.view.MainActivity
 
 class DetoxSleepFragment : Fragment() {
+    private lateinit var mainActivity: MainActivity
+
     lateinit var binding : FragmentDetoxSleepBinding
     lateinit var alarmManager: AlarmManager
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        mainActivity = context as MainActivity
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -39,10 +50,19 @@ class DetoxSleepFragment : Fragment() {
         return binding.root
     }
 
+    private fun checkPermission() {
+        val overlayPermission = Settings.canDrawOverlays( mainActivity)
+
+        if (!overlayPermission) {
+            val bottomSheet = DetoxBlockingBottomSheetFragment(2)
+            bottomSheet.show(childFragmentManager, bottomSheet.tag)
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        checkPermission()
         alarmManager = AlarmManager(context as MainActivity)
 
         Glide.with(this)

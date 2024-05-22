@@ -62,11 +62,12 @@ class DetoxBlockingFragment : Fragment() {
 
         val notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
 
+        val reminderPermission = Settings.canDrawOverlays(context)
+
         val accessibilityPermission = isAccessibilityServiceEnabled(mainActivity, AccessibilityService::class.java)
 
-        if (!overlayPermission || !notiPermission || !accessibilityPermission) {
-            val bottomSheet = DetoxBlockingBottomSheetFragment()
-
+        if (!overlayPermission || !notiPermission || !reminderPermission ||!accessibilityPermission) {
+            val bottomSheet = DetoxBlockingBottomSheetFragment(3)
             bottomSheet.show(childFragmentManager, bottomSheet.tag)
         }
     }
