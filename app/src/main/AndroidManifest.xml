@@ -2,21 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- 알림 -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- Alarm 정확한 설정 -->
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <!-- Alarm 재부팅 등록 -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <!-- 다른 앱 위에 그리기 -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <!-- 사용정보 확인 -->
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"
-        tools:ignore="ProtectedPermissions" />
-    <!-- Alarm 화면보호기 설정 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 알림 -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Alarm 정확한 설정 -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" /> <!-- Alarm 재부팅 등록 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- 다른 앱 위에 그리기 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 사용정보 확인 -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" /> <!-- Alarm 화면보호기 설정 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" /> <!-- 앱의 목록을 가져오기 위한 쿼리 -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+
+            <data android:mimeType="image/jpeg" />
+        </intent>
+    </queries>
 
     <application
         android:allowBackup="true"
@@ -28,6 +30,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FrogDetox"
         tools:targetApi="31">
+        <activity
+            android:name=".view.detox.GoSleepActivity"
+            android:theme="@style/AppTheme.BarColorChange"
+            android:exported="true"
+            />
+
         <service
             android:name=".view.detox.AccessibilityService"
             android:enabled="true"
@@ -36,6 +44,7 @@
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
@@ -43,8 +52,8 @@
 
         <activity
             android:name=".view.detox.ScreenSaverActivity"
-            android:theme="@style/TransparentTheme"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/TransparentTheme" />
         <activity
             android:name=".view.LoginActivity"
             android:exported="true">
@@ -65,20 +74,13 @@
         <receiver
             android:name=".common.alarm.ScreenSaverReceiver"
             android:enabled="true"
-            android:exported="false">
-        </receiver>
-        <service android:name=".view.detox.ScreenSaverService"/>
-        <service android:name=".view.detox.OverlayService"
+            android:exported="false"></receiver>
+
+        <service android:name=".view.detox.ScreenSaverService" />
+        <service
+            android:name=".view.detox.OverlayService"
             android:enabled="true"
             android:exported="false" />
     </application>
-
-    <!-- 앱의 목록을 가져오기 위한 쿼리 -->
-    <queries>
-        <intent>
-            <action android:name="android.intent.action.SEND" />
-            <data android:mimeType="image/jpeg" />
-        </intent>
-    </queries>
 
 </manifest>

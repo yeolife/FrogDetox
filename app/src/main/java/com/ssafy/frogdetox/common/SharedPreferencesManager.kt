@@ -30,7 +30,7 @@ object SharedPreferencesManager {
     }
 
     fun getHour(): Int {
-        return preferences.getInt("hour", 11)
+        return preferences.getInt("hour", -1)
     }
 
     //detox sleep minute

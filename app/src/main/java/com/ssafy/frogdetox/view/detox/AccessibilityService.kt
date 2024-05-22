@@ -18,6 +18,7 @@ class AccessibilityService : AccessibilityService() {
                 // 특정 앱이 전면으로 왔을 때 수행할 작업
                 Log.d(TAG, "onAccessibilityEvent: $currentAppPackageName")
                 // 오버레이 서비스 시작
+
                 val intent = Intent(this, OverlayService::class.java)
                 startService(intent)
             }

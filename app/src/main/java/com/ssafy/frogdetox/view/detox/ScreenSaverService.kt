@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -21,6 +22,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityOptionsCompat
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.view.LoginActivity
 import java.util.Random
@@ -33,7 +36,7 @@ data class ImageViewData(
 )
 class ScreenSaverService : Service() {
     private lateinit var windowManager: WindowManager
-    private lateinit var overlayView: LinearLayout
+    private lateinit var overlayView: ConstraintLayout
     private var realWidth = 0
     private var realHeight = 0
     @RequiresApi(Build.VERSION_CODES.R)
@@ -48,30 +51,8 @@ class ScreenSaverService : Service() {
     override fun onCreate() {
         super.onCreate()
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-        overlayView = LinearLayout(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-            )
-            setBackgroundColor(Color.parseColor("#55000000"))
-            orientation = LinearLayout.VERTICAL
-        }
+        overlayView = LayoutInflater.from(this).inflate(R.layout.overlay_background, null) as ConstraintLayout
 
-        // TextView 생성 및 추가
-        val textView = TextView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                gravity = Gravity.CENTER
-            }
-            text = "개구리를 10마리 만들고, 10마리를 모두 터치하시고 주무세요!!!!!개굴!!"
-            textSize = 20f
-            setTextColor(resources.getColor(android.R.color.white, null))
-            setBackgroundColor(Color.parseColor("#60000000")) // 배경색 설정 (반투명 검정)
-            setPadding(16, 16, 16, 16) // 패딩 추가
-        }
-        overlayView.addView(textView)
         initSensor()
         getScreenSize()
         initTouchListener()
@@ -120,18 +101,16 @@ class ScreenSaverService : Service() {
                 if(deletecount <= 0) {
                     sensorManager.unregisterListener(listener)
                     windowManager.removeView(overlayView)
-                    val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-                    val taskInfo = activityManager.appTasks
-                        .filter { it.taskInfo != null }
-                        .map { it.taskInfo }
-                        .firstOrNull()
 
-                    val topActivity = taskInfo?.topActivity?.className ?: "No top activity found"
-                    Log.d("TopActivity_싸피", "Top Activity: $topActivity")
-                    val loginIntent = Intent(this@ScreenSaverService, LoginActivity::class.java).apply {
+                    val loginIntent = Intent(this@ScreenSaverService, GoSleepActivity::class.java).apply {
                         addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                     }
-                    startActivity(loginIntent)
+                    val options = ActivityOptionsCompat.makeCustomAnimation(
+                        this@ScreenSaverService,
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                    )
+                    startActivity(loginIntent, options.toBundle())
                     stopSelf()
                 }
             }

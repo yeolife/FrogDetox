@@ -6,6 +6,8 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/white</item>
     </style>
-
+    <style name="AppTheme.BarColorChange" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:statusBarColor">#555555</item>
+    </style>
     <style name="Theme.FrogDetox" parent="Base.Theme.FrogDetox" />
 </resources>
