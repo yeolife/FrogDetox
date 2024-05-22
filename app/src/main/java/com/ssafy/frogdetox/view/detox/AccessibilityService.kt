@@ -1,6 +1,7 @@
 package com.ssafy.frogdetox.view.detox
 
 import android.accessibilityservice.AccessibilityService
+import android.content.Intent
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.ssafy.frogdetox.common.SharedPreferencesManager
@@ -16,6 +17,9 @@ class AccessibilityService : AccessibilityService() {
             if (SharedPreferencesManager.getAppState(currentAppPackageName)) {
                 // 특정 앱이 전면으로 왔을 때 수행할 작업
                 Log.d(TAG, "onAccessibilityEvent: $currentAppPackageName")
+                // 오버레이 서비스 시작
+                val intent = Intent(this, OverlayService::class.java)
+                startService(intent)
             }
         }
     }

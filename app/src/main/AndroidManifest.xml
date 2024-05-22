@@ -68,6 +68,9 @@
             android:exported="false">
         </receiver>
         <service android:name=".view.detox.ScreenSaverService"/>
+        <service android:name=".view.detox.OverlayService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
     <!-- 앱의 목록을 가져오기 위한 쿼리 -->

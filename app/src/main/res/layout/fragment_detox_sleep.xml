@@ -7,22 +7,6 @@
     tools:context=".view.detox.DetoxSleepFragment"
     android:background="@drawable/bg_gradient"
     >
-<!--    <androidx.appcompat.widget.SwitchCompat-->
-<!--        android:id="@+id/switch1"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:thumb="@drawable/switch_thumb"-->
-<!--        app:track="@drawable/switch_track"-->
-<!--        app:thumbTextPadding="24dp"-->
-<!--        app:switchMinWidth="0dp"-->
-<!--        app:trackTint="@null"-->
-<!--        app:thumbTint="@null"-->
-<!--        android:textOff=""-->
-<!--        android:textOn=""-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        tools:ignore="UseSwitchCompatOrMaterialXml" />-->
 
     <ImageView
         android:id="@+id/ivon"
