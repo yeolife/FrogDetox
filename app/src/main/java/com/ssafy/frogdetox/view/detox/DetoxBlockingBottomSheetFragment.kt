@@ -74,6 +74,13 @@ class DetoxBlockingBottomSheetFragment : BottomSheetDialogFragment() {
             activityLauncher.launch(intent)
         }
 
+        binding.llReminder.setOnClickListener {
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION).apply{
+                putExtra(Settings.EXTRA_APP_PACKAGE, mainActivity.packageName)
+            }
+            activityLauncher.launch(intent)
+        }
+
         binding.llAccessibility.setOnClickListener {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -89,14 +96,18 @@ class DetoxBlockingBottomSheetFragment : BottomSheetDialogFragment() {
         // 알람 권한 확인
         val notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
 
+        //시간 설정하고 알림 주도록 함.
+        val reminderPermission = Settings.canDrawOverlays(context)
+
         val accessibilityPermission = isAccessibilityServiceEnabled(mainActivity, AccessibilityService::class.java)
 
         // 권한에 따라 view 보여주기
         binding.llOverlay.visibility = if(overlayPermission) View.GONE else View.VISIBLE
         binding.llNotification.visibility = if(notiPermission) View.GONE else View.VISIBLE
+        binding.llReminder.visibility = if(reminderPermission) View.GONE else View.VISIBLE
         binding.llAccessibility.visibility = if(accessibilityPermission) View.GONE else View.VISIBLE
 
-        return (overlayPermission && notiPermission && accessibilityPermission)
+        return (overlayPermission && notiPermission && accessibilityPermission && reminderPermission)
     }
 
     override fun onDestroy() {
