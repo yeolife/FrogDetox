@@ -44,7 +44,6 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
         activityLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 if(checkPermission()) {
-                    Toast.makeText(mainActivity, "모든 권한이 허용되었습니다.", Toast.LENGTH_SHORT).show()
                     dismiss()
                 }
             }
@@ -55,7 +54,6 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        checkPermission()
         binding.llOverlay.setOnClickListener {
             val intent = Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -85,6 +83,10 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        checkPermission()
+    }
     private fun checkPermission(): Boolean {
         // 다른 앱 위에 띄우는 권한 확인
         val overlayPermission = Settings.canDrawOverlays(mainActivity)
@@ -104,12 +106,13 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
         if(flag2==1) {
             binding.llNotification.visibility = if (notiPermission) View.GONE else View.VISIBLE
         }
-        if(flag2==1||flag2==3) {
+        if(flag2==1||flag2==2||flag2==3) {
             binding.llReminder.visibility = if (reminderPermission) View.GONE else View.VISIBLE
         }
         if(flag2==3) {
             binding.llAccessibility.visibility = if (accessibilityPermission) View.GONE else View.VISIBLE
         }
+
         if(flag2==1){
             binding.tvpermission.text = "todo 알림 기능을 위해서 권한을 허용해주세요"
         }
@@ -119,8 +122,13 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
         if(flag2==3){
             binding.tvpermission.text = "앱 차단 기능을 위해서 권한을 허용해주세요"
         }
-
-        return (overlayPermission && notiPermission && accessibilityPermission && reminderPermission)
+        return if(flag2==1){
+            (notiPermission&&reminderPermission)
+        } else if(flag2==2){
+            (overlayPermission&&reminderPermission)
+        } else{
+            (accessibilityPermission&&overlayPermission&&reminderPermission)
+        }
     }
 
     override fun onDestroy() {

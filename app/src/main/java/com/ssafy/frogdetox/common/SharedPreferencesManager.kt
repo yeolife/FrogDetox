@@ -2,7 +2,9 @@ package com.ssafy.frogdetox.common
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 
+private const val TAG = "SharedPreferencesManage_싸피"
 object SharedPreferencesManager {
     private lateinit var preferences: SharedPreferences
     private const val SHARED_PREFERENCES_NAME = "todo_preference"
@@ -20,6 +22,26 @@ object SharedPreferencesManager {
 
     fun getUId(): String? {
         return preferences.getString("id", "")
+    }
+
+    fun putSleepState(state:Boolean){
+        preferences.edit().apply(){
+            putBoolean("sleepState",state).apply()
+        }
+        Log.d(TAG, "putSleepState: $state")
+    }
+    fun getSleepState():Boolean{
+        Log.d(TAG, "getSleepState: ${preferences.getBoolean("sleepState",false)}")
+        return preferences.getBoolean("sleepState",false)
+    }
+
+    fun putBlockingState(state:Boolean){
+        preferences.edit().apply(){
+            putBoolean("blockingState",state).apply()
+        }
+    }
+    fun getBlockingState():Boolean{
+        return preferences.getBoolean("blockingState",false)
     }
 
     //detox sleep hour
