@@ -46,4 +46,9 @@ class DetoxBlockingAdapter(private var list: List<AppInfoDto>): RecyclerView.Ada
     override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
         holder.apply { bind(list[position]) }
     }
+
+    fun updateData(newItems: List<AppInfoDto>) {
+        list = newItems
+        notifyDataSetChanged()
+    }
 }
