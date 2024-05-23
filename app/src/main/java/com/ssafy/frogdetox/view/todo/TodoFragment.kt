@@ -306,7 +306,7 @@ class TodoFragment : Fragment() {
 
                         if (bindingTMD.calendarView.minute < 10)
                             strMinute = "0$strMinute"
-                        if (hour > 12)
+                        if (hour >= 12)
                             todo.time = "⏰ PM " + (hour - 12).toString() + ":" + strMinute
                         else
                             todo.time = "⏰ AM " + bindingTMD.calendarView.hour + ":" + strMinute

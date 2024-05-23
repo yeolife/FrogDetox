@@ -3,12 +3,14 @@ package com.ssafy.frogdetox.view.detox
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
 import android.util.Log
+import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import com.ssafy.frogdetox.common.SharedPreferencesManager
 import com.ssafy.frogdetox.common.SharedPreferencesManager.getBlockingState
 
 private const val TAG = "accessibilityService_싸피"
 class AccessibilityService : AccessibilityService() {
+
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if(getBlockingState()){
             if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
@@ -24,6 +26,10 @@ class AccessibilityService : AccessibilityService() {
                     val intent = Intent(this, OverlayService::class.java)
                     startService(intent)
                 }
+                else if(currentAppPackageName=="com.sec.android.app.launcher"){
+                    val intent = Intent(this, OverlayService::class.java)
+                    stopService(intent)
+                }
             }
         }
         else{
@@ -32,6 +38,6 @@ class AccessibilityService : AccessibilityService() {
     }
 
     override fun onInterrupt() {
-        Log.d(TAG, "onInterrupt: 앱 감지함니당 ")
+        // 필요한 경우 중단 처리
     }
 }
