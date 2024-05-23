@@ -70,7 +70,7 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
             activityLauncher.launch(intent)
         }
         binding.llReminder.setOnClickListener {
-            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION).apply{
+            val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply{
                 putExtra(Settings.EXTRA_APP_PACKAGE, mainActivity.packageName)
             }
             activityLauncher.launch(intent)
