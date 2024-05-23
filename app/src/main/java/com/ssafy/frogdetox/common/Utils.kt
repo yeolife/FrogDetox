@@ -44,8 +44,8 @@ fun getTimeInMillis(hourOfDay: Int, minute: Int): Long {
     val calendar = Calendar.getInstance()
     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
     calendar.set(Calendar.MINUTE, minute)
-    calendar.set(Calendar.SECOND, 0)
-    calendar.set(Calendar.MILLISECOND, 0)
+    calendar.set(Calendar.SECOND, 59)
+    calendar.set(Calendar.MILLISECOND, 59)
     return calendar.timeInMillis
 }
 
