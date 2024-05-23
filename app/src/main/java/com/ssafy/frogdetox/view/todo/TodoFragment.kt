@@ -312,8 +312,6 @@ class TodoFragment : Fragment() {
                             todo.time = "⏰ AM " + bindingTMD.calendarView.hour + ":" + strMinute
 
                         if(getTimeInMillis(hour, minute) >= getTodayInMillis()) {
-                            Log.d(TAG, "todoRegisterDialog: ${getTimeInMillis(hour, minute)} ${getTodayInMillis()}")
-                            
                             todo.alarmCode = registerAlarm()
                         }
                     } else {
