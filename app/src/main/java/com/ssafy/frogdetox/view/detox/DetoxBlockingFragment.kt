@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.NumberPicker
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +26,9 @@ import com.ssafy.frogdetox.common.SharedPreferencesManager.setAppState
 import com.ssafy.frogdetox.data.AppInfoDto
 import com.ssafy.frogdetox.databinding.FragmentDetoxBlockingBinding
 import com.ssafy.frogdetox.view.MainActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.log
 
 private const val TAG = "DetoxBlockingFragment"
@@ -67,26 +71,27 @@ class DetoxBlockingFragment : Fragment() {
             binding.btnfrogoff.visibility = View.VISIBLE
         }
         binding.btnfrog.setOnClickListener {
-            if(getBlockingState()){
-                //알람 끄기
-                Log.d(TAG, "onViewCreated: 알람끔")
-                binding.btnfrogon.visibility = View.GONE
-                binding.btnfrogoff.visibility = View.VISIBLE
-                putBlockingState(false)
-            }
-            else{
-                //알람 설정
-                Log.d(TAG, "onViewCreated: 알람켬")
-                binding.btnfrogon.visibility = View.VISIBLE
-                binding.btnfrogoff.visibility = View.GONE
-                putBlockingState(true)
+            if(checkPermission()) {
+                if (getBlockingState()) {
+                    //알람 끄기
+                    Log.d(TAG, "onViewCreated: 알람끔")
+                    binding.btnfrogon.visibility = View.GONE
+                    binding.btnfrogoff.visibility = View.VISIBLE
+                    putBlockingState(false)
+                } else {
+                    //알람 설정
+                    Log.d(TAG, "onViewCreated: 알람켬")
+                    binding.btnfrogon.visibility = View.VISIBLE
+                    binding.btnfrogoff.visibility = View.GONE
+                    putBlockingState(true)
+                }
             }
         }
-        checkPermission()
+
         initRecyclerView()
     }
 
-    private fun checkPermission() {
+    private fun checkPermission(): Boolean {
         val overlayPermission = Settings.canDrawOverlays(mainActivity)
 
         val notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
@@ -98,16 +103,19 @@ class DetoxBlockingFragment : Fragment() {
         if (!overlayPermission || !notiPermission || !reminderPermission ||!accessibilityPermission) {
             val bottomSheet = DetoxBlockingBottomSheetFragment(3)
             bottomSheet.show(childFragmentManager, bottomSheet.tag)
+
+            return false
         }
+
+        return true
     }
 
     private fun initRecyclerView() {
         blockingRecycler = binding.rvAppBlocking
 
         val packageManager = mainActivity.packageManager
-        val installedApps = getInstalledApps(packageManager,requireContext())
 
-        blockingAdapter = DetoxBlockingAdapter(installedApps)
+        blockingAdapter = DetoxBlockingAdapter(listOf())
 
         blockingRecycler.apply {
             adapter = blockingAdapter
@@ -118,26 +126,30 @@ class DetoxBlockingFragment : Fragment() {
 
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
+
+        lifecycleScope.launch {
+            val installedApps = getInstalledApps(packageManager,requireContext())
+
+            blockingAdapter.updateData(installedApps)
+        }
     }
 
-    private fun getInstalledApps(packageManager: PackageManager,context: Context): List<AppInfoDto> {
+    private suspend fun getInstalledApps(packageManager: PackageManager, context: Context): List<AppInfoDto> {
         val intent = Intent(Intent.ACTION_MAIN, null)
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
 
-        val apps = packageManager.queryIntentActivities(intent, 0)
+        return withContext(Dispatchers.IO) {
+            val apps = packageManager.queryIntentActivities(intent, 0)
 
-        apps.forEach { app ->
-            Log.d("AppInfo", "Found app: ${app.loadLabel(packageManager)}")
-        }
-
-        return apps.filter { app ->
-            app.activityInfo.packageName != context.packageName
-        }.map { app ->
-            AppInfoDto(
-                appTitle = app.loadLabel(packageManager).toString(),
-                appIcon = app.loadIcon(packageManager),
-                appPackage = app.activityInfo.packageName
-            )
+            apps.filter { app ->
+                app.activityInfo.packageName != context.packageName
+            }.map { app ->
+                AppInfoDto(
+                    appTitle = app.loadLabel(packageManager).toString(),
+                    appIcon = app.loadIcon(packageManager),
+                    appPackage = app.activityInfo.packageName
+                )
+            }
         }
     }
 }
