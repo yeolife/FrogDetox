@@ -5,16 +5,21 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.NumberPicker
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.common.Permission.isAccessibilityServiceEnabled
+import com.ssafy.frogdetox.common.SharedPreferencesManager.getBlockingState
+import com.ssafy.frogdetox.common.SharedPreferencesManager.putBlockingState
 import com.ssafy.frogdetox.common.SharedPreferencesManager.setAppState
 import com.ssafy.frogdetox.data.AppInfoDto
 import com.ssafy.frogdetox.databinding.FragmentDetoxBlockingBinding
@@ -51,9 +56,31 @@ class DetoxBlockingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        if(getBlockingState()){
+            binding.btnfrogon.visibility = View.VISIBLE
+            binding.btnfrogoff.visibility = View.GONE
+        }
+        else{
+            binding.btnfrogon.visibility = View.GONE
+            binding.btnfrogoff.visibility = View.VISIBLE
+        }
+        binding.btnfrog.setOnClickListener {
+            if(getBlockingState()){
+                //알람 끄기
+                Log.d(TAG, "onViewCreated: 알람끔")
+                binding.btnfrogon.visibility = View.GONE
+                binding.btnfrogoff.visibility = View.VISIBLE
+                putBlockingState(false)
+            }
+            else{
+                //알람 설정
+                Log.d(TAG, "onViewCreated: 알람켬")
+                binding.btnfrogon.visibility = View.VISIBLE
+                binding.btnfrogoff.visibility = View.GONE
+                putBlockingState(true)
+            }
+        }
         checkPermission()
-
         initRecyclerView()
     }
 

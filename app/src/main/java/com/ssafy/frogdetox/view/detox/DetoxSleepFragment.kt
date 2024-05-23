@@ -19,8 +19,10 @@ import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.common.Permission
 import com.ssafy.frogdetox.common.SharedPreferencesManager.getHour
 import com.ssafy.frogdetox.common.SharedPreferencesManager.getMinute
+import com.ssafy.frogdetox.common.SharedPreferencesManager.getSleepState
 import com.ssafy.frogdetox.common.SharedPreferencesManager.putHour
 import com.ssafy.frogdetox.common.SharedPreferencesManager.putMinute
+import com.ssafy.frogdetox.common.SharedPreferencesManager.putSleepState
 import com.ssafy.frogdetox.common.alarm.AlarmManager
 import com.ssafy.frogdetox.common.getTimeInMillis
 import com.ssafy.frogdetox.common.getTodayInMillis
@@ -75,6 +77,21 @@ class DetoxSleepFragment : Fragment() {
             .into(binding.imgBall)
         val scale = resources.displayMetrics.density // 디바이스의 화면 밀도를 가져옵니다.
         val textSizeInPx = 25 * scale // dp를 px로 변환합니다.
+
+        if(getSleepState()){
+            binding.night.visibility=View.GONE
+            binding.ivon.visibility=View.VISIBLE
+            binding.ivoff.visibility=View.GONE
+            binding.tvon.visibility=View.VISIBLE
+            binding.tvoff.visibility=View.GONE
+        }
+        else{
+            binding.night.visibility=View.VISIBLE
+            binding.ivon.visibility=View.GONE
+            binding.ivoff.visibility=View.VISIBLE
+            binding.tvon.visibility = View.GONE
+            binding.tvoff.visibility=View.VISIBLE
+        }
         if(getHour()!=-1){
             if(getMinute()==0){
                 binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
@@ -122,20 +139,22 @@ class DetoxSleepFragment : Fragment() {
             binding.ivoff.visibility=View.VISIBLE
             binding.tvon.visibility = View.GONE
             binding.tvoff.visibility=View.VISIBLE
+            putSleepState(false)
             alarmManager.cancelScreenSaverAlarm()
         }
         binding.ivoff.setOnClickListener {
-            binding.night.visibility=View.GONE
-            binding.ivon.visibility=View.VISIBLE
-            binding.ivoff.visibility=View.GONE
-            binding.tvon.visibility=View.VISIBLE
-            binding.tvoff.visibility=View.GONE
-            if(getHour()!=-1)
+            if(getHour()!=-1){
                 alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
+                binding.night.visibility=View.GONE
+                binding.ivon.visibility=View.VISIBLE
+                binding.ivoff.visibility=View.GONE
+                binding.tvon.visibility=View.VISIBLE
+                binding.tvoff.visibility=View.GONE
+                putSleepState(true)
+            }
             else{
                 Toast.makeText(requireContext(),"알람 시간을 설정해주세요",Toast.LENGTH_SHORT).show()
             }
         }
     }
-
 }

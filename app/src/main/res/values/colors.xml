@@ -8,4 +8,5 @@
     <color name ="NightBlue">#7e81a2</color>
     <color name="todoListDeleteColor">#BE4941</color>
     <color name="halftransparent">#33000000</color>
+    <color name= "onRed">#ed6b31</color>
 </resources>
