@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import com.ssafy.frogdetox.common.getTimeInMillis
+import com.ssafy.frogdetox.common.getTodayInMillis
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.text.ParseException
@@ -74,27 +76,28 @@ class AlarmManager(private val context: Context) {
     }
 
     @SuppressLint("ScheduleExactAlarm")
-    fun setScreenSaverAlarm(context: Context,hour: Int?, minute : Int?){
+    fun setScreenSaverAlarm(context: Context, hour: Int?, minute : Int?){
         Log.d(TAG, "set hour $hour, minute $minute.")
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, ScreenSaverReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(context,100001,intent,
             PendingIntent.FLAG_IMMUTABLE)
-        val calendar = Calendar.getInstance().apply {
-            if (hour != null) {
-                set(Calendar.HOUR_OF_DAY,hour)
+        Calendar.getInstance().apply {
+            if (hour != null && minute != null) {
+                
+                // 지금보다 늦으면 다음 날로 설정
+                if(getTimeInMillis(hour, minute) < getTodayInMillis()) {
+                    add(Calendar.DAY_OF_MONTH, 1)
+                }
+
+                set(Calendar.HOUR_OF_DAY, hour)
+
+                set(Calendar.MINUTE, minute)
+
+                set(Calendar.SECOND,0)
+                
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
             }
-            else{
-                set(Calendar.HOUR_OF_DAY,11)
-            }
-            if (minute != null) {
-                set(Calendar.MINUTE,minute)
-            }
-            else{
-                set(Calendar.MINUTE,0)
-            }
-            set(Calendar.SECOND,0)
         }
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,calendar.timeInMillis,pendingIntent)
     }
 }
