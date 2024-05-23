@@ -1,6 +1,5 @@
 package com.ssafy.frogdetox.view.todo
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,7 +32,7 @@ class TodoViewModel: ViewModel() {
     }
 
     suspend fun currentTodo(): String{
-        return todoRepo.getThreeTodo()
+        return todoRepo.getTodo()
     }
     suspend fun selectTodo(id: String): TodoDto {
         return todoRepo.todoSelect(id)

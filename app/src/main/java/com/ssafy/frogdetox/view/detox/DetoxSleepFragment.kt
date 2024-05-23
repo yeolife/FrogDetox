@@ -58,20 +58,23 @@ class DetoxSleepFragment : Fragment() {
     }
 
     @SuppressLint("ServiceCast")
-    private fun checkPermission() {
-        val overlayPermission = Settings.canDrawOverlays(mainActivity)
+    private fun checkPermission() : Boolean {
+        var overlayPermission = Settings.canDrawOverlays(mainActivity)
+        var reminderPermission = Permission.isExactAlarmPermissionGranted(mainActivity)
 
-        if (!overlayPermission) {
+        if (!overlayPermission|| !reminderPermission) {
+            Toast.makeText(requireContext(), "잠자기 알림 기능을 사용하시려면 아래 권한을 허용하셔야합니다.",Toast.LENGTH_SHORT).show()
             val bottomSheet = DetoxBlockingBottomSheetFragment(2)
             bottomSheet.show(childFragmentManager, bottomSheet.tag)
         }
-
+        overlayPermission = Settings.canDrawOverlays(mainActivity)
+        reminderPermission = Permission.isExactAlarmPermissionGranted(mainActivity)
+        return overlayPermission&&reminderPermission
     }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkPermission()
         alarmManager = AlarmManager(context as MainActivity)
 
         Glide.with(this)
@@ -108,54 +111,60 @@ class DetoxSleepFragment : Fragment() {
             }
         }
         binding.tvSleepTime.setOnClickListener {
-            val binding2 =
-                DialogSleepBinding.inflate(LayoutInflater.from(requireContext()))
-            val dialog = AlertDialog.Builder(requireContext())
-                .setPositiveButton("확인") { dialog, _ ->
-                    putHour(binding2.calendarView.hour)
+            if(checkPermission()){
+                val binding2 =
+                    DialogSleepBinding.inflate(LayoutInflater.from(requireContext()))
+                val dialog = AlertDialog.Builder(requireContext())
+                    .setPositiveButton("확인") { dialog, _ ->
+                        putHour(binding2.calendarView.hour)
 
-                    putMinute(binding2.calendarView.minute)
-                    if(binding2.calendarView.minute==0){
-                        binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
-                        binding.tvSleepTime.text = binding2.calendarView.hour.toString()+"시에\n자야지"
+                        putMinute(binding2.calendarView.minute)
+                        if(binding2.calendarView.minute==0){
+                            binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
+                            binding.tvSleepTime.text = binding2.calendarView.hour.toString()+"시에\n자야지"
+                        }
+                        else {
+                            binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
+                            binding.tvSleepTime.text = binding2.calendarView.hour.toString() + "시" + binding2.calendarView.minute.toString() + "분에\n자야지"
+                        }
+                        binding.night.visibility= View.GONE
+                        binding.ivon.visibility=View.VISIBLE
+                        binding.ivoff.visibility=View.GONE
+                        binding.tvon.visibility=View.VISIBLE
+                        binding.tvoff.visibility=View.GONE
+                        alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
+
+                        dialog.dismiss()
                     }
-                    else {
-                        binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
-                        binding.tvSleepTime.text = binding2.calendarView.hour.toString() + "시" + binding2.calendarView.minute.toString() + "분에\n자야지"
+                    .setNegativeButton("취소") { dialog, _ ->
+                        dialog.dismiss()
                     }
-                    binding.night.visibility= View.GONE
+                dialog.setView(binding2.root)
+                dialog.show()
+            }
+        }
+        binding.ivon.setOnClickListener {
+            if(checkPermission()){
+                binding.night.visibility=View.VISIBLE
+                binding.ivon.visibility=View.GONE
+                binding.ivoff.visibility=View.VISIBLE
+                binding.tvon.visibility = View.GONE
+                binding.tvoff.visibility=View.VISIBLE
+                putSleepState(false)
+                alarmManager.cancelScreenSaverAlarm()
+            }
+        }
+        binding.ivoff.setOnClickListener {
+            if(getHour()!=-1){
+                if(checkPermission()){
+                    alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
+                    binding.night.visibility=View.GONE
                     binding.ivon.visibility=View.VISIBLE
                     binding.ivoff.visibility=View.GONE
                     binding.tvon.visibility=View.VISIBLE
                     binding.tvoff.visibility=View.GONE
-                    alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
-
-                    dialog.dismiss()
+                    putSleepState(true)
                 }
-                .setNegativeButton("취소") { dialog, _ ->
-                    dialog.dismiss()
-                }
-            dialog.setView(binding2.root)
-            dialog.show()
-        }
-        binding.ivon.setOnClickListener {
-            binding.night.visibility=View.VISIBLE
-            binding.ivon.visibility=View.GONE
-            binding.ivoff.visibility=View.VISIBLE
-            binding.tvon.visibility = View.GONE
-            binding.tvoff.visibility=View.VISIBLE
-            putSleepState(false)
-            alarmManager.cancelScreenSaverAlarm()
-        }
-        binding.ivoff.setOnClickListener {
-            if(getHour()!=-1){
-                alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
-                binding.night.visibility=View.GONE
-                binding.ivon.visibility=View.VISIBLE
-                binding.ivoff.visibility=View.GONE
-                binding.tvon.visibility=View.VISIBLE
-                binding.tvoff.visibility=View.GONE
-                putSleepState(true)
             }
             else{
                 Toast.makeText(requireContext(),"알람 시간을 설정해주세요",Toast.LENGTH_SHORT).show()

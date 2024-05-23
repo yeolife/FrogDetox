@@ -115,7 +115,6 @@ class TodoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkPermission()
         Log.d(TAG, "onViewCreated: ${userName} $userImgUrl")
         binding.tvName.text=userName+"님"
         binding.ivFrog.load(userImgUrl) {
@@ -136,16 +135,22 @@ class TodoFragment : Fragment() {
 
         initTodoDateCalendar()
     }
-    private fun checkPermission() {
-        val notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
+    private fun checkPermission() :Boolean{
+        var notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
 
-        val reminderPermission = Settings.canDrawOverlays(context)
+        var reminderPermission = Permission.isExactAlarmPermissionGranted(mainActivity)
 
         if (!notiPermission || !reminderPermission) {
+            Toast.makeText(requireContext(), "알림 받기 기능을 사용하시려면 아래 권한을 허용하셔야합니다.",Toast.LENGTH_SHORT).show()
             val bottomSheet = DetoxBlockingBottomSheetFragment(1)
             bottomSheet.show(childFragmentManager, bottomSheet.tag)
         }
+        notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
+
+        reminderPermission = Permission.isExactAlarmPermissionGranted(mainActivity)
+        return notiPermission&&reminderPermission
     }
+
     private fun initTodoRecyclerView() {
         todoRecycler = binding.rvTodo
 
@@ -202,18 +207,18 @@ class TodoFragment : Fragment() {
                     bindingTMD.tvloading.text="흠..."
                     bindingTMD.lyAiText.visibility = View.GONE
                     bindingTMD.tvloading.visibility= View.VISIBLE
-                    while (true) {
+                    for(i in 0..5) {
                         bindingTMD.tvloading.text = bindingTMD.tvloading.text.toString()+" 🤔"
                         delay(500) // 1초마다 일시 중지
                     }
                 }
 
                 val todoString = viewModel.currentTodo()
-
+                Log.d(TAG, "todoRegisterDialog: $todoString")
                 val prompt = if(todoString!=""){
-                    "평소 ${todoString} 같은 일을 하는 사람에게 할 일을 '~~하기' 형식으로 비슷한 할 일 10글자 내외로 하나만 추천해줘. 출력은 본론만 간결히 한줄로"
+                    "평소 ${todoString} 같은 일을 하는 사람에게 할 일을 다양한 느낌으로'~~하기' 형식으로 10글자 내외로 하나만 추천해줘. 출력은 본론만 간결히 한줄로."
                 }else{
-                    "일상적인 할 일 하나 '~~하기' 형식으로 추천해줘. 출력은 본론만 간결히 한줄로"
+                    "일상적인 할 일 하나 '~~하기' 형식으로 추천해줘. 출력은 본론만 간결히 한줄로."
                 }
                 val url = URL("https://api.openai.com/v1/chat/completions")
                 val connection = url.openConnection() as HttpURLConnection
@@ -292,46 +297,49 @@ class TodoFragment : Fragment() {
             // Positive Button 커스텀 추가
             val positiveButton = bindingTMD.positiveButton
             positiveButton.setOnClickListener {
-                if (bindingTMD.etTodo.text.isBlank()) {
-                    Toast.makeText(requireContext(), "내용을 입력하세요. 개굴!", Toast.LENGTH_SHORT).show()
-                } else {
-                    todo.uId = getUId().toString()
-                    todo.content = bindingTMD.etTodo.text.toString()
-                    todo.isAlarm = bindingTMD.switch2.isChecked
-                    viewModel.selectDay.value?.let {
-                        todo.regTime = it
-                    }
-
-                    if (todo.alarmCode != -1) {
-                        alarmManager.cancelAlarm(todo.alarmCode)
-                    }
-
-                    if (bindingTMD.switch2.isChecked) {
-                        val hour = bindingTMD.calendarView.hour
-                        val minute = bindingTMD.calendarView.minute
-                        var strMinute = minute.toString()
-
-                        if (bindingTMD.calendarView.minute < 10)
-                            strMinute = "0$strMinute"
-                        if (hour >= 12)
-                            todo.time = "⏰ PM " + (hour - 12).toString() + ":" + strMinute
-                        else
-                            todo.time = "⏰ AM " + bindingTMD.calendarView.hour + ":" + strMinute
-
-                        if(getTimeInMillis(hour, minute) >= getTodayInMillis()) {
-                            todo.alarmCode = registerAlarm()
-                        }
+                if(checkPermission()) {
+                    if (bindingTMD.etTodo.text.isBlank()) {
+                        Toast.makeText(requireContext(), "내용을 입력하세요. 개굴!", Toast.LENGTH_SHORT)
+                            .show()
                     } else {
-                        todo.alarmCode = -1
-                        todo.time = ""
+                        todo.uId = getUId().toString()
+                        todo.content = bindingTMD.etTodo.text.toString()
+                        todo.isAlarm = bindingTMD.switch2.isChecked
+                        viewModel.selectDay.value?.let {
+                            todo.regTime = it
+                        }
+
+                        if (todo.alarmCode != -1) {
+                            alarmManager.cancelAlarm(todo.alarmCode)
+                        }
+
+                        if (bindingTMD.switch2.isChecked) {
+                            val hour = bindingTMD.calendarView.hour
+                            val minute = bindingTMD.calendarView.minute
+                            var strMinute = minute.toString()
+
+                            if (bindingTMD.calendarView.minute < 10)
+                                strMinute = "0$strMinute"
+                            if (hour >= 12)
+                                todo.time = "⏰ PM " + (hour - 12).toString() + ":" + strMinute
+                            else
+                                todo.time = "⏰ AM " + bindingTMD.calendarView.hour + ":" + strMinute
+
+                            if (getTimeInMillis(hour, minute) >= getTodayInMillis()) {
+                                todo.alarmCode = registerAlarm()
+                            }
+                        } else {
+                            todo.alarmCode = -1
+                            todo.time = ""
+                        }
+
+                        if (state == TODO_INSERT)
+                            viewModel.addTodo(todo)
+                        else if (state == TODO_UPDATE)
+                            viewModel.updateTodoContent(todo)
+
+                        dialog.dismiss()
                     }
-
-                    if (state == TODO_INSERT)
-                        viewModel.addTodo(todo)
-                    else if (state == TODO_UPDATE)
-                        viewModel.updateTodoContent(todo)
-
-                    dialog.dismiss()
                 }
             }
 
@@ -345,6 +353,7 @@ class TodoFragment : Fragment() {
         bindingTMD.switch2.setOnClickListener {
             if (bindingTMD.switch2.isChecked) {
                 bindingTMD.calendarView.visibility = View.VISIBLE
+                checkPermission()
             } else {
                 bindingTMD.calendarView.visibility = View.GONE
             }
