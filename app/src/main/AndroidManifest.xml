@@ -10,6 +10,8 @@
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" /> <!-- Alarm 화면보호기 설정 -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" /> <!-- 설치된 모든 앱 불러오기 권한 -->
     <!--화면 들어 깨우기-->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
@@ -18,7 +20,6 @@
     <queries>
         <intent>
             <action android:name="android.intent.action.SEND" />
-
             <data android:mimeType="image/jpeg" />
         </intent>
     </queries>
