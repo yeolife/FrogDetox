@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.common.Permission.isAccessibilityServiceEnabled
+import com.ssafy.frogdetox.common.Permission.isExactAlarmPermissionGranted
 import com.ssafy.frogdetox.common.SharedPreferencesManager.getBlockingState
 import com.ssafy.frogdetox.common.SharedPreferencesManager.putBlockingState
 import com.ssafy.frogdetox.common.SharedPreferencesManager.setAppState
@@ -90,7 +91,7 @@ class DetoxBlockingFragment : Fragment() {
 
         val notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
 
-        val reminderPermission = true
+        val reminderPermission = isExactAlarmPermissionGranted(mainActivity)
 
         val accessibilityPermission = isAccessibilityServiceEnabled(mainActivity, AccessibilityService::class.java)
 
