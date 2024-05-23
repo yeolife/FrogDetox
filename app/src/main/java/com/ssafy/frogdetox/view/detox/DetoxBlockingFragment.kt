@@ -24,6 +24,7 @@ import com.ssafy.frogdetox.common.SharedPreferencesManager.setAppState
 import com.ssafy.frogdetox.data.AppInfoDto
 import com.ssafy.frogdetox.databinding.FragmentDetoxBlockingBinding
 import com.ssafy.frogdetox.view.MainActivity
+import kotlin.math.log
 
 private const val TAG = "DetoxBlockingFragment"
 class DetoxBlockingFragment : Fragment() {
@@ -123,6 +124,11 @@ class DetoxBlockingFragment : Fragment() {
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
 
         val apps = packageManager.queryIntentActivities(intent, 0)
+
+        apps.forEach { app ->
+            Log.d("AppInfo", "Found app: ${app.loadLabel(packageManager)}")
+        }
+
         return apps.filter { app ->
             app.activityInfo.packageName != context.packageName
         }.map { app ->
@@ -134,7 +140,3 @@ class DetoxBlockingFragment : Fragment() {
         }
     }
 }
-
-// 1번 이 목록들로 화면 위에 화면 띄우게 설정하기
-// sharedpreference로 패키지명을 키로하고 boolean값을 저장해놓는다.
-// 앱을 켤때마다 shared 초기화하고 다시 저장

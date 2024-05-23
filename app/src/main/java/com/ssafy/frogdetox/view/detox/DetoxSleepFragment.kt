@@ -59,7 +59,7 @@ class DetoxSleepFragment : Fragment() {
 
     @SuppressLint("ServiceCast")
     private fun checkPermission() {
-        val overlayPermission = Settings.canDrawOverlays( mainActivity)
+        val overlayPermission = Settings.canDrawOverlays(mainActivity)
 
         if (!overlayPermission) {
             val bottomSheet = DetoxBlockingBottomSheetFragment(2)

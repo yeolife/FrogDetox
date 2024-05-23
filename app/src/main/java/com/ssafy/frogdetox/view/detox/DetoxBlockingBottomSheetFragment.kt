@@ -4,7 +4,6 @@ import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -13,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ssafy.frogdetox.common.Permission.isAccessibilityServiceEnabled
@@ -53,7 +51,6 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -73,8 +70,9 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
             activityLauncher.launch(intent)
         }
         binding.llReminder.setOnClickListener {
-            val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:" + requireContext().packageName))
-            intent.addCategory(Intent.CATEGORY_DEFAULT)
+            val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply{
+                putExtra(Settings.EXTRA_APP_PACKAGE, mainActivity.packageName)
+            }
             activityLauncher.launch(intent)
         }
         binding.llAccessibility.setOnClickListener {
