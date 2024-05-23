@@ -62,6 +62,16 @@
         app:layout_constraintStart_toEndOf="@+id/ivFrog"
         app:layout_constraintTop_toTopOf="@id/ivFrog" />
 
+    <ImageView
+        android:id="@+id/btn_logout"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="12dp"
+        android:src="@drawable/logout"
+        app:layout_constraintBottom_toTopOf="@+id/llWeek"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvName" />
+
     <TextView
         android:id="@+id/tvDont"
         android:layout_width="wrap_content"

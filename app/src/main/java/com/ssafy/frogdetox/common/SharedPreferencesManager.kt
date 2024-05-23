@@ -3,6 +3,7 @@ package com.ssafy.frogdetox.common
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import okhttp3.internal.cache2.Relay.Companion.edit
 
 private const val TAG = "SharedPreferencesManage_싸피"
 object SharedPreferencesManager {
@@ -22,6 +23,10 @@ object SharedPreferencesManager {
 
     fun getUId(): String? {
         return preferences.getString("id", "")
+    }
+
+    fun clearPreferences() {
+        preferences.edit().clear().apply()
     }
 
     fun putSleepState(state:Boolean){

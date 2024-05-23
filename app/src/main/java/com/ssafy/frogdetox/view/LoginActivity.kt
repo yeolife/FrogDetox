@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Log.d(TAG, "onCreate: ")
         SharedPreferencesManager.init(this)
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -59,15 +59,37 @@ class LoginActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = Firebase.auth
 
+        // Intent에서 "state" 값 검사
+        val state = intent.getIntExtra("state", 0) // 기본값은 0
+        if (state == 1) {
+            clearAuthentication()
+        }
     }
+    private fun clearAuthentication() {
+        // Firebase 로그아웃
+        auth.signOut()
 
+        // Google 로그아웃
+        googleSignInClient.signOut().addOnCompleteListener(this) {
+            // 로그아웃 후 UI 업데이트
+            updateUI(null)
+        }
+
+        // SharedPreferences 내용 삭제
+        SharedPreferencesManager.clearPreferences()
+
+        // 필요한 경우 사용자에게 로그아웃 되었음을 알리기
+        Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+    }
     override fun onStart() {
         super.onStart()
+        Log.d(TAG, "onStart: ")
         val currentUser = auth.currentUser
         updateUI(currentUser)
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
+        Log.d(TAG, "firebaseAuthWithGoogle: ")
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
@@ -83,6 +105,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUI(user: FirebaseUser?) {
+        Log.d(TAG, "updateUI: ")
         if (user != null) {
             val intent2 = Intent(this, MainActivity::class.java).apply {
                 putExtra("url", user.photoUrl.toString())
@@ -98,6 +121,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun signIn() {
+        Log.d(TAG, "signIn: ")
         val signInIntent = googleSignInClient.signInIntent
         activityLauncher.launch(signInIntent)
     }

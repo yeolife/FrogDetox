@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.databinding.ActivityMainBinding
 import com.ssafy.frogdetox.view.detox.DetoxFragment
-import com.ssafy.frogdetox.view.setting.SettingFragment
 import com.ssafy.frogdetox.view.todo.TodoFragment
 
 class MainActivity : AppCompatActivity() {
@@ -38,7 +37,6 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
                 R.id.detoxTab -> transaction.replace(R.id.mainFrameLayout, DetoxFragment())
-                R.id.settingTab -> transaction.replace(R.id.mainFrameLayout, SettingFragment())
             }
             transaction.commit()
 
@@ -58,16 +56,11 @@ class MainActivity : AppCompatActivity() {
                 transaction.replace(binding.mainFrameLayout.id, DetoxFragment())
                     .commit()
             }
-            SETTING_FRAGMENT -> {
-                transaction.replace(binding.mainFrameLayout.id, SettingFragment())
-                    .commit()
-            }
         }
     }
 
     companion object {
         const val TODO_FRAGMENT = 1
         const val DETOX_FRAGMENT = 2
-        const val SETTING_FRAGMENT = 3
     }
 }

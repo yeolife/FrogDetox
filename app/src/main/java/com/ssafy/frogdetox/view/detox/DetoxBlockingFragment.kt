@@ -89,7 +89,7 @@ class DetoxBlockingFragment : Fragment() {
 
         val notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
 
-        val reminderPermission = Settings.canDrawOverlays(context)
+        val reminderPermission = true
 
         val accessibilityPermission = isAccessibilityServiceEnabled(mainActivity, AccessibilityService::class.java)
 

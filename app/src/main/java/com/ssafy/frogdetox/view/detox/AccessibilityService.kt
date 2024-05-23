@@ -32,9 +32,6 @@ class AccessibilityService : AccessibilityService() {
                 }
             }
         }
-        else{
-            Log.d(TAG, "onAccessibilityEvent: 감지됐지만 실행안됨")
-        }
     }
 
     override fun onInterrupt() {
