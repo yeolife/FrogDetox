@@ -42,6 +42,8 @@ import com.ssafy.frogdetox.common.Permission
 import com.ssafy.frogdetox.common.SharedPreferencesManager.getUId
 import com.ssafy.frogdetox.common.alarm.AlarmManager
 import com.ssafy.frogdetox.common.displayText
+import com.ssafy.frogdetox.common.getTimeInMillis
+import com.ssafy.frogdetox.common.getTodayInMillis
 import com.ssafy.frogdetox.common.getWeekPageTitle
 import com.ssafy.frogdetox.common.todoListSwiper.SwipeController
 import com.ssafy.frogdetox.view.detox.AccessibilityService
@@ -199,8 +201,8 @@ class TodoFragment : Fragment() {
                     }
                 }
 
-                val todoString =viewModel.currentTodo()
-                Log.d(TAG, "todoRegisterDialog: $todoString")
+                val todoString = viewModel.currentTodo()
+
                 val prompt = if(todoString!=""){
                     "평소 ${todoString} 같은 일을 하는 사람에게 할 일을 '~~하기' 형식으로 비슷한 할 일 10글자 내외로 하나만 추천해줘. 출력은 본론만 간결히 한줄로"
                 }else{
@@ -298,17 +300,22 @@ class TodoFragment : Fragment() {
                     }
 
                     if (bindingTMD.switch2.isChecked) {
-                        todo.alarmCode = registerAlarm()
-
                         val hour = bindingTMD.calendarView.hour
-                        var strMinute = bindingTMD.calendarView.minute.toString()
+                        val minute = bindingTMD.calendarView.minute
+                        var strMinute = minute.toString()
 
                         if (bindingTMD.calendarView.minute < 10)
-                            strMinute = "0" + bindingTMD.calendarView.minute.toString()
+                            strMinute = "0$strMinute"
                         if (hour > 12)
                             todo.time = "⏰ PM " + (hour - 12).toString() + ":" + strMinute
                         else
                             todo.time = "⏰ AM " + bindingTMD.calendarView.hour + ":" + strMinute
+
+                        if(getTimeInMillis(hour, minute) >= getTodayInMillis()) {
+                            Log.d(TAG, "todoRegisterDialog: ${getTimeInMillis(hour, minute)} ${getTodayInMillis()}")
+                            
+                            todo.alarmCode = registerAlarm()
+                        }
                     } else {
                         todo.alarmCode = -1
                         todo.time = ""

@@ -12,6 +12,8 @@ import java.time.Month
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.TextStyle
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 fun YearMonth.displayText(short: Boolean = false): String {
@@ -35,6 +37,21 @@ fun LongToLocalDate(time: Long): LocalDate {
         .toLocalDate()
 
     return date
+}
+
+// 특정 시간과 분의 밀리초를 얻는 함수
+fun getTimeInMillis(hourOfDay: Int, minute: Int): Long {
+    val calendar = Calendar.getInstance()
+    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+    calendar.set(Calendar.MINUTE, minute)
+    calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
+    return calendar.timeInMillis
+}
+
+// 현재 시간 long 반환
+fun getTodayInMillis(): Long {
+    return System.currentTimeMillis()
 }
 
 fun Context.findActivity(): Activity {

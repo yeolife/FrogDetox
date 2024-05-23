@@ -22,6 +22,8 @@ import com.ssafy.frogdetox.common.SharedPreferencesManager.getMinute
 import com.ssafy.frogdetox.common.SharedPreferencesManager.putHour
 import com.ssafy.frogdetox.common.SharedPreferencesManager.putMinute
 import com.ssafy.frogdetox.common.alarm.AlarmManager
+import com.ssafy.frogdetox.common.getTimeInMillis
+import com.ssafy.frogdetox.common.getTodayInMillis
 import com.ssafy.frogdetox.databinding.DialogSleepBinding
 import com.ssafy.frogdetox.databinding.FragmentDetoxSleepBinding
 import com.ssafy.frogdetox.view.LoginActivity
@@ -89,6 +91,7 @@ class DetoxSleepFragment : Fragment() {
             val dialog = AlertDialog.Builder(requireContext())
                 .setPositiveButton("확인") { dialog, _ ->
                     putHour(binding2.calendarView.hour)
+
                     putMinute(binding2.calendarView.minute)
                     if(binding2.calendarView.minute==0){
                         binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
@@ -98,7 +101,7 @@ class DetoxSleepFragment : Fragment() {
                         binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
                         binding.tvSleepTime.text = binding2.calendarView.hour.toString() + "시" + binding2.calendarView.minute.toString() + "분에\n자야지"
                     }
-                    binding.night.visibility=View.GONE
+                    binding.night.visibility= View.GONE
                     binding.ivon.visibility=View.VISIBLE
                     binding.ivoff.visibility=View.GONE
                     binding.tvon.visibility=View.VISIBLE
