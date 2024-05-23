@@ -8,10 +8,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.ssafy.frogdetox.view.LoginActivity
 import com.ssafy.frogdetox.data.TodoDto
 import com.ssafy.frogdetox.common.LongToLocalDate
-import com.ssafy.frogdetox.common.SharedPreferencesManager
 import com.ssafy.frogdetox.common.SharedPreferencesManager.getUId
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -54,25 +52,29 @@ class TodoRepository {
         })
         return mutableData
     }
-    suspend fun getThreeTodo(): String {
+    suspend fun getTodo(): String {
         val deferred = CompletableDeferred<String>()
 
         var result = ""
         var count = 0
-
+        val dtoList = arrayListOf<TodoDto>()
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     for (curSnapshot in snapshot.children) {
-                        if (count >= 6) break
                         val getData = curSnapshot.getValue(TodoDto::class.java)
                         if (getData != null) {
                             if (getData.uId == getUId()) {
-                                result += getData.content + ", "
-                                count++
+                                dtoList.add(getData)
                             }
                         }
                     }
+                    for(i in 0..(dtoList.size-1)){
+                        result += dtoList[dtoList.size-1-i].content + ", "
+                        count++
+                        if (count >= 10) break
+                    }
+
                     deferred.complete(result)
                 }
             }
