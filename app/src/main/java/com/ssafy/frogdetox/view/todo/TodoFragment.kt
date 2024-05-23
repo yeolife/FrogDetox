@@ -3,6 +3,7 @@ package com.ssafy.frogdetox.view.todo
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -39,6 +40,7 @@ import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.common.LongToLocalDate
 import com.ssafy.frogdetox.common.Permission
+import com.ssafy.frogdetox.common.SharedPreferencesManager.clearPreferences
 import com.ssafy.frogdetox.common.SharedPreferencesManager.getUId
 import com.ssafy.frogdetox.common.alarm.AlarmManager
 import com.ssafy.frogdetox.common.displayText
@@ -120,7 +122,12 @@ class TodoFragment : Fragment() {
             transformations(CircleCropTransformation())
             placeholder(R.drawable.ic_launcher_foreground)
         }
-
+        binding.btnLogout.setOnClickListener {
+            val intent3 = Intent(requireContext(),LoginActivity::class.java)
+            intent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent3.putExtra("state", 1)
+            startActivity(intent3)
+        }
         alarmManager = AlarmManager(mainActivity)
 
         observerTodoList()

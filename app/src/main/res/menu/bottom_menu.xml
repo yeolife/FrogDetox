@@ -15,10 +15,4 @@
         android:title="잠자기"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/settingTab"
-        android:enabled="true"
-        android:icon="@drawable/baseline_settings_24"
-        android:title="내정보"
-        app:showAsAction="always" />
 </menu>
