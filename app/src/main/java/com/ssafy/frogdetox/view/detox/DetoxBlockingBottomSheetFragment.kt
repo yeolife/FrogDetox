@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -12,9 +13,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ssafy.frogdetox.common.Permission.isAccessibilityServiceEnabled
+import com.ssafy.frogdetox.common.Permission.isExactAlarmPermissionGranted
 import com.ssafy.frogdetox.databinding.FragmentDetoxBlockingBottomSheetBinding
 import com.ssafy.frogdetox.view.MainActivity
 
@@ -51,6 +54,7 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -95,7 +99,7 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
         val notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
 
         //시간 설정하고 알림 주도록 함.
-        val reminderPermission = Settings.canDrawOverlays(context)
+        val reminderPermission = isExactAlarmPermissionGranted(mainActivity)
 
         val accessibilityPermission = isAccessibilityServiceEnabled(mainActivity, AccessibilityService::class.java)
 
