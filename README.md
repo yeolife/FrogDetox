@@ -2,11 +2,11 @@
   <img src="https://github.com/yeolife/frogDetox/assets/82012857/42d157ad-236e-47af-adf9-d363de4fff63" width="25%" height="35%">
   <img src="https://github.com/yeolife/frogDetox/assets/82012857/9a29470a-ab7f-4392-a855-d2c67ebad209" width="25%" height="35%">
 </div>
-
+<br>
 <img src="https://github.com/yeolife/frogDetox/assets/82012857/343cb9c2-ee4d-430f-9633-abc28ffd5412">
- 
-<img src="https://github.com/yeolife/frogDetox/assets/82012857/fda22bcd-ffe2-4b2e-9037-8aee89218d8a">
 <br><br>
+<img src="https://github.com/yeolife/frogDetox/assets/82012857/fda22bcd-ffe2-4b2e-9037-8aee89218d8a">
+<br><br><br>
 
 [개요]
 
