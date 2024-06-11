@@ -84,4 +84,9 @@ dependencies {
     //gpt 통신
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation ("com.google.code.gson:gson:2.8.8")
+
+    // room db
+    val room_version = "2.6.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
 }
