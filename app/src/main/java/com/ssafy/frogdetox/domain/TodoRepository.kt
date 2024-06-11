@@ -69,7 +69,7 @@ class TodoRepository {
                             }
                         }
                     }
-                    for(i in 0..(dtoList.size-1)){
+                    for(i in 0 ..< dtoList.size){
                         result += dtoList[dtoList.size-1-i].content + ", "
                         count++
                         if (count >= 10) break
