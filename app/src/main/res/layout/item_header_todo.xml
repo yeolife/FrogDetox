@@ -1,34 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_todoHeader"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="12dp">
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <data>
-        <variable
-            name="clickListener"
-            type="com.ssafy.frogdetox.view.todo.ItemClickListener" />
-    </data>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_add_box_24"
+        android:paddingHorizontal="12dp"/>
 
-    <LinearLayout
-        android:id="@+id/ll_todoRegister"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingVertical="12dp"
-        android:onClick="@{() -> clickListener.onHeaderClick()}">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_add_box_24"
-            android:paddingHorizontal="12dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:text="투두 추가하기"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
-    </LinearLayout>
-</layout>
+        android:layout_marginBottom="2dp"
+        android:text="투두 추가하기"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+</LinearLayout>

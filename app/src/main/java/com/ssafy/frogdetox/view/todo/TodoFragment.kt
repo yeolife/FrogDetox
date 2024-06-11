@@ -154,13 +154,17 @@ class TodoFragment : Fragment() {
     private fun initTodoRecyclerView() {
         todoRecycler = binding.rvTodo
 
-        todoAdapter = TodoListAdapter(ItemClickListener { id, state ->
-            if (state == TODO_INSERT) {
-                todoRegisterDialog(TODO_INSERT, id)
-            } else if (state == TODO_UPDATE) {
-                todoRegisterDialog(TODO_UPDATE, id)
+        todoAdapter = TodoListAdapter()
+
+        todoAdapter.todoClickListener = object : TodoListAdapter.TodoClickListener {
+            override fun onTodoClick(id: String, state: Int) {
+                if(state == TODO_UPDATE) {
+                    todoRegisterDialog(TODO_UPDATE, id)
+                } else if(state == TODO_INSERT) {
+                    todoRegisterDialog(TODO_INSERT, "-1")
+                }
             }
-        })
+        }
 
         todoRecycler.apply {
             adapter = todoAdapter

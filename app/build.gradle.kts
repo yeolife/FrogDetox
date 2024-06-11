@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    id ("org.jetbrains.kotlin.kapt")
+    id("com.google.devtools.ksp")
     id("com.google.gms.google-services");
 }
 
@@ -36,9 +36,6 @@ android {
         jvmTarget = "1.8"
     }
     viewBinding{
-        enable = true
-    }
-    dataBinding {
         enable = true
     }
 }
