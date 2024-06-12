@@ -52,6 +52,7 @@ class AlarmManager(private val context: Context) {
 
         //API 23(android 6.0) 이상(해당 api 레벨부터 도즈모드 도입으로 setExact 사용 시 알람이 울리지 않음)
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,pendingIntent)
+        Log.d(TAG, "callAlarm: 알람 등록 완료 $time $alarm_code $content")
     }
 
     fun cancelAlarm(alarm_code: Int) {
