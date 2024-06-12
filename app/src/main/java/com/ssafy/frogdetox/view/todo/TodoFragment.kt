@@ -48,6 +48,7 @@ import com.ssafy.frogdetox.common.getTimeInMillis
 import com.ssafy.frogdetox.common.getTodayInMillis
 import com.ssafy.frogdetox.common.getWeekPageTitle
 import com.ssafy.frogdetox.common.todoListSwiper.SwipeController
+import com.ssafy.frogdetox.data.TodoAlarmDto
 import com.ssafy.frogdetox.domain.FrogDetoxDatabase
 import com.ssafy.frogdetox.view.detox.AccessibilityService
 import com.ssafy.frogdetox.view.detox.DetoxBlockingBottomSheetFragment
@@ -119,7 +120,6 @@ class TodoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d(TAG, "onViewCreated: ${userName} $userImgUrl")
         binding.tvName.text = userName + "님"
         binding.ivFrog.load(userImgUrl) {
             transformations(CircleCropTransformation())
@@ -169,6 +169,9 @@ class TodoFragment : Fragment() {
             override fun onTodoClick(id: String, state: Int) {
                 if (state == TODO_UPDATE) {
                     todoRegisterDialog(TODO_UPDATE, id)
+                    lifecycleScope.launch {
+                        db!!.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
+                    }
                 } else if (state == TODO_INSERT) {
                     todoRegisterDialog(TODO_INSERT, "-1")
                 }
@@ -190,9 +193,8 @@ class TodoFragment : Fragment() {
                     viewModel.selectTodo(id).alarmCode.let {
                         alarmManager.cancelAlarm(it)
                     }
-
+                    db!!.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
                     viewModel.deleteTodo(id)
-
                     db!!.todoDao().delete(id)
                 }
             }
@@ -200,7 +202,10 @@ class TodoFragment : Fragment() {
 
         todoAdapter.todoCompleteListener = object : TodoListAdapter.TodoCompleteListener {
             override fun onChecked(id: String, isChecked: Boolean) {
-                viewModel.updateTodoComplete(id, isChecked)
+                lifecycleScope.launch {
+                    db!!.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
+                    viewModel.updateTodoComplete(id, isChecked)
+                }
             }
         }
     }
@@ -229,7 +234,6 @@ class TodoFragment : Fragment() {
                 }
 
                 val todoString = viewModel.currentTodo()
-                Log.d(TAG, "todoRegisterDialog: $todoString")
                 val prompt = if (todoString != "") {
                     "평소 ${todoString} 같은 일을 하는 사람에게 할 일을 다양한 느낌으로'~~하기' 형식으로 10글자 내외로 하나만 추천해줘. 출력은 본론만 간결히 한줄로."
                 } else {
@@ -326,6 +330,9 @@ class TodoFragment : Fragment() {
 
                         if (todo.alarmCode != -1) {
                             alarmManager.cancelAlarm(todo.alarmCode)
+                            lifecycleScope.launch {
+                                db!!.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
+                            }
                         }
 
                         if (bindingTMD.switch2.isChecked) {
@@ -342,6 +349,13 @@ class TodoFragment : Fragment() {
 
                             if (getTimeInMillis(hour, minute) >= getTodayInMillis()) {
                                 todo.alarmCode = registerAlarm()
+                                lifecycleScope.launch {
+                                    val alarmdto = TodoAlarmDto()
+                                    alarmdto.alarm_code=todo.alarmCode
+                                    alarmdto.time = "${LongToLocalDate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
+                                    alarmdto.content = bindingTMD.etTodo.text.toString()
+                                    db!!.todoAlarmDao().insert(alarmdto)
+                                }
                             }
                         } else {
                             todo.alarmCode = -1
