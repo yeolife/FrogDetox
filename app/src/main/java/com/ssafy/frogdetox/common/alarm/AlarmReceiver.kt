@@ -75,7 +75,10 @@ class AlarmReceiver : BroadcastReceiver() {
                     }
                 }
             }
-
+            //재부팅 sleep 알림 등록
+            if (SharedPreferencesManager.getSleepState()){
+                alarmManager.setScreenSaverAlarm(context,SharedPreferencesManager.getHour(),SharedPreferencesManager.getMinute())
+            }
         } else {
             manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
