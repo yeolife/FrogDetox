@@ -347,7 +347,7 @@ class TodoFragment : Fragment() {
                             else
                                 todo.time = "⏰ AM " + bindingTMD.calendarView.hour + ":" + strMinute
 
-                            if (getTimeInMillis(hour, minute) >= getTodayInMillis()) {
+                            if(viewModel.selectDay.value!! >= getTodayInMillis()){//다음날
                                 todo.alarmCode = registerAlarm()
                                 lifecycleScope.launch {
                                     val alarmdto = TodoAlarmDto()
@@ -355,6 +355,18 @@ class TodoFragment : Fragment() {
                                     alarmdto.time = "${LongToLocalDate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
                                     alarmdto.content = bindingTMD.etTodo.text.toString()
                                     db!!.todoAlarmDao().insert(alarmdto)
+                                }
+                            }
+                            else if(getTodayInMillis()- viewModel.selectDay.value!! <=86400000){
+                                if (getTimeInMillis(hour, minute) >= getTodayInMillis()) {
+                                    todo.alarmCode = registerAlarm()
+                                    lifecycleScope.launch {
+                                        val alarmdto = TodoAlarmDto()
+                                        alarmdto.alarm_code=todo.alarmCode
+                                        alarmdto.time = "${LongToLocalDate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
+                                        alarmdto.content = bindingTMD.etTodo.text.toString()
+                                        db!!.todoAlarmDao().insert(alarmdto)
+                                    }
                                 }
                             }
                         } else {
