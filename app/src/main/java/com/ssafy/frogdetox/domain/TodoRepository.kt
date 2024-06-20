@@ -19,26 +19,22 @@ import java.util.concurrent.CountDownLatch
 
 class TodoRepository {
     private val myRef = Firebase.database.getReference("Todo")
+    private val uidQuery = myRef.orderByChild("uid").equalTo(getUId())
 
-    fun getData(selectday : Long) : LiveData<MutableList<TodoDto>> {
+    fun getData(selectDay : Long) : LiveData<MutableList<TodoDto>> {
         val mutableData = MutableLiveData<MutableList<TodoDto>>()
 
-        myRef.addValueEventListener(object : ValueEventListener {
+        uidQuery.addValueEventListener(object : ValueEventListener {
             val listData : MutableList<TodoDto> = mutableListOf()
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                val selectvalue = LongToLocalDate(selectday)
-                lateinit var listvalue: LocalDate
-                if(snapshot.exists()){
+                if(snapshot.exists()) {
                     listData.clear()
                     for(curSnapshot in snapshot.children){
                         val getData = curSnapshot.getValue(TodoDto::class.java)
                         if (getData != null) {
-                            if(getData.uId== getUId()){
-                                listvalue = LongToLocalDate(getData.regTime)
-                                if(selectvalue==listvalue)
-                                    listData.add(getData)
-                            }
+                            if(selectDay == getData.regTime)
+                                listData.add(getData)
                         }
                     }
 
@@ -46,9 +42,7 @@ class TodoRepository {
                 }
             }
 
-            override fun onCancelled(error: DatabaseError) {
-            }
-
+            override fun onCancelled(error: DatabaseError) { }
         })
         return mutableData
     }
@@ -58,15 +52,13 @@ class TodoRepository {
         var result = ""
         var count = 0
         val dtoList = arrayListOf<TodoDto>()
-        myRef.addValueEventListener(object : ValueEventListener {
+        uidQuery.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     for (curSnapshot in snapshot.children) {
                         val getData = curSnapshot.getValue(TodoDto::class.java)
                         if (getData != null) {
-                            if (getData.uId == getUId()) {
-                                dtoList.add(getData)
-                            }
+                            dtoList.add(getData)
                         }
                     }
                     for(i in 0 ..< dtoList.size){
@@ -120,7 +112,7 @@ class TodoRepository {
     }
 
     fun todoContentUpdate(todo: TodoDto) {
-        val childUpdates: Map<String, Any> = mapOf("content" to todo.content, "alarm" to todo.isAlarm,"alarmCode" to todo.alarmCode,"time" to todo.time)
+        val childUpdates: Map<String, Any> = mapOf("content" to todo.content, "alarm" to todo.isAlarm,"alarmCode" to todo.alarmCode,"time" to todo.alarmTime)
 
         myRef.child(todo.id).updateChildren(childUpdates)
     }
