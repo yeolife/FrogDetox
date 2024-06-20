@@ -88,7 +88,9 @@ class TodoFragment : Fragment() {
     private val dateFormatter = DateTimeFormatter.ofPattern("dd")
 
     val viewModel: TodoViewModel by viewModels()
-    private var db: FrogDetoxDatabase? = null
+    private val db: FrogDetoxDatabase by lazy {
+        FrogDetoxDatabase.getInstance(requireContext())
+    }
 
     private var userImgUrl: String? = null
     private var userName: String? = null
@@ -113,7 +115,6 @@ class TodoFragment : Fragment() {
     ): View {
         _binding = FragmentTodoBinding.inflate(inflater, container, false)
         bindingTMD = DialogTodomakeBinding.inflate(layoutInflater)
-        db = FrogDetoxDatabase.getInstance(requireContext())
 
         return binding.root
     }
@@ -170,7 +171,7 @@ class TodoFragment : Fragment() {
                 if (state == TODO_UPDATE) {
                     todoRegisterDialog(TODO_UPDATE, id)
                     lifecycleScope.launch {
-                        db!!.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
+                        db.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
                     }
                 } else if (state == TODO_INSERT) {
                     todoRegisterDialog(TODO_INSERT, "-1")
@@ -193,9 +194,9 @@ class TodoFragment : Fragment() {
                     viewModel.selectTodo(id).alarmCode.let {
                         alarmManager.cancelAlarm(it)
                     }
-                    db!!.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
+                    db.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
                     viewModel.deleteTodo(id)
-                    db!!.todoDao().delete(id)
+                    db.todoDao().delete(id)
                 }
             }
         }
@@ -203,7 +204,7 @@ class TodoFragment : Fragment() {
         todoAdapter.todoCompleteListener = object : TodoListAdapter.TodoCompleteListener {
             override fun onChecked(id: String, isChecked: Boolean) {
                 lifecycleScope.launch {
-                    db!!.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
+                    db.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
                     viewModel.updateTodoComplete(id, isChecked)
                 }
             }
@@ -220,7 +221,7 @@ class TodoFragment : Fragment() {
         bindingTMD.lyAiText.visibility = View.VISIBLE
         bindingTMD.lyResult.visibility = View.GONE
         //network작업 Runnable --> lambda
-        bindingTMD.tvAiText.setOnClickListener { v: View? ->
+        bindingTMD.tvAiText.setOnClickListener {
             val apiKey = "sk-proj-aKurzhjxFAHM3X4c2b4aT3BlbkFJYmvUVRqAZSRrvEc99E93"
             GlobalScope.launch(Dispatchers.IO) {
                 val job = CoroutineScope(Dispatchers.Main).launch {
@@ -331,7 +332,7 @@ class TodoFragment : Fragment() {
                         if (todo.alarmCode != -1) {
                             alarmManager.cancelAlarm(todo.alarmCode)
                             lifecycleScope.launch {
-                                db!!.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
+                                db.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
                             }
                         }
 
@@ -343,9 +344,9 @@ class TodoFragment : Fragment() {
                             if (bindingTMD.calendarView.minute < 10)
                                 strMinute = "0$strMinute"
                             if (hour >= 12)
-                                todo.time = "⏰ PM " + (hour - 12).toString() + ":" + strMinute
+                                todo.alarmTime = "⏰ PM " + (hour - 12).toString() + ":" + strMinute
                             else
-                                todo.time = "⏰ AM " + bindingTMD.calendarView.hour + ":" + strMinute
+                                todo.alarmTime = "⏰ AM " + bindingTMD.calendarView.hour + ":" + strMinute
 
                             if(viewModel.selectDay.value!! >= getTodayInMillis()){//다음날
                                 todo.alarmCode = registerAlarm()
@@ -354,7 +355,7 @@ class TodoFragment : Fragment() {
                                     alarmdto.alarm_code=todo.alarmCode
                                     alarmdto.time = "${LongToLocalDate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
                                     alarmdto.content = bindingTMD.etTodo.text.toString()
-                                    db!!.todoAlarmDao().insert(alarmdto)
+                                    db.todoAlarmDao().insert(alarmdto)
                                 }
                             }
                             else if(getTodayInMillis()- viewModel.selectDay.value!! <=86400000){
@@ -371,26 +372,26 @@ class TodoFragment : Fragment() {
                             }
                         } else {
                             todo.alarmCode = -1
-                            todo.time = ""
+                            todo.alarmTime = ""
                         }
 
                         if (state == TODO_INSERT) {
                             viewModel.addTodo(todo)
 
                             lifecycleScope.launch(Dispatchers.IO) {
-                                db!!.todoDao().insert(todo)
+                                db.todoDao().insert(todo)
                             }
                         } else if (state == TODO_UPDATE) {
                             viewModel.updateTodoContent(todo)
 
                             lifecycleScope.launch(Dispatchers.IO) {
-                                db!!.todoDao().update(
+                                db.todoDao().update(
                                     id = todo.id,
                                     content = todo.content,
                                     regTime = todo.regTime,
                                     complete = todo.complete,
                                     isAlarm = todo.isAlarm,
-                                    time = todo.time,
+                                    time = todo.alarmTime,
                                     alarmCode = todo.alarmCode
                                 )
                             }

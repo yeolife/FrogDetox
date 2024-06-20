@@ -90,7 +90,7 @@ class TodoListAdapter() :
             binding.tvTime.apply {
                 if (item.isAlarm) {
                     visibility = View.VISIBLE
-                    text = item.time
+                    text = item.alarmTime
                 } else {
                     visibility = View.GONE
                 }

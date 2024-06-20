@@ -34,4 +34,7 @@ interface TodoDao {
 
     @Query("DELETE FROM todo WHERE id = :id")
     suspend fun delete(id: String)
+
+    @Query("SELECT * FROM todo WHERE isSynced = 0")
+    suspend fun getUnsyncedTodos(): List<TodoDto>
 }

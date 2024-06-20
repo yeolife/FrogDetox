@@ -46,7 +46,7 @@ class AlarmReceiver : BroadcastReceiver() {
             Log.d(TAG, "onReceive: 재부팅팅!!")
             SharedPreferencesManager.init(context)
             coroutineScope.launch {
-                val list = db!!.todoAlarmDao().getAllTodoAlarm()
+                val list = db.todoAlarmDao().getAllTodoAlarm()
                 val size = db.todoAlarmDao().getAllTodoAlarm().size
                 Log.d(TAG, "onReceive: $size")
                 list.let {
@@ -121,7 +121,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 manager.notify(1, notification)
             }
             coroutineScope.launch {
-                db!!.todoAlarmDao().delete(requestCode)
+                db.todoAlarmDao().delete(requestCode)
             }
         }
     }
