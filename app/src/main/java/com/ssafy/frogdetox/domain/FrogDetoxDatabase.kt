@@ -5,14 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.ssafy.frogdetox.data.TodoAlarmDto
-import com.ssafy.frogdetox.data.TodoDto
 import com.ssafy.frogdetox.domain.dao.TodoAlarmDao
-import com.ssafy.frogdetox.domain.dao.TodoDao
 
-@Database(entities = [TodoDto::class, TodoAlarmDto::class], version = 1)
+@Database(entities = [TodoAlarmDto::class], version = 1)
 abstract class FrogDetoxDatabase : RoomDatabase() {
-
-    abstract fun todoDao(): TodoDao
     abstract fun todoAlarmDao(): TodoAlarmDao
 
     companion object {
