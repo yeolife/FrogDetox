@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -101,6 +103,7 @@ class TodoFragment : Fragment() {
             userImgUrl = it.getString("url")
             userName = it.getString("name")
         }
+
     }
 
     override fun onAttach(context: Context) {
@@ -132,6 +135,9 @@ class TodoFragment : Fragment() {
             intent3.putExtra("state", 1)
             startActivity(intent3)
         }
+
+        Firebase.database.setPersistenceEnabled(true)
+
         alarmManager = AlarmManager(mainActivity)
 
         observerTodoList()

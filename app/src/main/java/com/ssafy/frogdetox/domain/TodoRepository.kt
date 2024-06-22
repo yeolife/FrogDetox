@@ -18,7 +18,9 @@ import java.time.LocalDate
 import java.util.concurrent.CountDownLatch
 
 class TodoRepository {
-    private val myRef = Firebase.database.getReference("Todo")
+    private val myRef = Firebase.database.getReference("Todo").apply {
+        keepSynced(true)
+    }
     private val uidQuery = myRef.orderByChild("uid").equalTo(getUId())
 
     fun getData(selectDay : Long) : LiveData<MutableList<TodoDto>> {
