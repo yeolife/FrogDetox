@@ -2,34 +2,77 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     tools:context=".view.LoginActivity">
 
-
-    <TextView
-        android:id="@+id/tvName"
+    <!-- 화면의 30% 지점에 가이드라인 설정 -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="청깨구리 디톡스"
-        android:textSize="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnMain"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.20" />
 
-    <Button
-        android:id="@+id/btnMain"
+    <LinearLayout
+        android:id="@+id/ll_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_login"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="30dp"
+            android:src="@drawable/cutefrogicon" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TODO &amp;\nDopamine detox"
+                android:textAlignment="textEnd"
+                android:textColor="#848484"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="청깨구리"
+                android:textAlignment="textEnd"
+                android:textSize="36dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_signIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="구글계정으로 로그인"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:backgroundTint="#ffffff"
+        android:drawableLeft="@drawable/googleg_standard_color_18"
+        android:drawablePadding="12dp"
+        android:gravity="center_vertical"
+        android:padding="18dp"
+        android:text="구글로 시작하기"
+        android:textColor="#848484"
+        android:textStyle="bold"
+        android:layout_marginTop="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+        app:layout_constraintTop_toBottomOf="@+id/ll_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
