@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.databinding.ActivityMainBinding
 import com.ssafy.frogdetox.view.detox.DetoxFragment
@@ -15,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)

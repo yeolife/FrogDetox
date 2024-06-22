@@ -5,12 +5,9 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
@@ -23,8 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import coil.transform.CircleCropTransformation
-import com.google.firebase.Firebase
-import com.google.firebase.database.database
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -42,7 +37,6 @@ import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.common.LongToLocalDate
 import com.ssafy.frogdetox.common.Permission
-import com.ssafy.frogdetox.common.SharedPreferencesManager.clearPreferences
 import com.ssafy.frogdetox.common.SharedPreferencesManager.getUId
 import com.ssafy.frogdetox.common.alarm.AlarmManager
 import com.ssafy.frogdetox.common.displayText
@@ -52,7 +46,6 @@ import com.ssafy.frogdetox.common.getWeekPageTitle
 import com.ssafy.frogdetox.common.todoListSwiper.SwipeController
 import com.ssafy.frogdetox.data.TodoAlarmDto
 import com.ssafy.frogdetox.domain.FrogDetoxDatabase
-import com.ssafy.frogdetox.view.detox.AccessibilityService
 import com.ssafy.frogdetox.view.detox.DetoxBlockingBottomSheetFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -136,8 +129,6 @@ class TodoFragment : Fragment() {
             startActivity(intent3)
         }
 
-        Firebase.database.setPersistenceEnabled(true)
-
         alarmManager = AlarmManager(mainActivity)
 
         observerTodoList()
@@ -202,7 +193,6 @@ class TodoFragment : Fragment() {
                     }
                     db.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
                     viewModel.deleteTodo(id)
-                    db.todoDao().delete(id)
                 }
             }
         }
@@ -323,88 +313,69 @@ class TodoFragment : Fragment() {
             // Positive Button 커스텀 추가
             val positiveButton = bindingTMD.positiveButton
             positiveButton.setOnClickListener {
-                if (checkPermission()) {
-                    if (bindingTMD.etTodo.text.isBlank()) {
-                        Toast.makeText(requireContext(), "내용을 입력하세요. 개굴!", Toast.LENGTH_SHORT)
-                            .show()
-                    } else {
-                        todo.uId = getUId().toString()
-                        todo.content = bindingTMD.etTodo.text.toString()
-                        todo.isAlarm = bindingTMD.switch2.isChecked
-                        viewModel.selectDay.value?.let {
-                            todo.regTime = it
-                        }
+                if (bindingTMD.etTodo.text.isBlank()) {
+                    Toast.makeText(requireContext(), "내용을 입력하세요. 개굴!", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    todo.uId = getUId().toString()
+                    todo.content = bindingTMD.etTodo.text.toString()
+                    todo.isAlarm = bindingTMD.switch2.isChecked
+                    viewModel.selectDay.value?.let {
+                        todo.regTime = it
+                    }
 
-                        if (todo.alarmCode != -1) {
-                            alarmManager.cancelAlarm(todo.alarmCode)
+                    if (todo.alarmCode != -1) {
+                        alarmManager.cancelAlarm(todo.alarmCode)
+                        lifecycleScope.launch {
+                            db.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
+                        }
+                    }
+
+                    if(bindingTMD.switch2.isChecked) {
+                        val hour = bindingTMD.calendarView.hour
+                        val minute = bindingTMD.calendarView.minute
+                        var strMinute = minute.toString()
+
+                        if (bindingTMD.calendarView.minute < 10)
+                            strMinute = "0$strMinute"
+                        if (hour >= 12)
+                            todo.alarmTime = "⏰ PM " + (hour - 12).toString() + ":" + strMinute
+                        else
+                            todo.alarmTime = "⏰ AM " + bindingTMD.calendarView.hour + ":" + strMinute
+
+                        if(viewModel.selectDay.value!! >= getTodayInMillis()){//다음날
+                            todo.alarmCode = registerAlarm()
                             lifecycleScope.launch {
-                                db.todoAlarmDao().delete(viewModel.selectTodo(id).alarmCode)
+                                val alarmdto = TodoAlarmDto()
+                                alarmdto.alarm_code=todo.alarmCode
+                                alarmdto.time = "${LongToLocalDate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
+                                alarmdto.content = bindingTMD.etTodo.text.toString()
+                                db.todoAlarmDao().insert(alarmdto)
                             }
-                        }
-
-                        if (bindingTMD.switch2.isChecked) {
-                            val hour = bindingTMD.calendarView.hour
-                            val minute = bindingTMD.calendarView.minute
-                            var strMinute = minute.toString()
-
-                            if (bindingTMD.calendarView.minute < 10)
-                                strMinute = "0$strMinute"
-                            if (hour >= 12)
-                                todo.alarmTime = "⏰ PM " + (hour - 12).toString() + ":" + strMinute
-                            else
-                                todo.alarmTime = "⏰ AM " + bindingTMD.calendarView.hour + ":" + strMinute
-
-                            if(viewModel.selectDay.value!! >= getTodayInMillis()){//다음날
+                        } else if(getTodayInMillis()- viewModel.selectDay.value!! <=86400000){
+                            if (getTimeInMillis(hour, minute) >= getTodayInMillis()) {
                                 todo.alarmCode = registerAlarm()
                                 lifecycleScope.launch {
                                     val alarmdto = TodoAlarmDto()
                                     alarmdto.alarm_code=todo.alarmCode
                                     alarmdto.time = "${LongToLocalDate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
                                     alarmdto.content = bindingTMD.etTodo.text.toString()
-                                    db.todoAlarmDao().insert(alarmdto)
+                                    db!!.todoAlarmDao().insert(alarmdto)
                                 }
                             }
-                            else if(getTodayInMillis()- viewModel.selectDay.value!! <=86400000){
-                                if (getTimeInMillis(hour, minute) >= getTodayInMillis()) {
-                                    todo.alarmCode = registerAlarm()
-                                    lifecycleScope.launch {
-                                        val alarmdto = TodoAlarmDto()
-                                        alarmdto.alarm_code=todo.alarmCode
-                                        alarmdto.time = "${LongToLocalDate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
-                                        alarmdto.content = bindingTMD.etTodo.text.toString()
-                                        db!!.todoAlarmDao().insert(alarmdto)
-                                    }
-                                }
-                            }
-                        } else {
-                            todo.alarmCode = -1
-                            todo.alarmTime = ""
                         }
-
-                        if (state == TODO_INSERT) {
-                            viewModel.addTodo(todo)
-
-                            lifecycleScope.launch(Dispatchers.IO) {
-                                db.todoDao().insert(todo)
-                            }
-                        } else if (state == TODO_UPDATE) {
-                            viewModel.updateTodoContent(todo)
-
-                            lifecycleScope.launch(Dispatchers.IO) {
-                                db.todoDao().update(
-                                    id = todo.id,
-                                    content = todo.content,
-                                    regTime = todo.regTime,
-                                    complete = todo.complete,
-                                    isAlarm = todo.isAlarm,
-                                    time = todo.alarmTime,
-                                    alarmCode = todo.alarmCode
-                                )
-                            }
-                        }
-
-                        dialog.dismiss()
+                    } else {
+                        todo.alarmCode = -1
+                        todo.alarmTime = ""
                     }
+
+                    if (state == TODO_INSERT) {
+                        viewModel.addTodo(todo)
+                    } else if (state == TODO_UPDATE) {
+                        viewModel.updateTodoContent(todo)
+                    }
+
+                    dialog.dismiss()
                 }
             }
 
@@ -415,12 +386,15 @@ class TodoFragment : Fragment() {
             }
         }
 
-        bindingTMD.switch2.setOnClickListener {
-            if (bindingTMD.switch2.isChecked) {
-                bindingTMD.calendarView.visibility = View.VISIBLE
-                checkPermission()
+        bindingTMD.switch2.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(!checkPermission()) {
+                bindingTMD.switch2.isChecked = false
             } else {
-                bindingTMD.calendarView.visibility = View.GONE
+                if (bindingTMD.switch2.isChecked) {
+                    bindingTMD.calendarView.isVisible = true
+                } else {
+                    bindingTMD.calendarView.isVisible = false
+                }
             }
         }
 
@@ -439,6 +413,7 @@ class TodoFragment : Fragment() {
         val random = (1 .. 100000) // 1~100000 범위에서 알람코드 랜덤으로 생성
         val alarmCode = random.random()
         setAlarm(alarmCode, bindingTMD.etTodo.text.toString(), time)
+
         return alarmCode
     }
 
@@ -486,7 +461,7 @@ class TodoFragment : Fragment() {
                     R.color.white
                 }
 //                bind.exSevenDateText.setTextColor(view.context.getColorCompat(colorRes))
-                bind.exSevenSelectedView.isVisible = day.date == selectedDate
+                bind.exSevenSelectedView.isVisible = (day.date == selectedDate)
             }
         }
 

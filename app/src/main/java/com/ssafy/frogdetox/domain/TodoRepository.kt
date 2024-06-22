@@ -9,14 +9,13 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.ssafy.frogdetox.data.TodoDto
-import com.ssafy.frogdetox.common.LongToLocalDate
 import com.ssafy.frogdetox.common.SharedPreferencesManager.getUId
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.LocalDate
 import java.util.concurrent.CountDownLatch
 
+private const val TAG = "TodoRepository_싸피"
 class TodoRepository {
     private val myRef = Firebase.database.getReference("Todo").apply {
         keepSynced(true)
@@ -34,9 +33,8 @@ class TodoRepository {
                     listData.clear()
                     for(curSnapshot in snapshot.children){
                         val getData = curSnapshot.getValue(TodoDto::class.java)
-                        if (getData != null) {
-                            if(selectDay == getData.regTime)
-                                listData.add(getData)
+                        if (getData != null && selectDay == getData.regTime) {
+                            listData.add(getData)
                         }
                     }
 
@@ -44,7 +42,9 @@ class TodoRepository {
                 }
             }
 
-            override fun onCancelled(error: DatabaseError) { }
+            override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "Failed to read value.", error.toException())
+            }
         })
         return mutableData
     }
