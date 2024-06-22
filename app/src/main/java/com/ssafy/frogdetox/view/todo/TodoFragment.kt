@@ -213,73 +213,88 @@ class TodoFragment : Fragment() {
 
         bindingTMD.etTodo.setText("")
         bindingTMD.switch2.isChecked = false
-        bindingTMD.calendarView.visibility = View.GONE
-        bindingTMD.lyAiText.visibility = View.VISIBLE
-        bindingTMD.lyResult.visibility = View.GONE
+        bindingTMD.calendarView.isVisible = false
+        bindingTMD.lyAiText.isVisible = true
+        bindingTMD.lyResult.isVisible = false
         //network작업 Runnable --> lambda
         bindingTMD.tvAiText.setOnClickListener {
             val apiKey = "sk-proj-aKurzhjxFAHM3X4c2b4aT3BlbkFJYmvUVRqAZSRrvEc99E93"
             GlobalScope.launch(Dispatchers.IO) {
                 val job = CoroutineScope(Dispatchers.Main).launch {
                     bindingTMD.tvloading.text = "흠..."
-                    bindingTMD.lyAiText.visibility = View.GONE
-                    bindingTMD.tvloading.visibility = View.VISIBLE
+                    bindingTMD.tvloading.isVisible = true
+                    bindingTMD.lyAiText.isVisible = false
+
                     for (i in 0 .. 5) {
                         bindingTMD.tvloading.text = bindingTMD.tvloading.text.toString() + " 🤔"
                         delay(500) // 1초마다 일시 중지
                     }
                 }
 
-                val todoString = viewModel.currentTodo()
-                val prompt = if (todoString != "") {
-                    "평소 ${todoString} 같은 일을 하는 사람에게 할 일을 다양한 느낌으로'~~하기' 형식으로 10글자 내외로 하나만 추천해줘. 출력은 본론만 간결히 한줄로."
-                } else {
-                    "일상적인 할 일 하나 '~~하기' 형식으로 추천해줘. 출력은 본론만 간결히 한줄로."
-                }
-                val url = URL("https://api.openai.com/v1/chat/completions")
-                val connection = url.openConnection() as HttpURLConnection
+                runCatching {
+                    val todoString = viewModel.currentTodo()
+                    val prompt = if (todoString != "") {
+                        "평소 ${todoString} 같은 일을 하는 사람에게 할 일을 다양한 느낌으로'~~하기' 형식으로 10글자 내외로 하나만 추천해줘. 출력은 본론만 간결히 한줄로."
+                    } else {
+                        "일상적인 할 일 하나 '~~하기' 형식으로 추천해줘. 출력은 본론만 간결히 한줄로."
+                    }
+                    val url = URL("https://api.openai.com/v1/chat/completions")
+                    val connection = url.openConnection() as HttpURLConnection
 
-                connection.requestMethod = "POST"
-                connection.setRequestProperty("Content-Type", "application/json")
-                connection.setRequestProperty("Authorization", "Bearer $apiKey")
-                connection.doOutput = true // outputStream으로 post로 데이터 전송
+                    connection.requestMethod = "POST"
+                    connection.setRequestProperty("Content-Type", "application/json")
+                    connection.setRequestProperty("Authorization", "Bearer $apiKey")
+                    connection.doOutput = true // outputStream으로 post로 데이터 전송
 
-                val out = BufferedWriter(OutputStreamWriter(connection.outputStream))
-                out.write(
-                    """
+                    val out = BufferedWriter(OutputStreamWriter(connection.outputStream))
+                    out.write(
+                        """
                 {    "model": "gpt-3.5-turbo",    "messages": [{"role": "user", "content": "$prompt"}],    "temperature": 0.7}
                 """.trimIndent()
-                )
-                out.flush()
-                out.close()
+                    )
+                    out.flush()
+                    out.close()
 
-                val reader = BufferedReader(InputStreamReader(connection.inputStream))
+                    val reader = BufferedReader(InputStreamReader(connection.inputStream))
 
-                val read = StringBuilder()
-                var temp: String? = ""
-                while (reader.readLine().also { temp = it } != null) {
-                    read.append(temp)
-                }
-                val jsonResponse: JsonObject = JsonParser.parseString(read.toString()).asJsonObject
-                val choices: JsonArray = jsonResponse.getAsJsonArray("choices")
-                val firstChoice: JsonObject = choices.get(0).asJsonObject
-                val message: JsonObject = firstChoice.getAsJsonObject("message")
-                var content: String = message.get("content").asString
-                if (content.get(content.length - 1) == '.') {
-                    content = content.subSequence(0, content.length - 1).toString()
-                }
-                withContext(Dispatchers.Main) {
-                    job.cancel()
-                    bindingTMD.tvResultText.text = content
-                    bindingTMD.lyResult.visibility = View.VISIBLE
-                    bindingTMD.tvResultClick.visibility = View.VISIBLE
-                    bindingTMD.tvloading.visibility = View.GONE
-                    bindingTMD.lyResult.isEnabled = false
-                    delay(1000) // 클릭 1초 막기
-                    bindingTMD.lyResult.isEnabled = true
+                    val read = StringBuilder()
+                    var temp: String? = ""
+                    while (reader.readLine().also { temp = it } != null) {
+                        read.append(temp)
+                    }
+                    val jsonResponse: JsonObject = JsonParser.parseString(read.toString()).asJsonObject
+                    val choices: JsonArray = jsonResponse.getAsJsonArray("choices")
+                    val firstChoice: JsonObject = choices.get(0).asJsonObject
+                    val message: JsonObject = firstChoice.getAsJsonObject("message")
+                    var content: String = message.get("content").asString
+                    if (content.get(content.length - 1) == '.') {
+                        content = content.subSequence(0, content.length - 1).toString()
+                    }
+                    content
+                } .onSuccess { content ->
+                    withContext(Dispatchers.Main) {
+                        job.cancel()
+                        bindingTMD.tvResultText.text = content
+                        bindingTMD.lyResult.isVisible = true
+                        bindingTMD.tvResultClick.isVisible = true
+                        bindingTMD.tvloading.isVisible = false
+
+                        bindingTMD.lyResult.isEnabled = false
+                        delay(1000) // 클릭 1초 막기
+                        bindingTMD.lyResult.isEnabled = true
+                    }
+                } .onFailure { exception ->
+                    withContext(Dispatchers.Main) {
+                        job.cancel()
+
+                        bindingTMD.tvloading.isVisible = false
+                        bindingTMD.lyAiText.isVisible = true
+                        Toast.makeText(mainActivity, "ChatGPT가 유효하지 않습니다", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
+
         bindingTMD.lyResult.setOnClickListener {
             bindingTMD.etTodo.setText(bindingTMD.tvResultText.text)
             bindingTMD.lyResult.visibility = View.GONE
