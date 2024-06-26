@@ -138,15 +138,12 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUI(user: FirebaseUser?) {
-        Log.d(TAG, "updateUI: ")
         if (user != null) {
             val intent2 = Intent(this, MainActivity::class.java).apply {
                 putExtra("url", user.photoUrl.toString())
                 putExtra("name", user.displayName)
             }
-            Log.d(TAG, "updateUI: ${user.uid}")
             putUId(user.uid)
-            Log.d(TAG, "updateUI: !!! ${getUId()}")
             Toast.makeText(this, "환영합니다, ${user.displayName}님", Toast.LENGTH_SHORT).show()
             startActivity(intent2)
             finish()
