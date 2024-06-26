@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:gravity="right"
-        app:layout_constraintTop_toBottomOf="@id/ivFrog">
+        app:layout_constraintTop_toBottomOf="@id/lyPersonal">
 
         <TextView
             android:id="@+id/tvWeek"
@@ -26,8 +26,42 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
-
     </LinearLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/lyPersonal">
+        <ImageView
+            android:id="@+id/ivFrog"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="OOO님"
+            android:textSize="30sp"
+            app:layout_constraintStart_toEndOf="@+id/ivFrog"
+            app:layout_constraintTop_toTopOf="@id/ivFrog" />
+        <TextView
+            android:id="@+id/tvDont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="오늘은 이걸 하지마세요. 개~굴"
+            app:layout_constraintStart_toEndOf="@+id/ivFrog"
+            app:layout_constraintTop_toBottomOf="@+id/tvName" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.kizitonwose.calendar.view.WeekCalendarView
         android:id="@+id/rv_date"
@@ -41,26 +75,6 @@
         app:layout_constraintTop_toBottomOf="@+id/llWeek" />
 
 
-    <ImageView
-        android:id="@+id/ivFrog"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:src="@drawable/ic_launcher_background"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="OOO님"
-        android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/ivFrog"
-        app:layout_constraintTop_toTopOf="@id/ivFrog" />
 
     <ImageView
         android:id="@+id/btn_logout"
@@ -70,16 +84,9 @@
         android:src="@drawable/logout"
         app:layout_constraintBottom_toTopOf="@+id/llWeek"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tvName" />
-
-    <TextView
-        android:id="@+id/tvDont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="오늘은 이걸 하지마세요. 개~굴"
-        app:layout_constraintStart_toEndOf="@+id/ivFrog"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+        app:layout_constraintTop_toTopOf="@id/lyPersonal"
+        app:layout_constraintBottom_toBottomOf="@id/lyPersonal"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTodo"

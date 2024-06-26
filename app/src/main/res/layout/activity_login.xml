@@ -7,13 +7,21 @@
     android:background="@color/white"
     tools:context=".view.LoginActivity">
 
-    <!-- 화면의 30% 지점에 가이드라인 설정 -->
+    <!-- 화면의 20% 지점에 가이드라인 설정 -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.20" />
+        app:layout_constraintGuide_percent="0.2" />
+
+    <!-- 화면의 80% 지점에 가이드라인 설정 -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
 
     <LinearLayout
         android:id="@+id/ll_title"
@@ -42,10 +50,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TODO &amp;\nDopamine detox"
-                android:textAlignment="textEnd"
+                android:text="TODO &amp;\nDOPAMINE DETOX"
+                android:textAlignment="textStart"
                 android:textColor="#848484"
-                android:textSize="16dp"
+                android:textSize="15dp"
                 android:textStyle="bold" />
 
             <TextView
@@ -60,19 +68,20 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_signIn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:backgroundTint="#ffffff"
         android:drawableLeft="@drawable/googleg_standard_color_18"
         android:drawablePadding="12dp"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:padding="18dp"
         android:text="구글로 시작하기"
         android:textColor="#848484"
         android:textStyle="bold"
-        android:layout_marginTop="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_title" />
+        app:layout_constraintBottom_toTopOf="@id/guideline2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
