@@ -1,8 +1,10 @@
 package com.ssafy.frogdetox.view.todo
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -59,9 +61,13 @@ class TodoListAdapter() :
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
-            is DataItem.Header -> TYPE_HEADER
-            is DataItem.TodoItem -> TYPE_ITEM
+        return if(currentList.isEmpty()) {
+            TYPE_HEADER
+        } else {
+            when (getItem(position)) {
+                is DataItem.Header -> TYPE_HEADER
+                is DataItem.TodoItem -> TYPE_ITEM
+            }
         }
     }
 

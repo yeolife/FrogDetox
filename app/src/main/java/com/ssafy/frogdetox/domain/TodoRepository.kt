@@ -20,12 +20,12 @@ class TodoRepository {
     private val myRef = Firebase.database.getReference("Todo").apply {
         keepSynced(true)
     }
-    private val uidQuery = myRef.orderByChild("uid").equalTo(getUId())
+//    private val uidQuery = myRef.orderByChild("uid").equalTo(getUId())
 
     fun getData(selectDay : Long) : LiveData<MutableList<TodoDto>> {
         val mutableData = MutableLiveData<MutableList<TodoDto>>()
 
-        uidQuery.addValueEventListener(object : ValueEventListener {
+        myRef.addValueEventListener(object : ValueEventListener {
             val listData : MutableList<TodoDto> = mutableListOf()
 
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -33,7 +33,7 @@ class TodoRepository {
                     listData.clear()
                     for(curSnapshot in snapshot.children){
                         val getData = curSnapshot.getValue(TodoDto::class.java)
-                        if (getData != null && selectDay == getData.regTime) {
+                        if (getData != null && getData.uId== getUId() && selectDay == getData.regTime) {
                             listData.add(getData)
                         }
                     }
@@ -54,12 +54,12 @@ class TodoRepository {
         var result = ""
         var count = 0
         val dtoList = arrayListOf<TodoDto>()
-        uidQuery.addValueEventListener(object : ValueEventListener {
+        myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     for (curSnapshot in snapshot.children) {
                         val getData = curSnapshot.getValue(TodoDto::class.java)
-                        if (getData != null) {
+                        if (getData != null && getData.uId== getUId()) {
                             dtoList.add(getData)
                         }
                     }
