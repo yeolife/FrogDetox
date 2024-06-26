@@ -45,6 +45,7 @@ import com.ssafy.frogdetox.common.getTodayInMillis
 import com.ssafy.frogdetox.common.getWeekPageTitle
 import com.ssafy.frogdetox.common.todoListSwiper.SwipeController
 import com.ssafy.frogdetox.data.TodoAlarmDto
+import com.ssafy.frogdetox.databinding.DialogPersonalBinding
 import com.ssafy.frogdetox.domain.FrogDetoxDatabase
 import com.ssafy.frogdetox.view.detox.DetoxBlockingBottomSheetFragment
 import kotlinx.coroutines.CoroutineScope
@@ -73,6 +74,7 @@ class TodoFragment : Fragment() {
     private var _binding: FragmentTodoBinding? = null
     private val binding get() = _binding!!
     private lateinit var bindingTMD: DialogTodomakeBinding
+    private lateinit var bindingPD : DialogPersonalBinding
 
     private lateinit var todoRecycler: RecyclerView
     private lateinit var todoAdapter: TodoListAdapter
@@ -96,7 +98,6 @@ class TodoFragment : Fragment() {
             userImgUrl = it.getString("url")
             userName = it.getString("name")
         }
-
     }
 
     override fun onAttach(context: Context) {
@@ -111,7 +112,7 @@ class TodoFragment : Fragment() {
     ): View {
         _binding = FragmentTodoBinding.inflate(inflater, container, false)
         bindingTMD = DialogTodomakeBinding.inflate(layoutInflater)
-
+        bindingPD = DialogPersonalBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -127,6 +128,10 @@ class TodoFragment : Fragment() {
             intent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             intent3.putExtra("state", 1)
             startActivity(intent3)
+        }
+
+        binding.lyPersonal.setOnClickListener {
+            personalDialog(userImgUrl,userName)
         }
 
         alarmManager = AlarmManager(mainActivity)
@@ -417,6 +422,35 @@ class TodoFragment : Fragment() {
             ((bindingTMD.root.parent) as ViewGroup).removeView(bindingTMD.root)
         }
 
+        dialog.show()
+    }
+    private fun personalDialog(url: String?, name: String?) {
+        bindingPD.ivUrl.load(url) {
+            transformations(CircleCropTransformation())
+            placeholder(R.drawable.ic_launcher_foreground)
+        }
+        bindingPD.tvName.text = name+"님"
+        bindingPD.lyRealBye.visibility = View.GONE
+        bindingPD.lyBye.setOnClickListener {
+            bindingPD.lyRealBye.visibility = View.VISIBLE
+        }
+        bindingPD.btnYes.setOnClickListener {
+            val intent3 = Intent(requireContext(), LoginActivity::class.java)
+            intent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent3.putExtra("state", 2)
+            startActivity(intent3)
+        }
+        bindingPD.btnNo.setOnClickListener {
+            bindingPD.lyRealBye.visibility = View.GONE
+        }
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+        val dialog = dialogBuilder
+            .setView(bindingPD.root)
+            .setCancelable(true) // 다이얼로그 바깥을 클릭하면 닫히도록
+            .create()
+        if (bindingPD.root.parent != null) {
+            ((bindingPD.root.parent) as ViewGroup).removeView(bindingPD.root)
+        }
         dialog.show()
     }
 
