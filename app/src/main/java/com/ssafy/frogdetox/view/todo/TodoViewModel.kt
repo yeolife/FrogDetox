@@ -14,6 +14,7 @@ class TodoViewModel: ViewModel() {
     private val _selectDay = MutableLiveData<Long>().apply {
         value = LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
     }
+
     val selectDay : LiveData<Long>
         get() = _selectDay
 
@@ -22,10 +23,13 @@ class TodoViewModel: ViewModel() {
     }
 
     fun fetchData(): LiveData<MutableList<TodoDto>> {
-        val mutableData = MutableLiveData<MutableList<TodoDto>>()
+        val mutableData = MutableLiveData<MutableList<TodoDto>>().apply {
+            value = mutableListOf()
+        }
+
         selectDay.observeForever {
-            todoRepo.getData(it).observeForever {
-                mutableData.value = it
+            todoRepo.getData(it).observeForever { data ->
+                mutableData.value = data ?: mutableListOf()
             }
         }
         return mutableData
@@ -53,5 +57,4 @@ class TodoViewModel: ViewModel() {
     fun deleteTodo(id: String) {
         todoRepo.todoDelete(id)
     }
-
 }
