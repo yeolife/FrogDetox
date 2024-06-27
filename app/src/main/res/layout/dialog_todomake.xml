@@ -156,8 +156,8 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="-10dp"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/saylayout">
 
@@ -169,31 +169,18 @@
                 app:layout_constraintTop_toBottomOf="@id/saylayout"
                 app:srcCompat="@drawable/cutefrog" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text=" " />
-
             <EditText
                 android:id="@+id/etTodo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:layout_weight=".16"
                 android:hint="todo를 작성하세요"
                 android:inputType="textMultiLine"
                 android:lines="3"
+                android:layout_marginEnd="10dp"
                 android:maxLines="4"
                 android:minLines="1"
                 android:scrollbars="vertical" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text=" " />
-
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CountDownLatch
 
+private const val TAG = "TodoRepository_싸피"
 class TodoRepository {
     private val myRef = Firebase.database.getReference("Todo").apply {
         keepSynced(true)
@@ -107,13 +108,12 @@ class TodoRepository {
         val key = myRef.push().key.toString()
 
         todo.id = key
-
+        Log.d(TAG, "todoInsert: $key")
         myRef.child(key).setValue(todo)
     }
 
     fun todoContentUpdate(todo: TodoDto) {
-        val childUpdates: Map<String, Any> = mapOf("content" to todo.content, "alarm" to todo.isAlarm,"alarmCode" to todo.alarmCode,"time" to todo.alarmTime)
-
+        val childUpdates: Map<String, Any> = mapOf("content" to todo.content, "alarm" to todo.isAlarm,"alarmCode" to todo.alarmCode,"alarmTime" to todo.alarmTime)
         myRef.child(todo.id).updateChildren(childUpdates)
     }
 

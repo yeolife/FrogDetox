@@ -20,7 +20,6 @@ import com.ssafy.frogdetox.data.local.SharedPreferencesManager.getSleepState
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager.putHour
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager.putMinute
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager.putSleepState
-import com.ssafy.frogdetox.common.AlarmManager
 import com.ssafy.frogdetox.databinding.DialogSleepBinding
 import com.ssafy.frogdetox.databinding.FragmentDetoxSleepBinding
 import com.ssafy.frogdetox.ui.MainActivity
@@ -29,7 +28,7 @@ class DetoxSleepFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
 
     lateinit var binding : FragmentDetoxSleepBinding
-    lateinit var alarmManager: AlarmManager
+    lateinit var screenSaverManager : ScreenSaverManager
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -66,7 +65,7 @@ class DetoxSleepFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        alarmManager = AlarmManager(context as MainActivity)
+        screenSaverManager = ScreenSaverManager(context as MainActivity)
 
         Glide.with(this)
             .load(R.drawable.sleepfrog)
@@ -102,6 +101,7 @@ class DetoxSleepFragment : Fragment() {
             }
         }
         binding.tvSleepTime.setOnClickListener {
+            screenSaverManager.cancelScreenSaverAlarm()
             if(checkPermission()){
                 val binding2 =
                     DialogSleepBinding.inflate(LayoutInflater.from(requireContext()))
@@ -123,7 +123,7 @@ class DetoxSleepFragment : Fragment() {
                         binding.ivoff.visibility=View.GONE
                         binding.tvon.visibility=View.VISIBLE
                         binding.tvoff.visibility=View.GONE
-                        alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
+                        screenSaverManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
 
                         dialog.dismiss()
                     }
@@ -142,13 +142,13 @@ class DetoxSleepFragment : Fragment() {
                 binding.tvon.visibility = View.GONE
                 binding.tvoff.visibility=View.VISIBLE
                 putSleepState(false)
-                alarmManager.cancelScreenSaverAlarm()
+                screenSaverManager.cancelScreenSaverAlarm()
             }
         }
         binding.ivoff.setOnClickListener {
             if(getHour()!=-1){
                 if(checkPermission()){
-                    alarmManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
+                    screenSaverManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
                     binding.night.visibility=View.GONE
                     binding.ivon.visibility=View.VISIBLE
                     binding.ivoff.visibility=View.GONE
