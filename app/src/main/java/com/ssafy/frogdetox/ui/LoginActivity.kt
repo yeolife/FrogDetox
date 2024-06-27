@@ -15,10 +15,10 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.ssafy.frogdetox.R
-import com.ssafy.frogdetox.databinding.ActivityLoginBinding
+import com.ssafy.frogdetox.common.LocalAPIKey
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager.putUId
+import com.ssafy.frogdetox.databinding.ActivityLoginBinding
 
 private const val TAG = "LoginActivity_싸피"
 class LoginActivity : AppCompatActivity() {
@@ -46,8 +46,10 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.btnSignIn.setOnClickListener { signIn() }
 
+        val webClientId = LocalAPIKey.getSecretKey(this, "default_web_client_id")
+
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestIdToken(webClientId)
             .requestEmail()
             .build()
 

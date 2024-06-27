@@ -28,26 +28,27 @@ import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.view.ViewContainer
 import com.kizitonwose.calendar.view.WeekDayBinder
-import com.ssafy.frogdetox.ui.LoginActivity
-import com.ssafy.frogdetox.ui.MainActivity
 import com.ssafy.frogdetox.R
-import com.ssafy.frogdetox.data.model.TodoDto
-import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
-import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
-import com.ssafy.frogdetox.databinding.FragmentTodoBinding
+import com.ssafy.frogdetox.common.AlarmManager
+import com.ssafy.frogdetox.common.LocalAPIKey
 import com.ssafy.frogdetox.common.LongToLocaldate
 import com.ssafy.frogdetox.common.Permission
-import com.ssafy.frogdetox.data.local.SharedPreferencesManager.getUId
-import com.ssafy.frogdetox.common.AlarmManager
 import com.ssafy.frogdetox.common.displayText
 import com.ssafy.frogdetox.common.getTimeInMillis
 import com.ssafy.frogdetox.common.getTodayInMillis
 import com.ssafy.frogdetox.common.getWeekPageTitle
-import com.ssafy.frogdetox.ui.todo.todoListSwiper.SwipeController
-import com.ssafy.frogdetox.data.model.TodoAlarmDto
-import com.ssafy.frogdetox.databinding.DialogPersonalBinding
 import com.ssafy.frogdetox.data.local.FrogDetoxDatabase
+import com.ssafy.frogdetox.data.local.SharedPreferencesManager.getUId
+import com.ssafy.frogdetox.data.model.TodoAlarmDto
+import com.ssafy.frogdetox.data.model.TodoDto
+import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
+import com.ssafy.frogdetox.databinding.DialogPersonalBinding
+import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
+import com.ssafy.frogdetox.databinding.FragmentTodoBinding
+import com.ssafy.frogdetox.ui.LoginActivity
+import com.ssafy.frogdetox.ui.MainActivity
 import com.ssafy.frogdetox.ui.detox.DetoxBlockingBottomSheetFragment
+import com.ssafy.frogdetox.ui.todo.todoListSwiper.SwipeController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -223,7 +224,7 @@ class TodoFragment : Fragment() {
         bindingTMD.lyResult.isVisible = false
         //network작업 Runnable --> lambda
         bindingTMD.tvAiText.setOnClickListener {
-            val apiKey = "sk-proj-aKurzhjxFAHM3X4c2b4aT3BlbkFJYmvUVRqAZSRrvEc99E93"
+            val apiKey = LocalAPIKey.getSecretKey(mainActivity, "chatgpt_api_key")
             GlobalScope.launch(Dispatchers.IO) {
                 val job = CoroutineScope(Dispatchers.Main).launch {
                     bindingTMD.tvloading.text = "흠..."

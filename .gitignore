@@ -13,6 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+local.defaults.properties
+secrets.properties
 
 # Created by https://www.toptal.com/developers/gitignore/api/android,androidstudio,kotlin,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=android,androidstudio,kotlin,macos
