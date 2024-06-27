@@ -9,7 +9,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.databinding.ActivityMainBinding
-import com.ssafy.frogdetox.view.detox.DetoxFragment
+import com.ssafy.frogdetox.view.detox.DetoxSleepFragment
 import com.ssafy.frogdetox.view.todo.TodoFragment
 
 class MainActivity : AppCompatActivity() {
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                         intent.getStringExtra("name")
                     )
                 )
-                R.id.detoxTab -> transaction.replace(R.id.mainFrameLayout, DetoxFragment())
+                R.id.detoxTab -> transaction.replace(R.id.mainFrameLayout, DetoxSleepFragment())
             }
             transaction.commit()
 
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                     .commit()
             }
             DETOX_FRAGMENT -> {
-                transaction.replace(binding.mainFrameLayout.id, DetoxFragment())
+                transaction.replace(binding.mainFrameLayout.id, DetoxSleepFragment())
                     .commit()
             }
         }

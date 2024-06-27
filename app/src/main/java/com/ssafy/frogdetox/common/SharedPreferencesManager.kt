@@ -40,15 +40,6 @@ object SharedPreferencesManager {
         return preferences.getBoolean("sleepState",false)
     }
 
-    fun putBlockingState(state:Boolean){
-        preferences.edit().apply(){
-            putBoolean("blockingState",state).apply()
-        }
-    }
-    fun getBlockingState():Boolean{
-        return preferences.getBoolean("blockingState",false)
-    }
-
     //detox sleep hour
     fun putHour(hour:Int){
         preferences.edit().apply {
@@ -69,22 +60,5 @@ object SharedPreferencesManager {
 
     fun getMinute(): Int {
         return preferences.getInt("minute", 0)
-    }
-
-    // 앱 제한 여부를 저장
-    fun getAppState(packageName: String): Boolean {
-        return preferences.getBoolean(packageName, false)
-    }
-
-    fun setAppState(packageName: String, state: Boolean) {
-        preferences.edit().apply {
-            putBoolean(packageName, state).apply()
-        }
-    }
-
-    fun removeAppState(packageName: String) {
-        preferences.edit().apply {
-            remove(packageName).apply()
-        }
     }
 }
