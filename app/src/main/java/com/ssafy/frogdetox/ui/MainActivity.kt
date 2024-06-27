@@ -9,56 +9,51 @@ import com.ssafy.frogdetox.ui.todo.TodoFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var todoFragment: TodoFragment
+    private lateinit var detoxFragment: DetoxSleepFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.mainFrameLayout, TodoFragment.newInstance(
-                intent.getStringExtra("url"),
-                intent.getStringExtra("name")
-            ))
-            .commit()
 
+        initBottomNavFragment()
+    }
+
+    private fun initBottomNavFragment() {
+        todoFragment = TodoFragment.newInstance(
+            intent.getStringExtra("url"),
+            intent.getStringExtra("name")
+        )
+        detoxFragment = DetoxSleepFragment()
+
+        // Initialize with the first fragment
+        supportFragmentManager.beginTransaction().apply {
+            add(binding.mainFrameLayout.id, todoFragment)
+            add(binding.mainFrameLayout.id, detoxFragment)
+            hide(detoxFragment)
+            commit()
+        }
 
         binding.bottomNavbar.setOnItemSelectedListener {
-            val transaction = supportFragmentManager.beginTransaction()
-            when(it.itemId){
-                R.id.todoTab -> transaction.replace(
-                    R.id.mainFrameLayout,
-                    TodoFragment.newInstance(
-                        intent.getStringExtra("url"),
-                        intent.getStringExtra("name")
-                    )
-                )
-                R.id.detoxTab -> transaction.replace(R.id.mainFrameLayout, DetoxSleepFragment())
-            }
-            transaction.commit()
-
+            changeFragmentView(it.itemId)
             true
         }
     }
 
-    //FragmentTransaction 을 이용 화면 replace
-    fun changeFragmentView(fragment: Int, actionFlag:Int = -1) {
+    private fun changeFragmentView(fragment: Int) {
         val transaction = supportFragmentManager.beginTransaction()
         when (fragment) {
-            TODO_FRAGMENT -> {
-                transaction.replace(binding.mainFrameLayout.id, TodoFragment())
-                    .commit()
+            R.id.todoTab -> {
+                transaction.hide(detoxFragment)
+                transaction.show(todoFragment)
             }
-            DETOX_FRAGMENT -> {
-                transaction.replace(binding.mainFrameLayout.id, DetoxSleepFragment())
-                    .commit()
+            R.id.detoxTab -> {
+                transaction.hide(todoFragment)
+                transaction.show(detoxFragment)
             }
         }
-    }
-
-    companion object {
-        const val TODO_FRAGMENT = 1
-        const val DETOX_FRAGMENT = 2
+        transaction.commit()
     }
 }

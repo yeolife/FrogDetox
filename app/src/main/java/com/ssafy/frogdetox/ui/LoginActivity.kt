@@ -22,8 +22,7 @@ import com.ssafy.frogdetox.data.local.SharedPreferencesManager.putUId
 
 private const val TAG = "LoginActivity_싸피"
 class LoginActivity : AppCompatActivity() {
-    lateinit var binding : ActivityLoginBinding
-
+    private lateinit var binding : ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private val activityLauncher =
@@ -65,7 +64,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
     private fun clearAll(){
-
         // Google 로그아웃
         googleSignInClient.signOut().addOnCompleteListener(this) {
             // 로그아웃 후 UI 업데이트
@@ -149,5 +147,4 @@ class LoginActivity : AppCompatActivity() {
         val signInIntent = googleSignInClient.signInIntent
         activityLauncher.launch(signInIntent)
     }
-
 }
