@@ -35,7 +35,7 @@ import com.ssafy.frogdetox.data.model.TodoDto
 import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
 import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
-import com.ssafy.frogdetox.common.LongToLocalDate
+import com.ssafy.frogdetox.common.LongToLocaldate
 import com.ssafy.frogdetox.common.Permission
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager.getUId
 import com.ssafy.frogdetox.common.AlarmManager
@@ -368,7 +368,7 @@ class TodoFragment : Fragment() {
                             lifecycleScope.launch {
                                 val alarmdto = TodoAlarmDto()
                                 alarmdto.alarm_code=todo.alarmCode
-                                alarmdto.time = "${LongToLocalDate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
+                                alarmdto.time = "${LongToLocaldate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
                                 alarmdto.content = bindingTMD.etTodo.text.toString()
                                 db.todoAlarmDao().insert(alarmdto)
                             }
@@ -378,7 +378,7 @@ class TodoFragment : Fragment() {
                                 lifecycleScope.launch {
                                     val alarmdto = TodoAlarmDto()
                                     alarmdto.alarm_code=todo.alarmCode
-                                    alarmdto.time = "${LongToLocalDate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
+                                    alarmdto.time = "${LongToLocaldate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
                                     alarmdto.content = bindingTMD.etTodo.text.toString()
                                     db!!.todoAlarmDao().insert(alarmdto)
                                 }
@@ -458,7 +458,7 @@ class TodoFragment : Fragment() {
         val hour = bindingTMD.calendarView.hour.toString()
         val minute = bindingTMD.calendarView.minute.toString()
         val time =
-            "${LongToLocalDate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
+            "${LongToLocaldate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
         val random = (1 .. 100000) // 1~100000 범위에서 알람코드 랜덤으로 생성
         val alarmCode = random.random()
         setAlarm(alarmCode, bindingTMD.etTodo.text.toString(), time)

@@ -11,7 +11,6 @@ abstract class FrogDetoxDatabase : RoomDatabase() {
     abstract fun todoAlarmDao(): TodoAlarmDao
 
     companion object {
-
         private var instance: FrogDetoxDatabase? = null
 
         fun getInstance(context: Context): FrogDetoxDatabase =
