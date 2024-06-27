@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".view.LoginActivity">
+    tools:context=".ui.LoginActivity">
 
     <!-- 화면의 20% 지점에 가이드라인 설정 -->
     <androidx.constraintlayout.widget.Guideline

@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.common.alarm
+package com.ssafy.frogdetox.service.receiver
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -13,22 +13,21 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.ssafy.frogdetox.view.LoginActivity
 import com.ssafy.frogdetox.R
-import com.ssafy.frogdetox.common.SharedPreferencesManager
-import com.ssafy.frogdetox.domain.FrogDetoxDatabase
+import com.ssafy.frogdetox.common.AlarmManager
+import com.ssafy.frogdetox.data.local.FrogDetoxDatabase
+import com.ssafy.frogdetox.data.local.SharedPreferencesManager
+import com.ssafy.frogdetox.ui.LoginActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.Date
 
-private const val TAG = "AlarmReceiver_싸피"
+private const val TAG = "AlarmReceiver"
 class AlarmReceiver : BroadcastReceiver() {
     private lateinit var manager: NotificationManager
     private lateinit var builder: NotificationCompat.Builder
@@ -64,7 +63,8 @@ class AlarmReceiver : BroadcastReceiver() {
 
                         // LocalDateTime을 Date로 변환
                         var nowtime = LocalDateTime.now()
-                        val nowtimeAsDate = Date.from(nowtime.atZone(ZoneId.systemDefault()).toInstant())
+                        val nowtimeAsDate =
+                            Date.from(nowtime.atZone(ZoneId.systemDefault()).toInstant())
 
                         alarmManager = AlarmManager(context)
                         if(datetime > nowtimeAsDate){
@@ -81,7 +81,10 @@ class AlarmReceiver : BroadcastReceiver() {
             }
             //재부팅 sleep 알림 등록
             if (SharedPreferencesManager.getSleepState()){
-                alarmManager.setScreenSaverAlarm(context,SharedPreferencesManager.getHour(),SharedPreferencesManager.getMinute())
+                alarmManager.setScreenSaverAlarm(context,
+                    SharedPreferencesManager.getHour(),
+                    SharedPreferencesManager.getMinute()
+                )
             }
         } else {
             manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -101,10 +104,20 @@ class AlarmReceiver : BroadcastReceiver() {
             val requestCode = intent?.extras!!.getInt("alarm_rqCode")
             val content = intent.extras!!.getString("content")
 
-            val pendingIntent = if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.S){
-                PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_IMMUTABLE); //Activity를 시작하는 인텐트 생성
+            val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+                PendingIntent.getActivity(
+                    context,
+                    requestCode,
+                    intent2,
+                    PendingIntent.FLAG_IMMUTABLE
+                ); //Activity를 시작하는 인텐트 생성
             }else {
-                PendingIntent.getActivity(context,requestCode,intent2,PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.getActivity(
+                    context,
+                    requestCode,
+                    intent2,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                );
             }
 
             val notification = builder.setContentTitle("하지마세요! 개굴")
@@ -117,7 +130,11 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setStyle(NotificationCompat.BigTextStyle().bigText(content))
                 .build()
 
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
                 manager.notify(1, notification)
             }
             coroutineScope.launch {

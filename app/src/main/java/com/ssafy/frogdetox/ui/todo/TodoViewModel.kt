@@ -1,10 +1,10 @@
-package com.ssafy.frogdetox.view.todo
+package com.ssafy.frogdetox.ui.todo
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ssafy.frogdetox.data.TodoDto
-import com.ssafy.frogdetox.domain.TodoRepository
+import com.ssafy.frogdetox.data.model.TodoDto
+import com.ssafy.frogdetox.data.remote.TodoRepository
 import java.time.LocalDate
 import java.time.ZoneOffset
 

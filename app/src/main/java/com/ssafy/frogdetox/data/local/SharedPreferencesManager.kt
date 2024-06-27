@@ -1,11 +1,10 @@
-package com.ssafy.frogdetox.common
+package com.ssafy.frogdetox.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import okhttp3.internal.cache2.Relay.Companion.edit
 
-private const val TAG = "SharedPreferencesManage_싸피"
+private const val TAG = "SharedPreferencesManage"
 object SharedPreferencesManager {
     private lateinit var preferences: SharedPreferences
     private const val SHARED_PREFERENCES_NAME = "todo_preference"
@@ -36,7 +35,7 @@ object SharedPreferencesManager {
         Log.d(TAG, "putSleepState: $state")
     }
     fun getSleepState():Boolean{
-        Log.d(TAG, "getSleepState: ${preferences.getBoolean("sleepState",false)}")
+        Log.d(TAG, "getSleepState: ${preferences.getBoolean("sleepState", false)}")
         return preferences.getBoolean("sleepState",false)
     }
 

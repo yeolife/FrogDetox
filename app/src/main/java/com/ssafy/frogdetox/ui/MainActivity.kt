@@ -1,16 +1,11 @@
-package com.ssafy.frogdetox.view
+package com.ssafy.frogdetox.ui
 
-import android.app.admin.DevicePolicyManager
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.databinding.ActivityMainBinding
-import com.ssafy.frogdetox.view.detox.DetoxSleepFragment
-import com.ssafy.frogdetox.view.todo.TodoFragment
+import com.ssafy.frogdetox.ui.detox.DetoxSleepFragment
+import com.ssafy.frogdetox.ui.todo.TodoFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

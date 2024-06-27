@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.view.detox
+package com.ssafy.frogdetox.ui.detox
 
 import android.content.Intent
 import android.net.Uri
@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.ssafy.frogdetox.service.service.ScreenSaverService
 
 private const val TAG = "ScreenSaverActivity_싸피"
 class ScreenSaverActivity : AppCompatActivity() {

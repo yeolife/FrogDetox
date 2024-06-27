@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.common.alarm
+package com.ssafy.frogdetox.service.receiver
 
 import android.app.ActivityManager
 import android.content.BroadcastReceiver
@@ -6,11 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.PowerManager
 import android.util.Log
-import androidx.core.content.getSystemService
-import com.ssafy.frogdetox.view.detox.ScreenSaverActivity
+import com.ssafy.frogdetox.ui.detox.ScreenSaverActivity
 
-private const val TAG = "ScreenSaverReceiver_싸피"
-class ScreenSaverReceiver :BroadcastReceiver(){
+private const val TAG = "ScreenSaverReceiver"
+class ScreenSaverReceiver : BroadcastReceiver(){
     override fun onReceive(context: Context, intent: Intent?) {
         val screenSaverIntent = Intent(context, ScreenSaverActivity::class.java)
         if(isOnScreen(context)){

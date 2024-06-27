@@ -1,12 +1,9 @@
-package com.ssafy.frogdetox.view
+package com.ssafy.frogdetox.ui
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -17,14 +14,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.database
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.databinding.ActivityLoginBinding
-import com.ssafy.frogdetox.common.SharedPreferencesManager
-import com.ssafy.frogdetox.common.SharedPreferencesManager.getUId
-import com.ssafy.frogdetox.common.SharedPreferencesManager.putUId
+import com.ssafy.frogdetox.data.local.SharedPreferencesManager
+import com.ssafy.frogdetox.data.local.SharedPreferencesManager.putUId
 
 private const val TAG = "LoginActivity_싸피"
 class LoginActivity : AppCompatActivity() {

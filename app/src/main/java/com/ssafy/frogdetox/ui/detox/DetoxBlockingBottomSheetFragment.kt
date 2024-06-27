@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.view.detox
+package com.ssafy.frogdetox.ui.detox
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
@@ -10,7 +10,6 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -19,7 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ssafy.frogdetox.common.Permission.isAccessibilityServiceEnabled
 import com.ssafy.frogdetox.common.Permission.isExactAlarmPermissionGranted
 import com.ssafy.frogdetox.databinding.FragmentDetoxBlockingBottomSheetBinding
-import com.ssafy.frogdetox.view.MainActivity
+import com.ssafy.frogdetox.ui.MainActivity
 
 class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
     private lateinit var mainActivity: MainActivity

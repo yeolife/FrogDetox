@@ -33,13 +33,13 @@
         tools:targetApi="31"
         android:name=".AppClass">
         <activity
-            android:name=".view.detox.GoSleepActivity"
+            android:name=".ui.detox.GoSleepActivity"
             android:exported="true"
             android:theme="@style/AppTheme.BarColorChange"
             android:screenOrientation="portrait"/>
 
         <service
-            android:name=".view.detox.AccessibilityService"
+            android:name=".ui.detox.AccessibilityService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
@@ -53,12 +53,12 @@
         </service>
 
         <activity
-            android:name=".view.detox.ScreenSaverActivity"
+            android:name=".ui.detox.ScreenSaverActivity"
             android:exported="false"
             android:theme="@style/TransparentTheme"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".view.LoginActivity"
+            android:name=".ui.LoginActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
@@ -69,13 +69,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <receiver
-            android:name=".common.alarm.AlarmReceiver"
+            android:name=".service.receiver.AlarmReceiver"
             android:enabled="true"
             android:exported="false" >
             <intent-filter>
@@ -83,13 +83,13 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".common.alarm.ScreenSaverReceiver"
+            android:name=".service.receiver.ScreenSaverReceiver"
             android:enabled="true"
             android:exported="false"/>
 
-        <service android:name=".view.detox.ScreenSaverService" />
+        <service android:name=".service.service.ScreenSaverService" />
         <service
-            android:name=".view.detox.OverlayService"
+            android:name=".ui.detox.OverlayService"
             android:enabled="true"
             android:exported="false" />
     </application>
