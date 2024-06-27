@@ -14,10 +14,11 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.ssafy.frogdetox.R
-import com.ssafy.frogdetox.common.AlarmManager
+import com.ssafy.frogdetox.ui.todo.AlarmManager
 import com.ssafy.frogdetox.data.local.FrogDetoxDatabase
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager
 import com.ssafy.frogdetox.ui.LoginActivity
+import com.ssafy.frogdetox.ui.detox.ScreenSaverManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,11 +28,12 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
 
-private const val TAG = "AlarmReceiver"
+private const val TAG = "AlarmReceiver_싸피"
 class AlarmReceiver : BroadcastReceiver() {
     private lateinit var manager: NotificationManager
     private lateinit var builder: NotificationCompat.Builder
     private lateinit var alarmManager: AlarmManager
+    private lateinit var saverManager: ScreenSaverManager
     private val coroutineScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     private val CHANNEL_ID = "TodayAlarm"
@@ -81,7 +83,7 @@ class AlarmReceiver : BroadcastReceiver() {
             }
             //재부팅 sleep 알림 등록
             if (SharedPreferencesManager.getSleepState()){
-                alarmManager.setScreenSaverAlarm(context,
+                saverManager.setScreenSaverAlarm(context,
                     SharedPreferencesManager.getHour(),
                     SharedPreferencesManager.getMinute()
                 )
@@ -96,7 +98,6 @@ class AlarmReceiver : BroadcastReceiver() {
                     NotificationManager.IMPORTANCE_HIGH
                 )
             )
-
             builder = NotificationCompat.Builder(context, CHANNEL_ID)
 
             val intent2 = Intent(context, LoginActivity::class.java)

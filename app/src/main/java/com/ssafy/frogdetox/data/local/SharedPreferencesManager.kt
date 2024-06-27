@@ -32,10 +32,8 @@ object SharedPreferencesManager {
         preferences.edit().apply(){
             putBoolean("sleepState",state).apply()
         }
-        Log.d(TAG, "putSleepState: $state")
     }
     fun getSleepState():Boolean{
-        Log.d(TAG, "getSleepState: ${preferences.getBoolean("sleepState", false)}")
         return preferences.getBoolean("sleepState",false)
     }
 

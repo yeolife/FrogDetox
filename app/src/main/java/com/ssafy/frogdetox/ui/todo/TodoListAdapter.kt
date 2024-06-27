@@ -65,6 +65,7 @@ class TodoListAdapter() :
             when (getItem(position)) {
                 is DataItem.Header -> TYPE_HEADER
                 is DataItem.TodoItem -> TYPE_ITEM
+                else -> {0}
             }
         }
     }

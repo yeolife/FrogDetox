@@ -29,7 +29,6 @@ import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.view.ViewContainer
 import com.kizitonwose.calendar.view.WeekDayBinder
 import com.ssafy.frogdetox.R
-import com.ssafy.frogdetox.common.AlarmManager
 import com.ssafy.frogdetox.common.LocalAPIKey
 import com.ssafy.frogdetox.common.LongToLocaldate
 import com.ssafy.frogdetox.common.Permission
@@ -224,7 +223,7 @@ class TodoFragment : Fragment() {
         bindingTMD.lyResult.isVisible = false
         //network작업 Runnable --> lambda
         bindingTMD.tvAiText.setOnClickListener {
-            val apiKey = LocalAPIKey.getSecretKey(mainActivity, "chatgpt_api_key")
+            val apiKey = "sk-proj-aKurzhjxFAHM3X4c2b4aT3BlbkFJYmvUVRqAZSRrvEc99E93"
             GlobalScope.launch(Dispatchers.IO) {
                 val job = CoroutineScope(Dispatchers.Main).launch {
                     bindingTMD.tvloading.text = "흠..."
