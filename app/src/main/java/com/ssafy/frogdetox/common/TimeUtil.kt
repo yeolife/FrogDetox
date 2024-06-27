@@ -1,8 +1,5 @@
 package com.ssafy.frogdetox.common
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import com.kizitonwose.calendar.core.Week
 import com.kizitonwose.calendar.core.yearMonth
 import java.time.DayOfWeek
@@ -30,7 +27,7 @@ fun DayOfWeek.displayText(uppercase: Boolean = false): String {
     }
 }
 
-fun LongToLocalDate(time: Long): LocalDate {
+fun LongToLocaldate(time: Long): LocalDate {
     val date = Instant.ofEpochMilli(time)
         .atZone(ZoneId.systemDefault())
         .toLocalDate()
@@ -48,18 +45,8 @@ fun getTimeInMillis(hourOfDay: Int, minute: Int): Long {
     return calendar.timeInMillis
 }
 
-// 현재 시간 long 반환
 fun getTodayInMillis(): Long {
     return System.currentTimeMillis()
-}
-
-fun Context.findActivity(): Activity {
-    var context = this
-    while (context is ContextWrapper) {
-        if (context is Activity) return context
-        context = context.baseContext
-    }
-    throw IllegalStateException("no activity")
 }
 
 fun getWeekPageTitle(week: Week): String {

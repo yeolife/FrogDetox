@@ -9,6 +9,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager
+import com.ssafy.frogdetox.data.local.SharedPreferencesManager.getUId
 import com.ssafy.frogdetox.data.model.TodoDto
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -19,30 +20,30 @@ class TodoRepository {
     private val myRef = Firebase.database.getReference("Todo").apply {
         keepSynced(true)
     }
-//    private val uidQuery = myRef.orderByChild("uid").equalTo(getUId())
+    private val uidQuery = myRef.orderByChild("uid").equalTo(getUId())
 
     fun getData(selectDay : Long) : LiveData<MutableList<TodoDto>> {
         val mutableData = MutableLiveData<MutableList<TodoDto>>()
 
-        myRef.addValueEventListener(object : ValueEventListener {
+        uidQuery.addValueEventListener(object : ValueEventListener {
             val listData : MutableList<TodoDto> = mutableListOf()
 
             override fun onDataChange(snapshot: DataSnapshot) {
+                listData.clear()
                 if(snapshot.exists()) {
-                    listData.clear()
                     for(curSnapshot in snapshot.children){
                         val getData = curSnapshot.getValue(TodoDto::class.java)
-                        if (getData != null && getData.uId== SharedPreferencesManager.getUId() && selectDay == getData.regTime) {
+                        if (getData != null && selectDay == getData.regTime) {
                             listData.add(getData)
                         }
                     }
-
-                    mutableData.value = listData
                 }
+                mutableData.value = listData
             }
 
             override fun onCancelled(error: DatabaseError) { }
         })
+
         return mutableData
     }
     suspend fun getTodo(): String {
