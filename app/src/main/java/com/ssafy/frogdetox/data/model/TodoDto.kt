@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.data
+package com.ssafy.frogdetox.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

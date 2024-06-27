@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.domain
+package com.ssafy.frogdetox.data.remote
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -8,14 +8,13 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.ssafy.frogdetox.data.TodoDto
-import com.ssafy.frogdetox.common.SharedPreferencesManager.getUId
+import com.ssafy.frogdetox.data.local.SharedPreferencesManager
+import com.ssafy.frogdetox.data.model.TodoDto
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CountDownLatch
 
-private const val TAG = "TodoRepository_싸피"
 class TodoRepository {
     private val myRef = Firebase.database.getReference("Todo").apply {
         keepSynced(true)
@@ -33,7 +32,7 @@ class TodoRepository {
                     listData.clear()
                     for(curSnapshot in snapshot.children){
                         val getData = curSnapshot.getValue(TodoDto::class.java)
-                        if (getData != null && getData.uId== getUId() && selectDay == getData.regTime) {
+                        if (getData != null && getData.uId== SharedPreferencesManager.getUId() && selectDay == getData.regTime) {
                             listData.add(getData)
                         }
                     }
@@ -42,9 +41,7 @@ class TodoRepository {
                 }
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG, "Failed to read value.", error.toException())
-            }
+            override fun onCancelled(error: DatabaseError) { }
         })
         return mutableData
     }
@@ -59,7 +56,7 @@ class TodoRepository {
                 if (snapshot.exists()) {
                     for (curSnapshot in snapshot.children) {
                         val getData = curSnapshot.getValue(TodoDto::class.java)
-                        if (getData != null && getData.uId== getUId()) {
+                        if (getData != null && getData.uId== SharedPreferencesManager.getUId()) {
                             dtoList.add(getData)
                         }
                     }

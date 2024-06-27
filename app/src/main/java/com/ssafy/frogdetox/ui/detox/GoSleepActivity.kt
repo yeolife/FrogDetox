@@ -1,17 +1,13 @@
-package com.ssafy.frogdetox.view.detox
+package com.ssafy.frogdetox.ui.detox
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
-import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.databinding.ActivityGoSleepBinding
-import com.ssafy.frogdetox.view.LoginActivity
+import com.ssafy.frogdetox.ui.LoginActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

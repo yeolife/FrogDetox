@@ -1,11 +1,10 @@
-package com.ssafy.frogdetox.domain
+package com.ssafy.frogdetox.data.local
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.ssafy.frogdetox.data.TodoAlarmDto
-import com.ssafy.frogdetox.domain.dao.TodoAlarmDao
+import com.ssafy.frogdetox.data.model.TodoAlarmDto
 
 @Database(entities = [TodoAlarmDto::class], version = 1)
 abstract class FrogDetoxDatabase : RoomDatabase() {

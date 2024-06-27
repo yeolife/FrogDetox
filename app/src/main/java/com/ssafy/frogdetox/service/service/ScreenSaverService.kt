@@ -1,11 +1,9 @@
-package com.ssafy.frogdetox.view.detox
+package com.ssafy.frogdetox.service.service
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -19,13 +17,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
 import com.ssafy.frogdetox.R
-import com.ssafy.frogdetox.view.LoginActivity
+import com.ssafy.frogdetox.ui.detox.GoSleepActivity
 import java.util.Random
 
 private const val TAG = "ScreenSaverService_싸피"
@@ -79,8 +75,8 @@ class ScreenSaverService : Service() {
     @SuppressLint("ClickableViewAccessibility")
     private fun initTouchListener() {
         for (i in 0..9) {
-            val x = (Random().nextInt(realWidth - if (i % 2 == 0) BIGSIZE else SIZE)+if (i % 2 == 0) BIGSIZE/2 else SIZE/2).toFloat()
-            val y = (Random().nextInt(realHeight - 200 - if (i % 2 == 0) BIGSIZE else SIZE)+if (i % 2 == 0) BIGSIZE/2 else SIZE/2).toFloat()
+            val x = (Random().nextInt(realWidth - if (i % 2 == 0) BIGSIZE else SIZE)+if (i % 2 == 0) BIGSIZE /2 else SIZE /2).toFloat()
+            val y = (Random().nextInt(realHeight - 200 - if (i % 2 == 0) BIGSIZE else SIZE)+if (i % 2 == 0) BIGSIZE /2 else SIZE /2).toFloat()
             setImageView(x, y, i)
         }
     }
@@ -89,8 +85,10 @@ class ScreenSaverService : Service() {
         Log.d(TAG, "setImageView: $x $y 에 생성됨.")
         ImageView(this).apply {
             setBackgroundResource(if(idx%2==0) R.drawable.gosleepfrog else R.drawable.cutefrogicon)
-            layoutParams= if(idx%2==0) ViewGroup.LayoutParams(BIGSIZE,
-                BIGSIZE) else ViewGroup.LayoutParams(SIZE,SIZE)
+            layoutParams= if(idx%2==0) ViewGroup.LayoutParams(
+                BIGSIZE,
+                BIGSIZE
+            ) else ViewGroup.LayoutParams(SIZE, SIZE)
             this.x = x
             this.y = y
             overlayView.addView(this)
