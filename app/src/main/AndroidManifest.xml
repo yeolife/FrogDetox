@@ -32,25 +32,19 @@
         android:theme="@style/Theme.FrogDetox"
         tools:targetApi="31"
         android:name=".AppClass">
+
+        <meta-data
+            android:name="default_web_client_id"
+            android:value="${DEFAULT_WEB_CLIENT_ID}"/>
+        <meta-data
+            android:name="chatgpt_api_key"
+            android:value="${GPT_API_KEY}"/>
+
         <activity
             android:name=".ui.detox.GoSleepActivity"
             android:exported="true"
             android:theme="@style/AppTheme.BarColorChange"
             android:screenOrientation="portrait"/>
-
-        <service
-            android:name=".ui.detox.AccessibilityService"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config" />
-        </service>
 
         <activity
             android:name=".ui.detox.ScreenSaverActivity"
@@ -88,10 +82,6 @@
             android:exported="false"/>
 
         <service android:name=".service.service.ScreenSaverService" />
-        <service
-            android:name=".ui.detox.OverlayService"
-            android:enabled="true"
-            android:exported="false" />
     </application>
 
 </manifest>
