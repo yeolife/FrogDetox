@@ -223,7 +223,7 @@ class TodoFragment : Fragment() {
         bindingTMD.lyResult.isVisible = false
         //network작업 Runnable --> lambda
         bindingTMD.tvAiText.setOnClickListener {
-            val apiKey = "sk-proj-aKurzhjxFAHM3X4c2b4aT3BlbkFJYmvUVRqAZSRrvEc99E93"
+            val apiKey = LocalAPIKey.getSecretKey(mainActivity, "chatgpt_api_key")
             GlobalScope.launch(Dispatchers.IO) {
                 val job = CoroutineScope(Dispatchers.Main).launch {
                     bindingTMD.tvloading.text = "흠..."

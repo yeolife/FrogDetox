@@ -8,7 +8,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.ssafy.frogdetox.data.local.SharedPreferencesManager
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager.getUId
 import com.ssafy.frogdetox.data.model.TodoDto
 import kotlinx.coroutines.CompletableDeferred
@@ -58,7 +57,7 @@ class TodoRepository {
                 if (snapshot.exists()) {
                     for (curSnapshot in snapshot.children) {
                         val getData = curSnapshot.getValue(TodoDto::class.java)
-                        if (getData != null && getData.uId== SharedPreferencesManager.getUId()) {
+                        if (getData != null && getData.uId== getUId()) {
                             dtoList.add(getData)
                         }
                     }
