@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,8 +67,6 @@ import java.time.YearMonth
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Date
-
-private const val TAG = "TodoFragment_싸피"
 
 class TodoFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
@@ -316,10 +315,17 @@ class TodoFragment : Fragment() {
 
                 bindingTMD.etTodo.setText(todo.content)
                 bindingTMD.switch2.isChecked = todo.isAlarm
-                if (todo.isAlarm) {
-                    bindingTMD.calendarView.visibility = View.VISIBLE
+
+                bindingTMD.calendarView.isVisible = false
+                if(!checkPermission()) {
+                    bindingTMD.switch2.isChecked = false
+                    bindingTMD.calendarView.isVisible = false
                 } else {
-                    bindingTMD.calendarView.visibility = View.GONE
+                    if (bindingTMD.switch2.isChecked) {
+                        bindingTMD.calendarView.isVisible = true
+                    } else {
+                        bindingTMD.calendarView.isVisible = false
+                    }
                 }
             }
         }
@@ -408,8 +414,10 @@ class TodoFragment : Fragment() {
         }
 
         bindingTMD.switch2.setOnCheckedChangeListener { buttonView, isChecked ->
+            bindingTMD.calendarView.isVisible = false
             if(!checkPermission()) {
                 bindingTMD.switch2.isChecked = false
+                bindingTMD.calendarView.isVisible = false
             } else {
                 if (bindingTMD.switch2.isChecked) {
                     bindingTMD.calendarView.isVisible = true
