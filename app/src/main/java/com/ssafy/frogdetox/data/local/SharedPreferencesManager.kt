@@ -24,6 +24,26 @@ object SharedPreferencesManager {
         return preferences.getString("id", "")
     }
 
+    fun putUserName(name: String) {
+        preferences.edit().apply {
+            putString("name", name).apply()
+        }
+    }
+
+    fun getUserName(): String? {
+        return preferences.getString("name", "")
+    }
+
+    fun putUserProfile(src: String) {
+        preferences.edit().apply {
+            putString("src", src).apply()
+        }
+    }
+
+    fun getUserProfile(): String? {
+        return preferences.getString("src", "")
+    }
+
     fun clearPreferences() {
         preferences.edit().clear().apply()
     }
