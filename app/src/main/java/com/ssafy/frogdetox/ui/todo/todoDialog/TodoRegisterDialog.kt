@@ -2,10 +2,8 @@ package com.ssafy.frogdetox.ui.todo.todoDialog
 
 import android.app.AlertDialog
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.google.gson.JsonArray
@@ -40,6 +38,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.Date
 
+private const val TAG = "TodoRegisterDialog"
 class TodoRegisterDialog(
     private val fragment: TodoFragment,
     private val viewModel: TodoViewModel,
@@ -144,9 +143,9 @@ class TodoRegisterDialog(
 
         binding.lyResult.setOnClickListener {
             binding.etTodo.setText(binding.tvResultText.text)
-            binding.lyResult.visibility = View.GONE
-            binding.tvResultClick.visibility = View.GONE
-            binding.lyAiText.visibility = View.VISIBLE
+            binding.lyResult.isVisible = false
+            binding.tvResultClick.isVisible = false
+            binding.lyAiText.isVisible = true
         }
 
         if (state == TodoFragment.TODO_UPDATE) {
@@ -156,12 +155,14 @@ class TodoRegisterDialog(
                 }
 
                 binding.etTodo.setText(todo.content)
-                binding.switch2.isChecked = todo.isAlarm
-                if (todo.isAlarm) {
-                    binding.calendarView.visibility = View.VISIBLE
+
+                if(!Permission.getNotificationPermission(fragment.requireContext()) || !Permission.isExactAlarmPermissionGranted(fragment.requireContext())) {
+                    binding.switch2.isChecked = false
                 } else {
-                    binding.calendarView.visibility = View.GONE
+                    binding.switch2.isChecked = todo.isAlarm
                 }
+
+                binding.calendarView.isVisible = binding.switch2.isChecked
             }
         }
 
@@ -238,16 +239,12 @@ class TodoRegisterDialog(
             }
         }
 
-        binding.switch2.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.switch2.setOnCheckedChangeListener { _, _ ->
             if(!checkPermission()) {
                 binding.switch2.isChecked = false
-            } else {
-                if (binding.switch2.isChecked) {
-                    binding.calendarView.isVisible = true
-                } else {
-                    binding.calendarView.isVisible = false
-                }
             }
+
+            binding.calendarView.isVisible = binding.switch2.isChecked
         }
 
         if (binding.root.parent != null) {
@@ -274,7 +271,7 @@ class TodoRegisterDialog(
     }
 
     private fun checkPermission(): Boolean {
-        var notiPermission = NotificationManagerCompat.from(fragment.requireContext()).areNotificationsEnabled()
+        var notiPermission = Permission.getNotificationPermission(fragment.requireContext())
 
         var reminderPermission = Permission.isExactAlarmPermissionGranted(fragment.requireContext())
 
@@ -288,9 +285,11 @@ class TodoRegisterDialog(
                 DetoxBlockingBottomSheetFragment.TODO_PERMISSION)
             bottomSheet.show(fragment.childFragmentManager, bottomSheet.tag)
         }
-        notiPermission = NotificationManagerCompat.from(fragment.requireContext()).areNotificationsEnabled()
+
+        notiPermission = Permission.getNotificationPermission(fragment.requireContext())
 
         reminderPermission = Permission.isExactAlarmPermissionGranted(fragment.requireContext())
+
         return notiPermission && reminderPermission
     }
 }

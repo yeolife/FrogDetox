@@ -1,6 +1,5 @@
 package com.ssafy.frogdetox.ui.detox
 
-import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.ssafy.frogdetox.common.Permission.isAccessibilityServiceEnabled
 import com.ssafy.frogdetox.common.Permission.isExactAlarmPermissionGranted
 import com.ssafy.frogdetox.databinding.FragmentDetoxBlockingBottomSheetBinding
 import com.ssafy.frogdetox.ui.MainActivity
@@ -86,8 +84,10 @@ class DetoxBlockingBottomSheetFragment : BottomSheetDialogFragment() {
 
     override fun onResume() {
         super.onResume()
+
         checkPermission()
     }
+
     private fun checkPermission(): Boolean {
         // 다른 앱 위에 띄우는 권한 확인
         val overlayPermission = Settings.canDrawOverlays(mainActivity)
@@ -97,8 +97,6 @@ class DetoxBlockingBottomSheetFragment : BottomSheetDialogFragment() {
 
         //시간 설정하고 알림 주도록 함.
         val reminderPermission = isExactAlarmPermissionGranted(mainActivity)
-
-        val accessibilityPermission = isAccessibilityServiceEnabled(mainActivity, AccessibilityService::class.java)
 
         // 권한에 따라 view 보여주기
         if(flag == TODO_PERMISSION) {
@@ -115,8 +113,7 @@ class DetoxBlockingBottomSheetFragment : BottomSheetDialogFragment() {
 
         return when(flag) {
             1 -> (notiPermission&&reminderPermission)
-            2 -> (overlayPermission&&reminderPermission)
-            else -> (accessibilityPermission&&overlayPermission&&reminderPermission)
+            else -> (overlayPermission&&reminderPermission)
         }
     }
 
