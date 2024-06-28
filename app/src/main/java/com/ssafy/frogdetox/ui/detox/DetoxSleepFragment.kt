@@ -54,7 +54,7 @@ class DetoxSleepFragment : Fragment() {
 
         if (!overlayPermission|| !reminderPermission) {
             Toast.makeText(requireContext(), "잠자기 알림 기능을 사용하시려면 아래 권한을 허용하셔야합니다.",Toast.LENGTH_SHORT).show()
-            val bottomSheet = DetoxBlockingBottomSheetFragment(2)
+            val bottomSheet = DetoxBlockingBottomSheetFragment.newInstance(DetoxBlockingBottomSheetFragment.DETOX_PERMISSION)
             bottomSheet.show(childFragmentManager, bottomSheet.tag)
         }
         overlayPermission = Settings.canDrawOverlays(mainActivity)

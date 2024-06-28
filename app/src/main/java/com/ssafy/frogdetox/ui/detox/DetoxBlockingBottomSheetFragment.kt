@@ -20,13 +20,13 @@ import com.ssafy.frogdetox.common.Permission.isExactAlarmPermissionGranted
 import com.ssafy.frogdetox.databinding.FragmentDetoxBlockingBottomSheetBinding
 import com.ssafy.frogdetox.ui.MainActivity
 
-class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
+class DetoxBlockingBottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var mainActivity: MainActivity
     private lateinit var activityLauncher: ActivityResultLauncher<Intent> // 권한 인텐트
 
     private var _binding: FragmentDetoxBlockingBottomSheetBinding? = null
     private val binding get() = _binding!!
-    private val flag2 = flag
+    private var flag: Int = 0
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -35,6 +35,10 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        arguments?.let {
+            flag = it.getInt("flag")
+        }
     }
 
     override fun onCreateView(
@@ -78,12 +82,6 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
             }
             activityLauncher.launch(intent)
         }
-        binding.llAccessibility.setOnClickListener {
-            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-            activityLauncher.launch(intent)
-        }
     }
 
     override fun onResume() {
@@ -103,34 +101,22 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
         val accessibilityPermission = isAccessibilityServiceEnabled(mainActivity, AccessibilityService::class.java)
 
         // 권한에 따라 view 보여주기
-        if(flag2==2||flag2==3) {
-            binding.llOverlay.visibility = if (overlayPermission) View.GONE else View.VISIBLE
-        }
-        if(flag2==1) {
+        if(flag == TODO_PERMISSION) {
             binding.llNotification.visibility = if (notiPermission) View.GONE else View.VISIBLE
-        }
-        if(flag2==1||flag2==2||flag2==3) {
-            binding.llReminder.visibility = if (reminderPermission) View.GONE else View.VISIBLE
-        }
-        if(flag2==3) {
-            binding.llAccessibility.visibility = if (accessibilityPermission) View.GONE else View.VISIBLE
-        }
-
-        if(flag2==1){
             binding.tvpermission.text = "todo 알림 기능을 위해서 권한을 허용해주세요"
         }
-        if(flag2==2){
+        if(flag == DETOX_PERMISSION) {
+            binding.llOverlay.visibility = if (overlayPermission) View.GONE else View.VISIBLE
             binding.tvpermission.text = "잠자기 알람 기능을 위해서 권한을 허용해주세요"
         }
-        if(flag2==3){
-            binding.tvpermission.text = "앱 차단 기능을 위해서 권한을 허용해주세요"
+        if(flag== TODO_PERMISSION || flag == DETOX_PERMISSION) {
+            binding.llReminder.visibility = if (reminderPermission) View.GONE else View.VISIBLE
         }
-        return if(flag2==1){
-            (notiPermission&&reminderPermission)
-        } else if(flag2==2){
-            (overlayPermission&&reminderPermission)
-        } else{
-            (accessibilityPermission&&overlayPermission&&reminderPermission)
+
+        return when(flag) {
+            1 -> (notiPermission&&reminderPermission)
+            2 -> (overlayPermission&&reminderPermission)
+            else -> (accessibilityPermission&&overlayPermission&&reminderPermission)
         }
     }
 
@@ -138,5 +124,20 @@ class DetoxBlockingBottomSheetFragment(flag:Int) : BottomSheetDialogFragment() {
         super.onDestroy()
 
         _binding = null
+    }
+
+    companion object {
+        const val TODO_PERMISSION = 1
+        const val DETOX_PERMISSION = 2
+
+        private const val ARG_FLAG = "flag"
+
+        @JvmStatic
+        fun newInstance(flag: Int) =
+            DetoxBlockingBottomSheetFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_FLAG, flag)
+                }
+            }
     }
 }
