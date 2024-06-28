@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.ssafy.frogdetox.R
@@ -26,9 +27,8 @@ import com.ssafy.frogdetox.ui.MainActivity
 
 class DetoxSleepFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
+    private lateinit var binding : FragmentDetoxSleepBinding
 
-    lateinit var binding : FragmentDetoxSleepBinding
-    lateinit var screenSaverManager : ScreenSaverManager
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -42,8 +42,8 @@ class DetoxSleepFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentDetoxSleepBinding.inflate(layoutInflater)
+
         return binding.root
     }
 
@@ -65,7 +65,6 @@ class DetoxSleepFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        screenSaverManager = ScreenSaverManager(context as MainActivity)
 
         Glide.with(this)
             .load(R.drawable.sleepfrog)
@@ -76,14 +75,10 @@ class DetoxSleepFragment : Fragment() {
         val scale = resources.displayMetrics.density // 디바이스의 화면 밀도를 가져옵니다.
         val textSizeInPx = 25 * scale // dp를 px로 변환합니다.
 
-        if(getSleepState()){
-            sleepOnUI()
-        }
-        else{
-            sleepOffUI()
-        }
-        if(getHour()!=-1){
-            if(getMinute()==0){
+        if(getSleepState()) setSleepUI(SleepState.ON) else setSleepUI(SleepState.OFF)
+
+        if(getHour() != -1) {
+            if(getMinute() == 0) {
                 binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
                 binding.tvSleepTime.text = getHour().toString()+"시에\n자야지"
             }
@@ -92,8 +87,9 @@ class DetoxSleepFragment : Fragment() {
                 binding.tvSleepTime.text = getHour().toString() + "시" + getMinute().toString() + "분에\n자야지"
             }
         }
+
         binding.tvSleepTime.setOnClickListener {
-            screenSaverManager.cancelScreenSaverAlarm()
+            ScreenSaverManager.cancelScreenSaverAlarm(mainActivity)
             if(checkPermission()){
                 val binding2 =
                     DialogSleepBinding.inflate(LayoutInflater.from(requireContext()))
@@ -110,8 +106,8 @@ class DetoxSleepFragment : Fragment() {
                             binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
                             binding.tvSleepTime.text = binding2.calendarView.hour.toString() + "시" + binding2.calendarView.minute.toString() + "분에\n자야지"
                         }
-                        sleepOnUI()
-                        screenSaverManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
+                        setSleepUI(SleepState.ON)
+                        ScreenSaverManager.setScreenSaverAlarm(mainActivity, getHour(), getMinute())
 
                         dialog.dismiss()
                     }
@@ -124,17 +120,17 @@ class DetoxSleepFragment : Fragment() {
         }
         binding.ivon.setOnClickListener {
             if(checkPermission()){
-                sleepOffUI()
+                setSleepUI(SleepState.OFF)
                 putSleepState(false)
-                screenSaverManager.cancelScreenSaverAlarm()
+                ScreenSaverManager.cancelScreenSaverAlarm(mainActivity)
             }
         }
         binding.ivoff.setOnClickListener {
             if(getHour()!=-1){
                 if(checkPermission()){
-                    screenSaverManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
-                    sleepOnUI()
+                    setSleepUI(SleepState.ON)
                     putSleepState(true)
+                    ScreenSaverManager.setScreenSaverAlarm(mainActivity, getHour(), getMinute())
                 }
             }
             else{
@@ -142,18 +138,27 @@ class DetoxSleepFragment : Fragment() {
             }
         }
     }
-    fun sleepOnUI(){
-        binding.night.visibility=View.GONE
-        binding.ivon.visibility=View.VISIBLE
-        binding.ivoff.visibility=View.GONE
-        binding.tvon.visibility=View.VISIBLE
-        binding.tvoff.visibility=View.GONE
+
+    enum class SleepState {
+        ON, OFF
     }
-    fun sleepOffUI(){
-        binding.night.visibility=View.VISIBLE
-        binding.ivon.visibility=View.GONE
-        binding.ivoff.visibility=View.VISIBLE
-        binding.tvon.visibility = View.GONE
-        binding.tvoff.visibility=View.VISIBLE
+
+    private fun setSleepUI(state: SleepState) {
+        when (state) {
+            SleepState.ON -> {
+                binding.night.isVisible = false
+                binding.ivon.isVisible = true
+                binding.ivoff.isVisible = false
+                binding.tvon.isVisible = true
+                binding.tvoff.isVisible = false
+            }
+            SleepState.OFF -> {
+                binding.night.isVisible = true
+                binding.ivon.isVisible = false
+                binding.ivoff.isVisible = true
+                binding.tvon.isVisible = false
+                binding.tvoff.isVisible = true
+            }
+        }
     }
 }

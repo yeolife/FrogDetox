@@ -13,7 +13,7 @@ data class TodoDto(
     @ColumnInfo(name = "regTime") var regTime: Long,
     @ColumnInfo(name = "complete") var complete: Boolean,
     @ColumnInfo(name = "isAlarm") var isAlarm : Boolean,
-    @ColumnInfo(name = "time") var alarmTime : String,
+    @ColumnInfo(name = "alarmTime") var alarmTime : String,
     @ColumnInfo(name = "alarmCode") var alarmCode : Int,
 ): Serializable {
     constructor() : this("","","",0L,false,false,"",-1)
