@@ -219,8 +219,9 @@ class TodoFragment : Fragment() {
         bindingTMD.etTodo.setText("")
         bindingTMD.switch2.isChecked = false
         bindingTMD.calendarView.isVisible = false
-        bindingTMD.lyAiText.isVisible = true
+        bindingTMD.lyAiText.isVisible = false
         bindingTMD.lyResult.isVisible = false
+        bindingTMD.saylayout.isVisible = false
         //network작업 Runnable --> lambda
         bindingTMD.tvAiText.setOnClickListener {
             val apiKey = LocalAPIKey.getSecretKey(mainActivity, "chatgpt_api_key")
