@@ -154,7 +154,7 @@ class TodoFragment : Fragment() {
                 "알림 받기 기능을 사용하시려면 아래 권한을 허용하셔야합니다.",
                 Toast.LENGTH_SHORT
             ).show()
-            val bottomSheet = DetoxBlockingBottomSheetFragment(1)
+            val bottomSheet = DetoxBlockingBottomSheetFragment.newInstance(DetoxBlockingBottomSheetFragment.TODO_PERMISSION)
             bottomSheet.show(childFragmentManager, bottomSheet.tag)
         }
         notiPermission = NotificationManagerCompat.from(mainActivity).areNotificationsEnabled()
