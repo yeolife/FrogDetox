@@ -38,6 +38,7 @@ import com.ssafy.frogdetox.common.getTimeInMillis
 import com.ssafy.frogdetox.common.getTodayInMillis
 import com.ssafy.frogdetox.common.getWeekPageTitle
 import com.ssafy.frogdetox.data.local.FrogDetoxDatabase
+import com.ssafy.frogdetox.data.local.SharedPreferencesManager
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager.getUId
 import com.ssafy.frogdetox.data.model.TodoAlarmDto
 import com.ssafy.frogdetox.data.model.TodoDto
@@ -68,7 +69,9 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
-class TodoFragment : Fragment() {
+open class todoRegisterDialog : Fragment()
+
+class TodoFragment : todoRegisterDialog() {
     private lateinit var mainActivity: MainActivity
     private var _binding: FragmentTodoBinding? = null
     private val binding get() = _binding!!
@@ -91,18 +94,16 @@ class TodoFragment : Fragment() {
     private var userImgUrl: String? = null
     private var userName: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            userImgUrl = it.getString("url")
-            userName = it.getString("name")
-        }
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
         mainActivity = context as MainActivity
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        userImgUrl = SharedPreferencesManager.getUserProfile()
+        userName = SharedPreferencesManager.getUserName()
+        alarmManager = AlarmManager(mainActivity)
     }
 
     override fun onCreateView(
@@ -123,22 +124,15 @@ class TodoFragment : Fragment() {
             placeholder(R.drawable.ic_launcher_foreground)
         }
         binding.btnLogout.setOnClickListener {
-            val intent3 = Intent(requireContext(), LoginActivity::class.java)
-            intent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            intent3.putExtra("state", 1)
-            startActivity(intent3)
+            goLoginWithState(1)
         }
 
         binding.lyPersonal.setOnClickListener {
             personalDialog(userImgUrl,userName)
         }
 
-        alarmManager = AlarmManager(mainActivity)
-
         observerTodoList()
-
         initTodoRecyclerView()
-
         initTodoDateCalendar()
     }
 
@@ -316,17 +310,7 @@ class TodoFragment : Fragment() {
                 bindingTMD.etTodo.setText(todo.content)
                 bindingTMD.switch2.isChecked = todo.isAlarm
 
-                bindingTMD.calendarView.isVisible = false
-                if(!checkPermission()) {
-                    bindingTMD.switch2.isChecked = false
-                    bindingTMD.calendarView.isVisible = false
-                } else {
-                    if (bindingTMD.switch2.isChecked) {
-                        bindingTMD.calendarView.isVisible = true
-                    } else {
-                        bindingTMD.calendarView.isVisible = false
-                    }
-                }
+                calendarPermissionCheck()
             }
         }
 
@@ -370,7 +354,8 @@ class TodoFragment : Fragment() {
                         else
                             todo.alarmTime = "⏰ AM " + bindingTMD.calendarView.hour + ":" + strMinute
 
-                        if(viewModel.selectDay.value!! >= getTodayInMillis()){//다음날
+                        //다음날 or 오늘 지금 시간 이후
+                        if((viewModel.selectDay.value!! >= getTodayInMillis()) or ((getTodayInMillis()- viewModel.selectDay.value!! <=86400000) and (getTimeInMillis(hour, minute) >= getTodayInMillis()))){
                             todo.alarmCode = registerAlarm()
                             lifecycleScope.launch {
                                 val alarmdto = TodoAlarmDto()
@@ -378,17 +363,6 @@ class TodoFragment : Fragment() {
                                 alarmdto.time = "${LongToLocaldate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
                                 alarmdto.content = bindingTMD.etTodo.text.toString()
                                 db.todoAlarmDao().insert(alarmdto)
-                            }
-                        } else if(getTodayInMillis()- viewModel.selectDay.value!! <=86400000){
-                            if (getTimeInMillis(hour, minute) >= getTodayInMillis()) {
-                                todo.alarmCode = registerAlarm()
-                                lifecycleScope.launch {
-                                    val alarmdto = TodoAlarmDto()
-                                    alarmdto.alarm_code=todo.alarmCode
-                                    alarmdto.time = "${LongToLocaldate(viewModel.selectDay.value ?: Date().time)} $hour:$minute:00" // 알람이 울리는 시간
-                                    alarmdto.content = bindingTMD.etTodo.text.toString()
-                                    db!!.todoAlarmDao().insert(alarmdto)
-                                }
                             }
                         }
                     } else {
@@ -414,17 +388,7 @@ class TodoFragment : Fragment() {
         }
 
         bindingTMD.switch2.setOnCheckedChangeListener { buttonView, isChecked ->
-            bindingTMD.calendarView.isVisible = false
-            if(!checkPermission()) {
-                bindingTMD.switch2.isChecked = false
-                bindingTMD.calendarView.isVisible = false
-            } else {
-                if (bindingTMD.switch2.isChecked) {
-                    bindingTMD.calendarView.isVisible = true
-                } else {
-                    bindingTMD.calendarView.isVisible = false
-                }
-            }
+            calendarPermissionCheck()
         }
 
         if (bindingTMD.root.parent != null) {
@@ -433,6 +397,21 @@ class TodoFragment : Fragment() {
 
         dialog.show()
     }
+
+    private fun calendarPermissionCheck() {
+        bindingTMD.calendarView.isVisible = false
+        if(!checkPermission()) {
+            bindingTMD.switch2.isChecked = false
+            bindingTMD.calendarView.isVisible = false
+        } else {
+            if (bindingTMD.switch2.isChecked) {
+                bindingTMD.calendarView.isVisible = true
+            } else {
+                bindingTMD.calendarView.isVisible = false
+            }
+        }
+    }
+
     private fun personalDialog(url: String?, name: String?) {
         bindingPD.ivUrl.load(url) {
             transformations(CircleCropTransformation())
@@ -444,11 +423,9 @@ class TodoFragment : Fragment() {
             bindingPD.lyRealBye.visibility = View.VISIBLE
         }
         bindingPD.btnYes.setOnClickListener {
-            val intent3 = Intent(requireContext(), LoginActivity::class.java)
-            intent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            intent3.putExtra("state", 2)
-            startActivity(intent3)
+            goLoginWithState(2)
         }
+
         bindingPD.btnNo.setOnClickListener {
             bindingPD.lyRealBye.visibility = View.GONE
         }
@@ -462,7 +439,12 @@ class TodoFragment : Fragment() {
         }
         dialog.show()
     }
-
+    fun goLoginWithState(state : Int){
+        val intent3 = Intent(requireContext(), LoginActivity::class.java)
+        intent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent3.putExtra("state", state)
+        startActivity(intent3)
+    }
     private fun registerAlarm(): Int {
         val hour = bindingTMD.calendarView.hour.toString()
         val minute = bindingTMD.calendarView.minute.toString()
@@ -545,14 +527,5 @@ class TodoFragment : Fragment() {
     companion object {
         const val TODO_INSERT = 0
         const val TODO_UPDATE = 1
-
-        @JvmStatic
-        fun newInstance(param1: String?, param2: String?) =
-            TodoFragment().apply {
-                arguments = Bundle().apply {
-                    putString("url", param1)
-                    putString("name", param2)
-                }
-            }
     }
 }
