@@ -7,6 +7,7 @@ import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
 import android.view.accessibility.AccessibilityManager
+import androidx.core.app.NotificationManagerCompat
 
 object Permission {
     fun isAccessibilityServiceEnabled(context: Context, service: Class<out AccessibilityService>): Boolean {
@@ -28,6 +29,10 @@ object Permission {
         return false
     }
 
+    fun getNotificationPermission(context: Context): Boolean {
+        return NotificationManagerCompat.from(context).areNotificationsEnabled()
+
+    }
 
     fun isExactAlarmPermissionGranted(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
