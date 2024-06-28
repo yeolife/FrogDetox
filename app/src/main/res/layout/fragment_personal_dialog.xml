@@ -13,20 +13,22 @@
         android:id="@+id/ivUrl"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:layout_marginHorizontal="100dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tvName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
+        android:gravity="center"
         android:text="이름+님"
         android:textSize="30dp" />
 
 
     <LinearLayout
         android:id="@+id/lyBye"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
@@ -50,7 +52,7 @@
     </LinearLayout>
     <LinearLayout
         android:id="@+id/lyRealBye"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
@@ -95,7 +97,7 @@
 
     </LinearLayout>
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginBottom="60dp"

@@ -43,7 +43,6 @@ import com.ssafy.frogdetox.data.local.SharedPreferencesManager.getUId
 import com.ssafy.frogdetox.data.model.TodoAlarmDto
 import com.ssafy.frogdetox.data.model.TodoDto
 import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
-import com.ssafy.frogdetox.databinding.DialogPersonalBinding
 import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.ui.LoginActivity
@@ -74,7 +73,6 @@ class TodoFragment : Fragment() {
     private var _binding: FragmentTodoBinding? = null
     private val binding get() = _binding!!
     private lateinit var bindingTMD: DialogTodomakeBinding
-    private lateinit var bindingPD : DialogPersonalBinding
 
     private lateinit var todoRecycler: RecyclerView
     private lateinit var todoAdapter: TodoListAdapter
@@ -110,7 +108,6 @@ class TodoFragment : Fragment() {
     ): View {
         _binding = FragmentTodoBinding.inflate(inflater, container, false)
         bindingTMD = DialogTodomakeBinding.inflate(layoutInflater)
-        bindingPD = DialogPersonalBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -126,7 +123,8 @@ class TodoFragment : Fragment() {
         }
 
         binding.lyPersonal.setOnClickListener {
-            personalDialog(userImgUrl,userName)
+            val dialog = PersonalDialogFragment()
+            dialog.show(childFragmentManager, "PersonalDialogFragment")
         }
 
         observerTodoList()
@@ -410,33 +408,6 @@ class TodoFragment : Fragment() {
         }
     }
 
-    private fun personalDialog(url: String?, name: String?) {
-        bindingPD.ivUrl.load(url) {
-            transformations(CircleCropTransformation())
-            placeholder(R.drawable.ic_launcher_foreground)
-        }
-        bindingPD.tvName.text = name+"님"
-        bindingPD.lyRealBye.visibility = View.GONE
-        bindingPD.lyBye.setOnClickListener {
-            bindingPD.lyRealBye.visibility = View.VISIBLE
-        }
-        bindingPD.btnYes.setOnClickListener {
-            goLoginWithState(2)
-        }
-
-        bindingPD.btnNo.setOnClickListener {
-            bindingPD.lyRealBye.visibility = View.GONE
-        }
-        val dialogBuilder = AlertDialog.Builder(requireContext())
-        val dialog = dialogBuilder
-            .setView(bindingPD.root)
-            .setCancelable(true) // 다이얼로그 바깥을 클릭하면 닫히도록
-            .create()
-        if (bindingPD.root.parent != null) {
-            ((bindingPD.root.parent) as ViewGroup).removeView(bindingPD.root)
-        }
-        dialog.show()
-    }
     fun goLoginWithState(state : Int){
         val intent3 = Intent(requireContext(), LoginActivity::class.java)
         intent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
