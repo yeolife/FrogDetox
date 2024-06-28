@@ -45,8 +45,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        SharedPreferencesManager.init(this)
-
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
