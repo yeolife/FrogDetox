@@ -1,15 +1,12 @@
 package com.ssafy.frogdetox.ui.todo
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -26,17 +23,14 @@ import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.view.ViewContainer
 import com.kizitonwose.calendar.view.WeekDayBinder
 import com.ssafy.frogdetox.R
-import com.ssafy.frogdetox.common.Permission
 import com.ssafy.frogdetox.common.displayText
 import com.ssafy.frogdetox.common.getWeekPageTitle
 import com.ssafy.frogdetox.data.local.FrogDetoxDatabase
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager
 import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
-import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.ui.LoginActivity
 import com.ssafy.frogdetox.ui.MainActivity
-import com.ssafy.frogdetox.ui.detox.DetoxBlockingBottomSheetFragment
 import com.ssafy.frogdetox.ui.todo.todoListSwiper.SwipeController
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -64,9 +58,6 @@ class TodoFragment : Fragment() {
         FrogDetoxDatabase.getInstance(requireContext())
     }
 
-    private var userImgUrl: String? = null
-    private var userName: String? = null
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = context as MainActivity
@@ -74,8 +65,7 @@ class TodoFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        userImgUrl = SharedPreferencesManager.getUserProfile()
-        userName = SharedPreferencesManager.getUserName()
+
         alarmManager = AlarmManager(mainActivity)
     }
 
@@ -97,8 +87,9 @@ class TodoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.tvName.text = userName + "님"
-        binding.ivFrog.load(userImgUrl) {
+
+        binding.tvName.text = "${SharedPreferencesManager.getUserName()}님"
+        binding.ivFrog.load(SharedPreferencesManager.getUserProfile()) {
             transformations(CircleCropTransformation())
             placeholder(R.drawable.ic_launcher_foreground)
         }
@@ -207,11 +198,6 @@ class TodoFragment : Fragment() {
                 bind.exSevenDateText.text = dateFormatter.format(day.date)
                 bind.exSevenDayText.text = day.date.dayOfWeek.displayText()
 
-                val colorRes = if (day.date == selectedDate) {
-                    R.color.LightGreen
-                } else {
-                    R.color.white
-                }
 //                bind.exSevenDateText.setTextColor(view.context.getColorCompat(colorRes))
                 bind.exSevenSelectedView.isVisible = (day.date == selectedDate)
             }

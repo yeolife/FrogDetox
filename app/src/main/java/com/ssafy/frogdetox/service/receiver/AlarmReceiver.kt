@@ -45,7 +45,6 @@ class AlarmReceiver : BroadcastReceiver() {
         if(intent?.action == Intent.ACTION_BOOT_COMPLETED) {
             // TODO 재부팅 알람 재등록
             Log.d(TAG, "onReceive: 재부팅팅!!")
-            SharedPreferencesManager.init(context)
             coroutineScope.launch {
                 val list = db.todoAlarmDao().getAllTodoAlarm()
                 val size = db.todoAlarmDao().getAllTodoAlarm().size
