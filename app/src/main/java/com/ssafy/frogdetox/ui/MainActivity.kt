@@ -22,10 +22,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initBottomNavFragment() {
-        todoFragment = TodoFragment.newInstance(
-            intent.getStringExtra("url"),
-            intent.getStringExtra("name")
-        )
+        todoFragment = TodoFragment()
         detoxFragment = DetoxSleepFragment()
 
         // Initialize with the first fragment

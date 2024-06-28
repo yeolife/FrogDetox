@@ -17,14 +17,20 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ssafy.frogdetox.common.LocalAPIKey
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager
+import com.ssafy.frogdetox.data.local.SharedPreferencesManager.getUId
+import com.ssafy.frogdetox.data.local.SharedPreferencesManager.getUserName
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager.putUId
+import com.ssafy.frogdetox.data.local.SharedPreferencesManager.putUserName
+import com.ssafy.frogdetox.data.local.SharedPreferencesManager.putUserProfile
 import com.ssafy.frogdetox.databinding.ActivityLoginBinding
 
 private const val TAG = "LoginActivity_싸피"
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding : ActivityLoginBinding
+
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+
     private val activityLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
@@ -69,14 +75,13 @@ class LoginActivity : AppCompatActivity() {
         // Google 로그아웃
         googleSignInClient.signOut().addOnCompleteListener(this) {
             // 로그아웃 후 UI 업데이트
-            updateUI(null)
+            Log.d(TAG, "clearAll: ")
         }
         // SharedPreferences 내용 삭제
         SharedPreferencesManager.clearPreferences()
 
         //탈퇴 처리하고 logout
         val user = auth.currentUser
-
         user?.delete()
             ?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -99,7 +104,7 @@ class LoginActivity : AppCompatActivity() {
         // Google 로그아웃
         googleSignInClient.signOut().addOnCompleteListener(this) {
             // 로그아웃 후 UI 업데이트
-            updateUI(null)
+            Log.d(TAG, "clearAuthentication: !@@!@#")
         }
 
         // SharedPreferences 내용 삭제
@@ -111,8 +116,8 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart: ")
-        val currentUser = auth.currentUser
-        updateUI(currentUser)
+
+        updateUI()
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
@@ -122,23 +127,25 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "signInWithCredential:success")
-                    val user = auth.currentUser
-                    updateUI(user)
+
+                    auth.currentUser?.let {
+                        putUId(it.uid)
+                        putUserName(it.displayName ?: "")
+                        putUserProfile(it.photoUrl.toString())
+                    }
+
+                    updateUI()
                 } else {
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    updateUI(null)
                 }
             }
     }
 
-    private fun updateUI(user: FirebaseUser?) {
-        if (user != null) {
-            val intent2 = Intent(this, MainActivity::class.java).apply {
-                putExtra("url", user.photoUrl.toString())
-                putExtra("name", user.displayName)
-            }
-            putUId(user.uid)
-            Toast.makeText(this, "환영합니다, ${user.displayName}님", Toast.LENGTH_SHORT).show()
+    private fun updateUI() {
+        // shared에 id가 유효하면
+        if(!getUId().isNullOrBlank()) {
+            val intent2 = Intent(this, MainActivity::class.java)
+            Toast.makeText(this, "환영합니다, ${getUserName()}님", Toast.LENGTH_SHORT).show()
             startActivity(intent2)
             finish()
         }
