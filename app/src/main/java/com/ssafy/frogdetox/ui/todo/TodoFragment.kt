@@ -69,9 +69,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
-open class todoRegisterDialog : Fragment()
-
-class TodoFragment : todoRegisterDialog() {
+class TodoFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private var _binding: FragmentTodoBinding? = null
     private val binding get() = _binding!!
