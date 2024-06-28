@@ -10,11 +10,9 @@ import com.ssafy.frogdetox.common.getTodayInMillis
 import com.ssafy.frogdetox.service.receiver.ScreenSaverReceiver
 import java.util.Calendar
 
-private const val TAG = "ScreenSaverManager"
 class ScreenSaverManager(private val context: Context)  {
     @SuppressLint("ScheduleExactAlarm")
     fun setScreenSaverAlarm(context: Context, hour: Int?, minute : Int?){
-        Log.d(TAG, "set hour $hour, minute $minute.")
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, ScreenSaverReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(

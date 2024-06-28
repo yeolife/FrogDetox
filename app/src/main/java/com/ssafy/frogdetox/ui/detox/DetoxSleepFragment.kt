@@ -77,18 +77,10 @@ class DetoxSleepFragment : Fragment() {
         val textSizeInPx = 25 * scale // dp를 px로 변환합니다.
 
         if(getSleepState()){
-            binding.night.visibility=View.GONE
-            binding.ivon.visibility=View.VISIBLE
-            binding.ivoff.visibility=View.GONE
-            binding.tvon.visibility=View.VISIBLE
-            binding.tvoff.visibility=View.GONE
+            sleepOnUI()
         }
         else{
-            binding.night.visibility=View.VISIBLE
-            binding.ivon.visibility=View.GONE
-            binding.ivoff.visibility=View.VISIBLE
-            binding.tvon.visibility = View.GONE
-            binding.tvoff.visibility=View.VISIBLE
+            sleepOffUI()
         }
         if(getHour()!=-1){
             if(getMinute()==0){
@@ -118,11 +110,7 @@ class DetoxSleepFragment : Fragment() {
                             binding.tvSleepTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizeInPx) // 텍스트 크기를 설정합니다.
                             binding.tvSleepTime.text = binding2.calendarView.hour.toString() + "시" + binding2.calendarView.minute.toString() + "분에\n자야지"
                         }
-                        binding.night.visibility= View.GONE
-                        binding.ivon.visibility=View.VISIBLE
-                        binding.ivoff.visibility=View.GONE
-                        binding.tvon.visibility=View.VISIBLE
-                        binding.tvoff.visibility=View.GONE
+                        sleepOnUI()
                         screenSaverManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
 
                         dialog.dismiss()
@@ -136,11 +124,7 @@ class DetoxSleepFragment : Fragment() {
         }
         binding.ivon.setOnClickListener {
             if(checkPermission()){
-                binding.night.visibility=View.VISIBLE
-                binding.ivon.visibility=View.GONE
-                binding.ivoff.visibility=View.VISIBLE
-                binding.tvon.visibility = View.GONE
-                binding.tvoff.visibility=View.VISIBLE
+                sleepOffUI()
                 putSleepState(false)
                 screenSaverManager.cancelScreenSaverAlarm()
             }
@@ -149,11 +133,7 @@ class DetoxSleepFragment : Fragment() {
             if(getHour()!=-1){
                 if(checkPermission()){
                     screenSaverManager.setScreenSaverAlarm(requireContext(), getHour(), getMinute())
-                    binding.night.visibility=View.GONE
-                    binding.ivon.visibility=View.VISIBLE
-                    binding.ivoff.visibility=View.GONE
-                    binding.tvon.visibility=View.VISIBLE
-                    binding.tvoff.visibility=View.GONE
+                    sleepOnUI()
                     putSleepState(true)
                 }
             }
@@ -161,5 +141,19 @@ class DetoxSleepFragment : Fragment() {
                 Toast.makeText(requireContext(),"알람 시간을 설정해주세요",Toast.LENGTH_SHORT).show()
             }
         }
+    }
+    fun sleepOnUI(){
+        binding.night.visibility=View.GONE
+        binding.ivon.visibility=View.VISIBLE
+        binding.ivoff.visibility=View.GONE
+        binding.tvon.visibility=View.VISIBLE
+        binding.tvoff.visibility=View.GONE
+    }
+    fun sleepOffUI(){
+        binding.night.visibility=View.VISIBLE
+        binding.ivon.visibility=View.GONE
+        binding.ivoff.visibility=View.VISIBLE
+        binding.tvon.visibility = View.GONE
+        binding.tvoff.visibility=View.VISIBLE
     }
 }
