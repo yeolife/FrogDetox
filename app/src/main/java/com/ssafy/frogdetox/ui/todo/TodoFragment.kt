@@ -31,6 +31,8 @@ import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.ui.LoginActivity
 import com.ssafy.frogdetox.ui.MainActivity
+import com.ssafy.frogdetox.ui.todo.todoDialog.PersonalDialogFragment
+import com.ssafy.frogdetox.ui.todo.todoDialog.TodoRegisterDialog
 import com.ssafy.frogdetox.ui.todo.todoListSwiper.SwipeController
 import kotlinx.coroutines.launch
 import java.time.LocalDate

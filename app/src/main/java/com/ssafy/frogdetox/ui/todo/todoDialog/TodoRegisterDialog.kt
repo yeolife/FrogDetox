@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.ui.todo
+package com.ssafy.frogdetox.ui.todo.todoDialog
 
 import android.app.AlertDialog
 import android.view.LayoutInflater
@@ -22,6 +22,9 @@ import com.ssafy.frogdetox.data.model.TodoAlarmDto
 import com.ssafy.frogdetox.data.model.TodoDto
 import com.ssafy.frogdetox.databinding.DialogTodomakeBinding
 import com.ssafy.frogdetox.ui.detox.DetoxBlockingBottomSheetFragment
+import com.ssafy.frogdetox.ui.todo.AlarmManager
+import com.ssafy.frogdetox.ui.todo.TodoFragment
+import com.ssafy.frogdetox.ui.todo.TodoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -38,10 +41,10 @@ import java.net.URL
 import java.util.Date
 
 class TodoRegisterDialog(
-                         private val fragment: TodoFragment,
-                         private val viewModel: TodoViewModel,
-                         private val db: FrogDetoxDatabase,
-                         private val alarmManager: AlarmManager
+    private val fragment: TodoFragment,
+    private val viewModel: TodoViewModel,
+    private val db: FrogDetoxDatabase,
+    private val alarmManager: AlarmManager
 ) {
     private var _binding: DialogTodomakeBinding? = null
     private val binding get() = _binding!!

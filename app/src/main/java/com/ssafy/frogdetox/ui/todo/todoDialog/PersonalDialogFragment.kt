@@ -1,4 +1,4 @@
-package com.ssafy.frogdetox.ui.todo
+package com.ssafy.frogdetox.ui.todo.todoDialog
 
 import android.content.Intent
 import android.os.Bundle
