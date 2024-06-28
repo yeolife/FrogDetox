@@ -5,12 +5,13 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.util.Log
 import com.ssafy.frogdetox.common.getTodayInMillis
 import com.ssafy.frogdetox.service.receiver.ScreenSaverReceiver
 import java.util.Calendar
 
-class ScreenSaverManager(private val context: Context)  {
+object ScreenSaverManager{
     @SuppressLint("ScheduleExactAlarm")
     fun setScreenSaverAlarm(context: Context, hour: Int?, minute : Int?){
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -37,7 +38,8 @@ class ScreenSaverManager(private val context: Context)  {
             }
         }
     }
-    fun cancelScreenSaverAlarm(){
+
+    fun cancelScreenSaverAlarm(context: Context){
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, ScreenSaverReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
