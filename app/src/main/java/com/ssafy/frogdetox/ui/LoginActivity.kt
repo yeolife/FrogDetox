@@ -11,7 +11,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -45,11 +44,12 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate: ")
+
         SharedPreferencesManager.init(this)
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         binding.btnSignIn.setOnClickListener { signIn() }
 
         val webClientId = LocalAPIKey.getSecretKey(this, "default_web_client_id")
@@ -72,12 +72,8 @@ class LoginActivity : AppCompatActivity() {
         }
     }
     private fun clearAll(){
-        // Google 로그아웃
-        googleSignInClient.signOut().addOnCompleteListener(this) {
-            // 로그아웃 후 UI 업데이트
-            Log.d(TAG, "clearAll: ")
-        }
-        // SharedPreferences 내용 삭제
+        googleSignInClient.signOut()
+
         SharedPreferencesManager.clearPreferences()
 
         //탈퇴 처리하고 logout
@@ -102,10 +98,7 @@ class LoginActivity : AppCompatActivity() {
         auth.signOut()
 
         // Google 로그아웃
-        googleSignInClient.signOut().addOnCompleteListener(this) {
-            // 로그아웃 후 UI 업데이트
-            Log.d(TAG, "clearAuthentication: !@@!@#")
-        }
+        googleSignInClient.signOut()
 
         // SharedPreferences 내용 삭제
         SharedPreferencesManager.clearPreferences()
@@ -115,7 +108,6 @@ class LoginActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
-        Log.d(TAG, "onStart: ")
 
         updateUI()
     }
