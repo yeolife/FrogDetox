@@ -22,19 +22,24 @@ import com.ssafy.frogdetox.ui.LoginActivity
 import com.ssafy.frogdetox.ui.todo.TodoViewModel
 
 private const val TAG = "PersonalDialogFragment"
-class PersonalDialogFragment() : DialogFragment() {
+class PersonalDialogFragment : DialogFragment() {
     private var _binding: FragmentPersonalDialogBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
     private lateinit var viewModel: TodoViewModel
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProvider(requireActivity())[TodoViewModel::class.java]
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPersonalDialogBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(requireActivity())[TodoViewModel::class.java]
 
         return binding.root
     }
@@ -57,13 +62,14 @@ class PersonalDialogFragment() : DialogFragment() {
         }
         binding.btnYes.setOnClickListener {
             val user = auth.currentUser
+            Log.d(TAG, "onViewCreated: ${requireContext()}")
             user?.delete()?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // 사용자 삭제 성공
                     Log.d(TAG, "onViewCreated: 성공")
-                    viewModel.deleteAllTodo()
-                    goLoginWithState()
+                    // viewModel.deleteAllTodo()
                     Toast.makeText(requireContext(), "회원 탈퇴 되었습니다.", Toast.LENGTH_SHORT).show()
+                    goLoginWithState()
                 } else {                    
                     Log.d(TAG, "onViewCreated: 실패")
                     Toast.makeText(requireContext(), "회원 탈퇴 실패 ${task.exception}", Toast.LENGTH_SHORT).show()
