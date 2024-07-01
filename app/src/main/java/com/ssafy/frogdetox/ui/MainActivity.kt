@@ -1,16 +1,20 @@
 package com.ssafy.frogdetox.ui
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.databinding.ActivityMainBinding
 import com.ssafy.frogdetox.ui.detox.DetoxSleepFragment
 import com.ssafy.frogdetox.ui.todo.TodoFragment
+import com.ssafy.frogdetox.ui.todo.TodoViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var todoFragment: TodoFragment
     private lateinit var detoxFragment: DetoxSleepFragment
+
+    private val viewModel: TodoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

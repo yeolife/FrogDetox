@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -55,7 +55,7 @@ class TodoFragment : Fragment() {
 
     private val dateFormatter = DateTimeFormatter.ofPattern("dd")
 
-    val viewModel: TodoViewModel by viewModels()
+    private val viewModel: TodoViewModel by activityViewModels()
     private val db: FrogDetoxDatabase by lazy {
         FrogDetoxDatabase.getInstance(requireContext())
     }
