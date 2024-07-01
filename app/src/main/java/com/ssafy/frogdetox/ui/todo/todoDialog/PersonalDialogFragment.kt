@@ -2,32 +2,46 @@ package com.ssafy.frogdetox.ui.todo.todoDialog
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
 import coil.load
 import coil.transform.CircleCropTransformation
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager
 import com.ssafy.frogdetox.databinding.FragmentPersonalDialogBinding
 import com.ssafy.frogdetox.ui.LoginActivity
+import com.ssafy.frogdetox.ui.todo.TodoViewModel
 
-class PersonalDialogFragment : DialogFragment() {
+private const val TAG = "PersonalDialogFragment"
+class PersonalDialogFragment() : DialogFragment() {
     private var _binding: FragmentPersonalDialogBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var viewModel: TodoViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPersonalDialogBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(requireActivity())[TodoViewModel::class.java]
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        auth = Firebase.auth
 
         val url = SharedPreferencesManager.getUserProfile()
         val name = SharedPreferencesManager.getUserName()
@@ -42,8 +56,20 @@ class PersonalDialogFragment : DialogFragment() {
             binding.lyRealBye.visibility = View.VISIBLE
         }
         binding.btnYes.setOnClickListener {
-            // 다이얼로그에서 액티비티로 결과를 전달하는 예제입니다. 구현 필요
-            goLoginWithState(2)
+            val user = auth.currentUser
+            user?.delete()?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // 사용자 삭제 성공
+                    Log.d(TAG, "onViewCreated: 성공")
+                    viewModel.deleteAllTodo()
+                    goLoginWithState()
+                    Toast.makeText(requireContext(), "회원 탈퇴 되었습니다.", Toast.LENGTH_SHORT).show()
+                } else {                    
+                    Log.d(TAG, "onViewCreated: 실패")
+                    Toast.makeText(requireContext(), "회원 탈퇴 실패 ${task.exception}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
             dismiss()
         }
         binding.btnNo.setOnClickListener {
@@ -64,10 +90,10 @@ class PersonalDialogFragment : DialogFragment() {
         _binding = null
     }
 
-    fun goLoginWithState(state : Int){
+    private fun goLoginWithState(){
         val intent3 = Intent(requireContext(), LoginActivity::class.java)
         intent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        intent3.putExtra("state", state)
+        intent3.putExtra("state", 1)
         startActivity(intent3)
     }
 }

@@ -3,8 +3,10 @@ package com.ssafy.frogdetox.ui.todo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ssafy.frogdetox.data.model.TodoDto
 import com.ssafy.frogdetox.data.remote.TodoRepository
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.ZoneOffset
 
@@ -28,8 +30,10 @@ class TodoViewModel: ViewModel() {
         }
 
         selectDay.observeForever {
-            todoRepo.getData(it).observeForever { data ->
-                mutableData.value = data ?: mutableListOf()
+            viewModelScope.launch {
+                todoRepo.getData(it).observeForever { data ->
+                    mutableData.value = data ?: mutableListOf()
+                }
             }
         }
         return mutableData
@@ -43,18 +47,32 @@ class TodoViewModel: ViewModel() {
     }
 
     fun addTodo(todo: TodoDto) {
-        todoRepo.todoInsert(todo)
+        viewModelScope.launch {
+            todoRepo.todoInsert(todo)
+        }
     }
 
     fun updateTodoContent(todo: TodoDto) {
-        todoRepo.todoContentUpdate(todo)
+        viewModelScope.launch {
+            todoRepo.todoContentUpdate(todo)
+        }
     }
 
     fun updateTodoComplete(id: String, isChecked: Boolean) {
-        todoRepo.todoCheckUpdate(id, isChecked)
+        viewModelScope.launch {
+            todoRepo.todoCheckUpdate(id, isChecked)
+        }
     }
 
     fun deleteTodo(id: String) {
-        todoRepo.todoDelete(id)
+        viewModelScope.launch {
+            todoRepo.todoDelete(id)
+        }
+    }
+
+    fun deleteAllTodo() {
+        viewModelScope.launch {
+            todoRepo.todoDeleteAll()
+        }
     }
 }
