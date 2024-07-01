@@ -65,32 +65,8 @@ class LoginActivity : AppCompatActivity() {
         if (state == 1) {
             clearAuthentication()
         }
-        else if(state ==2){
-            clearAll()
-        }
     }
-    private fun clearAll(){
-        googleSignInClient.signOut()
 
-        SharedPreferencesManager.clearPreferences()
-
-        //탈퇴 처리하고 logout
-        val user = auth.currentUser
-        user?.delete()
-            ?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // 사용자 삭제 성공
-                    // 추가적인 작업이 필요하면 여기에 작성
-                    Log.d(TAG, "clearAll: 성공")
-                    Toast.makeText(this, "회원 탈퇴 되었습니다.", Toast.LENGTH_SHORT).show()
-                } else {
-                    // 사용자 삭제 실패
-                    Log.e(TAG, "회원 탈퇴 실패: ${task.exception}")
-                }
-            }
-        // Firebase 로그아웃
-        auth.signOut()
-    }
     private fun clearAuthentication() {
         // Firebase 로그아웃
         auth.signOut()

@@ -31,7 +31,7 @@ class TodoRepository {
             override fun onDataChange(snapshot: DataSnapshot) {
                 listData.clear()
                 if(snapshot.exists()) {
-                    for(curSnapshot in snapshot.children){
+                    for(curSnapshot in snapshot.children) {
                         val getData = curSnapshot.getValue(TodoDto::class.java)
                         if (getData != null && selectDay == getData.regTime) {
                             listData.add(getData)
@@ -103,6 +103,20 @@ class TodoRepository {
         }
     }
 
+    fun todoDeleteAll() {
+        uidQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (curSnapshot in snapshot.children) {
+                        curSnapshot.ref.removeValue()
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) { }
+        })
+    }
+
     fun todoInsert(todo: TodoDto) {
         val key = myRef.push().key.toString()
 
@@ -118,7 +132,6 @@ class TodoRepository {
 
     fun todoCheckUpdate(id: String, complete: Boolean) {
         val childUpdates: Map<String, Any> = mapOf("complete" to complete)
-
         myRef.child(id).updateChildren(childUpdates)
     }
 
