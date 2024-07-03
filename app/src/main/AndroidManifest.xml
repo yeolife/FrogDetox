@@ -2,24 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- 알림 -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Alarm 정확한 설정 -->
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" /> <!-- Alarm 재부팅 등록 -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- 다른 앱 위에 그리기 -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 사용정보 확인 -->
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
-        tools:ignore="QueryAllPackagesPermission" /> <!-- 설치된 모든 앱 불러오기 권한 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 인터넷 권힌 -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- 알림 -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" /> <!-- Alarm 정확한 설정 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- Alarm 재부팅 등록 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 다른 앱 위에 그리기 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!--화면 들어 깨우기-->
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-
-    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" /> <!-- 앱의 목록을 가져오기 위한 쿼리 -->
-    <queries>
-        <intent>
-            <action android:name="android.intent.action.SEND" />
-
-            <data android:mimeType="image/jpeg" />
-        </intent>
-    </queries>
 
     <application
         android:allowBackup="true"
