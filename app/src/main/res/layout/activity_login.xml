@@ -53,7 +53,7 @@
                 android:text="TODO &amp;\nDOPAMINE DETOX"
                 android:textAlignment="textStart"
                 android:textColor="#848484"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:text="청깨구리"
                 android:textAlignment="textEnd"
-                android:textSize="36dp"
+                android:textSize="36sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
