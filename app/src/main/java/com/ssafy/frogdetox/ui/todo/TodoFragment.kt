@@ -2,7 +2,6 @@ package com.ssafy.frogdetox.ui.todo
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,7 +28,6 @@ import com.ssafy.frogdetox.data.local.FrogDetoxDatabase
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager
 import com.ssafy.frogdetox.databinding.CalendarDayLayoutBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
-import com.ssafy.frogdetox.ui.LoginActivity
 import com.ssafy.frogdetox.ui.MainActivity
 import com.ssafy.frogdetox.ui.todo.todoDialog.PersonalDialogFragment
 import com.ssafy.frogdetox.ui.todo.todoDialog.TodoRegisterDialog
@@ -95,8 +93,8 @@ class TodoFragment : Fragment() {
             transformations(CircleCropTransformation())
             placeholder(R.drawable.ic_launcher_foreground)
         }
-        binding.btnLogout.setOnClickListener {
-            goLoginWithState(1)
+        binding.btnSetting.setOnClickListener {
+            mainActivity.changeFragmentView(MainActivity.SETTING_FRAGMENT)
         }
 
         binding.lyPersonal.setOnClickListener {
@@ -157,14 +155,6 @@ class TodoFragment : Fragment() {
             }
         }
     }
-
-    fun goLoginWithState(state : Int){
-        val intent3 = Intent(requireContext(), LoginActivity::class.java)
-        intent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        intent3.putExtra("state", state)
-        startActivity(intent3)
-    }
-
 
     @SuppressLint("NotifyDataSetChanged")
     fun observerTodoList() {
