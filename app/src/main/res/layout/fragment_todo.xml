@@ -74,14 +74,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/llWeek" />
 
-
-
     <ImageView
-        android:id="@+id/btn_logout"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:id="@+id/btn_setting"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginEnd="12dp"
-        android:src="@drawable/logout"
+        android:src="@drawable/baseline_settings_24"
         app:layout_constraintBottom_toTopOf="@+id/llWeek"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/lyPersonal"
