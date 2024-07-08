@@ -1,5 +1,6 @@
 package com.ssafy.frogdetox.ui.setting
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,18 +11,27 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.databinding.FragmentSettingBinding
 import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.ui.LoginActivity
+import com.ssafy.frogdetox.ui.MainActivity
 
 class SettingFragment : Fragment() {
+    private lateinit var mainActivity: MainActivity
 
     private var _binding: FragmentSettingBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var listView: ListView
     private val menuItems = arrayOf("로그아웃", "개인정보처리방침", "개발자한테 문의하기")
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainActivity = context as MainActivity
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,9 +40,14 @@ class SettingFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
+    ): View {
         _binding = FragmentSettingBinding.inflate(inflater, container, false)
+
+        mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                mainActivity.changeFragmentView(MainActivity.TODO_FRAGMENT)
+            }
+        })
 
         return binding.root
     }
@@ -44,19 +59,23 @@ class SettingFragment : Fragment() {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, menuItems)
         listView.adapter = adapter
 
+        binding.backBtn.setOnClickListener{
+            mainActivity.changeFragmentView(MainActivity.TODO_FRAGMENT)
+        }
+
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             when (position) {
-                0 -> goLoginWithState(1)
+                0 -> goLoginWithState()
                 1 -> openPrivacyPolicy()
                 2 -> contactDeveloper()
             }
         }
     }
 
-    private fun goLoginWithState(state : Int){
+    private fun goLoginWithState(){
         val intent3 = Intent(requireContext(), LoginActivity::class.java)
         intent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        intent3.putExtra("state", state)
+        intent3.putExtra("state", 1)
         startActivity(intent3)
     }
 
