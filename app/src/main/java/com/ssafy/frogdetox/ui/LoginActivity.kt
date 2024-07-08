@@ -1,7 +1,11 @@
 package com.ssafy.frogdetox.ui
 
+
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +26,7 @@ import com.ssafy.frogdetox.data.local.SharedPreferencesManager.putUId
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager.putUserName
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager.putUserProfile
 import com.ssafy.frogdetox.databinding.ActivityLoginBinding
+
 
 private const val TAG = "LoginActivity_싸피"
 class LoginActivity : AppCompatActivity() {
@@ -49,6 +54,12 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnSignIn.setOnClickListener { signIn() }
+
+        // HTML 텍스트 설정
+        binding.tvHyperLink.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://aluminum-timpani-a63.notion.site/cab8db22c85c4b0eb62de92769976b7a?pvs=4"))
+            startActivity(intent)
+        }
 
         val webClientId = LocalAPIKey.getSecretKey(this, "default_web_client_id")
 
