@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 
-private const val TAG = "SharedPreferencesManage"
+private const val TAG = "SharedPreferencesManage_싸피"
 object SharedPreferencesManager {
     private lateinit var preferences: SharedPreferences
     private const val SHARED_PREFERENCES_NAME = "todo_preference"
@@ -55,6 +55,15 @@ object SharedPreferencesManager {
     }
     fun getSleepState():Boolean{
         return preferences.getBoolean("sleepState",false)
+    }
+    fun putCount(count:Int){
+        preferences.edit().apply(){
+            putInt("count",count).apply()
+        }
+        Log.d(TAG, "putCount: count $count 설정함.")
+    }
+    fun getCount():Int{
+        return preferences.getInt("count",10)
     }
 
     //detox sleep hour
