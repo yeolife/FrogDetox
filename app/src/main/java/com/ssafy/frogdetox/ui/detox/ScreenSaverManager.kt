@@ -10,6 +10,7 @@ import android.util.Log
 import com.ssafy.frogdetox.common.getTodayInMillis
 import com.ssafy.frogdetox.service.receiver.ScreenSaverReceiver
 import java.util.Calendar
+import kotlin.math.min
 
 object ScreenSaverManager{
     @SuppressLint("ScheduleExactAlarm")
@@ -26,6 +27,7 @@ object ScreenSaverManager{
                 // 지금보다 늦으면 다음 날로 설정
                 if(com.ssafy.frogdetox.common.getTimeInMillis(hour, minute) < getTodayInMillis()) {
                     add(Calendar.DAY_OF_MONTH, 1)
+                    Log.d("싸피", "날짜 하루 늘렸고")
                 }
 
                 set(Calendar.HOUR_OF_DAY, hour)
@@ -35,6 +37,7 @@ object ScreenSaverManager{
                 set(Calendar.SECOND,0)
 
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
+                Log.d("싸피", "setScreenSaverAlarm: time $hour $minute 에 설정했쇼")
             }
         }
     }
