@@ -29,7 +29,7 @@ class SettingFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var listView: ListView
-    private val menuItems = arrayOf("로그아웃", "개인정보처리방침", "개발자한테 문의하기","개구리 개수 설정하기","탈퇴하기")
+    private val menuItems = arrayOf("🐸 개구리 개수 설정하기", "💻 개인정보처리방침", "🧐 개발자한테 문의하기","🚀 로그아웃","😭 탈퇴하기")
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -68,10 +68,10 @@ class SettingFragment : Fragment() {
 
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             when (position) {
-                0 -> goLoginWithState()
+                0 -> setFrogCount()
                 1 -> openPrivacyPolicy()
                 2 -> contactDeveloper()
-                3 -> setFrogCount()
+                3 -> goLoginWithState()
                 4 -> bye()
             }
         }
