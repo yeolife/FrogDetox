@@ -24,8 +24,9 @@ class GoSleepActivity : AppCompatActivity() {
         binding.night1.isVisible = false
         binding.night2.isVisible = false
         binding.night3.isVisible = false
-        SharedPreferencesManager.putSleepState(false)
         ScreenSaverManager.cancelScreenSaverAlarm(this)
+        ScreenSaverManager.setScreenSaverAlarm(this,SharedPreferencesManager.getHour(),SharedPreferencesManager.getMinute())
+        SharedPreferencesManager.putSleepState(true)
 
         lifecycleScope.launch {
             delay(1000)
