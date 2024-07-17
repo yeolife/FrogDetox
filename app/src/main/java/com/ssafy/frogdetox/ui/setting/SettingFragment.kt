@@ -14,7 +14,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.SeekBar
-import androidx.activity.OnBackPressedCallback
 import com.ssafy.frogdetox.data.local.SharedPreferencesManager
 import com.ssafy.frogdetox.databinding.DialogCountBinding
 import com.ssafy.frogdetox.databinding.FragmentSettingBinding
@@ -36,10 +35,6 @@ class SettingFragment : Fragment() {
         mainActivity = context as MainActivity
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,8 +51,8 @@ class SettingFragment : Fragment() {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, menuItems)
         listView.adapter = adapter
 
-        binding.backBtn.setOnClickListener{
-            mainActivity.changeFragmentView(MainActivity.TODO_FRAGMENT)
+        binding.toolbar.setNavigationOnClickListener {
+            mainActivity.onBackPressed()
         }
 
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->

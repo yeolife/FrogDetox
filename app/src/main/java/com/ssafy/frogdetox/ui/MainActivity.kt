@@ -1,12 +1,9 @@
 package com.ssafy.frogdetox.ui
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.databinding.ActivityMainBinding
 import com.ssafy.frogdetox.ui.detox.DetoxSleepFragment
@@ -29,6 +26,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initBottomNavFragment()
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            handleBackStackChanged()
+        }
+    }
+
+    private fun handleBackStackChanged() {
+        val fragment = supportFragmentManager.findFragmentById(R.id.mainFrameLayout)
+        if (fragment is SettingFragment) {
+            binding.bottomNavbar.isVisible = false
+        } else {
+            binding.bottomNavbar.isVisible = true
+        }
     }
 
     private fun initBottomNavFragment() {
@@ -36,7 +46,6 @@ class MainActivity : AppCompatActivity() {
         detoxFragment = DetoxSleepFragment()
         settingFragment = SettingFragment()
 
-        // Initialize with the first fragment
         supportFragmentManager.beginTransaction().apply {
             add(binding.mainFrameLayout.id, todoFragment)
             add(binding.mainFrameLayout.id, detoxFragment)
