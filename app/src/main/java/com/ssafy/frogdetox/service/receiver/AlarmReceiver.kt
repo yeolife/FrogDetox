@@ -81,6 +81,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 }
             }
             //재부팅 sleep 알림 등록
+            Log.d(TAG, "onReceive: ${SharedPreferencesManager.getSleepState()}")
             if (SharedPreferencesManager.getSleepState()){
                 saverManager.setScreenSaverAlarm(context,
                     SharedPreferencesManager.getHour(),
