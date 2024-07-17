@@ -1,5 +1,6 @@
 package com.ssafy.frogdetox.ui.todo
 
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,7 +66,6 @@ class TodoListAdapter() :
             when (getItem(position)) {
                 is DataItem.Header -> TYPE_HEADER
                 is DataItem.TodoItem -> TYPE_ITEM
-                else -> {0}
             }
         }
     }
@@ -90,7 +90,16 @@ class TodoListAdapter() :
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: TodoDto) {
+            binding.cbIsComplete.setOnCheckedChangeListener(null) // 재사용에서 이전 설정을 저장하는 것 제거
+
             binding.cbIsComplete.isChecked = item.complete
+
+            if(binding.cbIsComplete.isChecked) {
+                binding.tvContext.paintFlags = binding.tvContext.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                binding.tvContext.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG.inv() and Paint.UNDERLINE_TEXT_FLAG.inv()
+            }
+
             binding.tvContext.text = item.content
             binding.tvTime.apply {
                 if (item.isAlarm) {

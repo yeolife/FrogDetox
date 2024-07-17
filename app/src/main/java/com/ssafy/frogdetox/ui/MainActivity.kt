@@ -1,6 +1,10 @@
 package com.ssafy.frogdetox.ui
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.ssafy.frogdetox.R
@@ -36,9 +40,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().apply {
             add(binding.mainFrameLayout.id, todoFragment)
             add(binding.mainFrameLayout.id, detoxFragment)
-            add(binding.mainFrameLayout.id, settingFragment)
             hide(detoxFragment)
-            hide(settingFragment)
             commit()
         }
 
@@ -56,18 +58,15 @@ class MainActivity : AppCompatActivity() {
         when (fragment) {
             TODO_FRAGMENT -> {
                 transaction.hide(detoxFragment)
-                transaction.hide(settingFragment)
                 transaction.show(todoFragment)
             }
             DETOX_FRAGMENT -> {
                 transaction.hide(todoFragment)
-                transaction.hide(settingFragment)
                 transaction.show(detoxFragment)
             }
             SETTING_FRAGMENT -> {
-                transaction.hide(todoFragment)
-                transaction.hide(detoxFragment)
-                transaction.show(settingFragment)
+                transaction.replace(binding.mainFrameLayout.id, settingFragment)
+                    .addToBackStack(null)
             }
         }
         transaction.commit()

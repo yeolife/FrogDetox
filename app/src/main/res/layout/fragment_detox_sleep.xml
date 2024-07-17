@@ -117,6 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight=".3"
+                android:paddingVertical="70dp"
                 android:text="잠자기 알람의\n시간을 설정하려면,\n말풍선을 클릭하세요."
                 android:layout_gravity="center_vertical"
                 android:gravity="center"

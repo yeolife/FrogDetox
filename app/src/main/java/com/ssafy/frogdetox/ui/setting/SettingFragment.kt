@@ -11,11 +11,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
-import com.ssafy.frogdetox.R
 import com.ssafy.frogdetox.databinding.FragmentSettingBinding
-import com.ssafy.frogdetox.databinding.FragmentTodoBinding
 import com.ssafy.frogdetox.ui.LoginActivity
 import com.ssafy.frogdetox.ui.MainActivity
 
@@ -42,12 +38,6 @@ class SettingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSettingBinding.inflate(inflater, container, false)
-
-        mainActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                mainActivity.changeFragmentView(MainActivity.TODO_FRAGMENT)
-            }
-        })
 
         return binding.root
     }
@@ -87,7 +77,7 @@ class SettingFragment : Fragment() {
     }
 
     private fun contactDeveloper() {
-        val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "hyejjang1203@gmail.com", null))
+        val emailIntent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "hyejjang120300@gmail.com", null))
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "문의하기")
         startActivity(Intent.createChooser(emailIntent, "이메일 클라이언트를 선택하세요."))
     }

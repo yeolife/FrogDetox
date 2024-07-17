@@ -3,9 +3,13 @@ package com.ssafy.frogdetox.ui.todo
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -50,8 +54,13 @@ class TodoFragment : Fragment() {
     private lateinit var alarmManager: AlarmManager
 
     private var selectedDate = LocalDate.now()
-
     private val dateFormatter = DateTimeFormatter.ofPattern("dd")
+
+    private var doubleBackToExitPressedOnce = false
+    private val handler = Handler(Looper.getMainLooper())
+    private val backPressedRunnable = Runnable {
+        doubleBackToExitPressedOnce = false
+    }
 
     private val viewModel: TodoViewModel by activityViewModels()
     private val db: FrogDetoxDatabase by lazy {
@@ -105,6 +114,22 @@ class TodoFragment : Fragment() {
         observerTodoList()
         initTodoRecyclerView()
         initTodoDateCalendar()
+        twoSecondOnBackPress()
+    }
+
+    private fun twoSecondOnBackPress() {
+        // 2초 내로 뒤로 가기 두번 하면 앱 종료
+        mainActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (doubleBackToExitPressedOnce) {
+                    mainActivity.finish()
+                } else {
+                    doubleBackToExitPressedOnce = true
+                    Toast.makeText(requireContext(), "한번 더 클릭 시 앱이 종료 됩니다.", Toast.LENGTH_SHORT).show()
+                    handler.postDelayed(backPressedRunnable, 2000) // 2초 후에 다시 false로 변경
+                }
+            }
+        })
     }
 
     private fun initTodoRecyclerView() {
@@ -163,6 +188,8 @@ class TodoFragment : Fragment() {
             todoAdapter.addHeaderAndSubmitList(it)
         })
     }
+
+
 
     // ----------------------- TodoDate
 
