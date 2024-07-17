@@ -93,13 +93,9 @@ class TodoFragment : Fragment() {
             transformations(CircleCropTransformation())
             placeholder(R.drawable.ic_launcher_foreground)
         }
-        binding.btnSetting.setOnClickListener {
-            mainActivity.changeFragmentView(MainActivity.SETTING_FRAGMENT)
-        }
 
         binding.lyPersonal.setOnClickListener {
-            val dialog = PersonalDialogFragment()
-            dialog.show(childFragmentManager, "PersonalDialogFragment")
+            mainActivity.changeFragmentView(MainActivity.SETTING_FRAGMENT)
         }
 
         observerTodoList()

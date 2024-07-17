@@ -21,6 +21,7 @@ import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
 import com.ssafy.frogdetox.R
+import com.ssafy.frogdetox.data.local.SharedPreferencesManager
 import com.ssafy.frogdetox.ui.detox.GoSleepActivity
 import java.util.Random
 
@@ -35,6 +36,7 @@ class ScreenSaverService : Service() {
     private lateinit var overlayView: ConstraintLayout
     private var realWidth = 0
     private var realHeight = 0
+    private val count = SharedPreferencesManager.getCount()
     @RequiresApi(Build.VERSION_CODES.R)
     private fun getScreenSize() {
         val matric = windowManager.currentWindowMetrics
@@ -70,11 +72,11 @@ class ScreenSaverService : Service() {
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
     }
-    var deletecount=10
+    var deletecount=count
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initTouchListener() {
-        for (i in 0..9) {
+        for (i in 0..count-1) {
             val x = (Random().nextInt(realWidth - if (i % 2 == 0) BIGSIZE else SIZE)+if (i % 2 == 0) BIGSIZE /2 else SIZE /2).toFloat()
             val y = (Random().nextInt(realHeight - 200 - if (i % 2 == 0) BIGSIZE else SIZE)+if (i % 2 == 0) BIGSIZE /2 else SIZE /2).toFloat()
             setImageView(x, y, i)
