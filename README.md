@@ -1,3 +1,12 @@
+### 🔗Link
+[청깨구리 - 슬립모드&투두리스트 - Google Play 앱](https://play.google.com/store/apps/details?id=com.ssafy.frogdetox&hl=ko)
+
+## 📢 개요
+"개구리를 생각하지 마세요." 라고 하면 무엇이 생각나시나요? 당신의 이러한 심리를 이용한 청개구리 투두리스트 기능입니다! 생성형 AI로 최근 작성한 투두를 기반으로 할일을 추천받고, 잠 잘 시간에 게이미피케이션한 앱 제한으로 불쾌하지 않게 도파민 디톡스를 할 수 있습니다. 현대인은 유튜브나 인스타그램과 같이 중독성 있는 플랫폼으로 일정을 지키지 못해서 다음 날 숙면을 충분히 취하지 못하는 일이 빈번하게 발생합니다. 이로 인해 능률이 떨어지고, 불규칙적인 수면 패턴으로 건강이 나빠집니다. 청깨구리로 수면 패턴을 지켜보세요!
+<br><br>
+
+</aside>
+
 <div align="center">  
   <img src="https://github.com/yeolife/frogDetox/assets/82012857/42d157ad-236e-47af-adf9-d363de4fff63" width="25%" height="35%">
   <img src="https://github.com/yeolife/frogDetox/assets/82012857/9a29470a-ab7f-4392-a855-d2c67ebad209" width="25%" height="35%">
